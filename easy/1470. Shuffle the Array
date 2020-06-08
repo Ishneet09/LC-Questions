@@ -1,0 +1,42 @@
+//in place solution-
+class Solution {
+public:
+    vector<int> shuffle(vector<int>& nums, int n) {
+        
+        int mid = nums.size()/2;
+        int i = 0;
+        
+        while(i < nums.size()-1 && mid < nums.size()-1){
+            
+            nums.insert(nums.begin() + i + 1, nums[mid]);
+            nums.erase(nums.begin() + mid+1);
+            i = i + 2;
+            mid = mid + 1;
+        }
+        return nums;
+    }
+};
+
+//my soln- O(N) space and time
+class Solution {
+public:
+    vector<int> shuffle(vector<int>& nums, int n) {
+        
+        if(nums.size() == 2)
+            return nums;
+        
+        int i = 0;
+        int j = n;
+        vector<int>ans;
+        
+        
+        while(i < n && j < nums.size()){
+            ans.push_back(nums[i]);
+            ans.push_back(nums[j]);
+            i++;
+            j++;
+        }
+        
+        return ans;
+    }
+}
