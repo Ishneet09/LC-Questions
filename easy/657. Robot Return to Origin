@@ -1,0 +1,29 @@
+class Solution {
+public:
+    bool judgeCircle(string moves) {
+        
+        if(moves.size() == 0)
+            return true;
+        
+        int lrcounter = 0;
+        int udcounter = 0;
+        
+        for(int i = 0; i < moves.size(); i++){
+            if(moves[i] == 'L')
+                lrcounter++;
+            else if(moves[i] == 'R')
+                lrcounter--;
+            
+            if(moves[i] == 'U')
+                udcounter++;
+            else if(moves[i] == 'D')
+                udcounter--;
+        }
+        
+        if(lrcounter == 0 && udcounter == 0)
+            return true;
+        
+        return false;
+        
+    }
+};
