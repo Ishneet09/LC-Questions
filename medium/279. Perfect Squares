@@ -1,0 +1,29 @@
+class Solution {
+public:
+    int numSquares(int n) {
+        if(n == 0)
+            return 0;
+        if(n == 1)
+            return 1;
+        if(n == 2)
+            return 2;
+        if(n == 3)
+            return 3;
+        
+        int store[n + 1];
+        
+        store[0] = 0;
+        store[1] = 1;
+        store[2] = 2;
+        store[3] = 3;
+        
+        for(int i = 4; i <= n; i++){
+            int ans = INT_MAX;
+            for(int j = 1; j <= sqrt(i); j++){
+                ans = min(ans, store[i - (j * j)] + 1);
+            }
+            store[i] = ans;
+        }
+        return store[n];
+    }
+};
