@@ -1,0 +1,46 @@
+class Solution {
+public:
+    bool match(char b1, char b2){
+        if(b1 == '(' && b2 == ')')
+            return true;
+        if(b1 == '[' && b2 == ']')
+            return true;
+        if(b1 == '{' && b2 == '}')
+            return true;
+        
+        return false;
+        
+        
+    }
+    
+    bool isOpen(char c){
+        if(c == '(' || c == '[' || c == '{' )
+            return true;
+        return false;
+    }
+    
+    bool isValid(string s) {
+        if(s.size() == 0)
+            return true;
+        
+        if(s.size() == 1)
+            return false;
+        
+        stack<char>st;
+        
+        for(int i = 0; i < s.size(); i++){
+            if(isOpen(s[i]))
+                st.push(s[i]);
+            else{
+                if(st.size() != 0 && match(st.top(), s[i]))
+                    st.pop();
+                else
+                    return false;
+            }
+        }
+        
+        if(st.size() != 0)
+            return false;
+        return true;
+    }
+};
