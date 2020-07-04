@@ -1,0 +1,33 @@
+class Solution {
+public:
+    bool backspaceCompare(string S, string T) {
+        
+        if(S == "" || T == "")
+            return false;
+        
+        string tempS = "";
+        string tempT = "";
+        
+        for(int i = 0; i < S.size(); i++){
+            if(isalpha(S[i])){
+                tempS += S[i];
+            }
+            else if(S[i] == '#'){
+                tempS = tempS.substr(0, tempS.size() - 1);
+            }
+        }
+        
+        for(int i = 0; i < T.size(); i++){
+            if(isalpha(T[i])){
+                tempT += T[i];
+            }
+            else if(T[i] == '#'){
+                tempT = tempT.substr(0, tempT.size() - 1);
+            }
+        }
+        
+        return tempS == tempT;
+        
+        
+    }
+};
