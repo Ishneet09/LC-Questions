@@ -1,0 +1,32 @@
+class Solution {
+public:
+    int longestConsecutive(vector<int>& nums) {
+        if(nums.size() == 0)
+            return 0;
+        
+        unordered_set<int>set;
+        
+        for(int i = 0; i < nums.size(); i++){
+            if(set.find(nums[i]) == set.end())
+                set.insert(nums[i]);
+        }
+        
+        int seqLen = INT_MIN;
+        
+        for(int i = 0; i < nums.size(); i++){
+            int front = 0;
+
+            if(set.find(nums[i] - 1) == set.end()){
+                int temp = nums[i] + 1;
+                while(set.find(temp) != set.end()){
+                    front++;
+                    temp = temp + 1;
+                }
+            }
+            
+            seqLen = max(seqLen, front + 1);
+        }
+        
+        return seqLen;
+    }
+};
