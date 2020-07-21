@@ -1,0 +1,38 @@
+class Solution {
+public:
+    
+    void helper(string S, int num, vector<string>& ans, unordered_set<string>& set){
+        if(num == S.size())
+            return;
+        
+        
+            S[num] = toupper(S[num]);
+            
+            if(set.find(S) == set.end()){
+              ans.push_back(S);
+                set.insert(S);
+            }
+            
+            
+            helper(S, num + 1, ans, set);
+
+            S[num] = tolower(S[num]);
+            
+            if(set.find(S) == set.end()){
+              ans.push_back(S);
+                set.insert(S);
+            }             
+           
+            helper(S, num + 1, ans, set);
+        
+    }
+    
+    vector<string> letterCasePermutation(string S) {
+       vector<string>ans;
+        unordered_set<string> set;
+        
+       helper(S, 0, ans, set);
+        
+        return ans;
+    }
+};
