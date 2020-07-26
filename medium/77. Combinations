@@ -1,0 +1,34 @@
+class Solution {
+public:
+    
+    vector<vector<int>>ans;
+
+    
+    void combineHelper(int n, int k, int numsStart, vector<int>& temp) {
+        if(n == 0)
+            return;
+        if(k == 0){
+            ans.push_back(temp);
+            return;
+        }
+                
+         for(int i = numsStart; i <= n; i++){
+             temp.push_back(i);
+             combineHelper(n, k - 1, i + 1, temp);
+             temp.pop_back();
+         }   
+            
+        return;
+        
+    }
+    
+    vector<vector<int>> combine(int n, int k) {
+        if(n == 1)
+            return {{1}};
+        
+        
+         vector<int> temp;
+         combineHelper(n, k, 1, temp);
+        return ans;
+    }
+};
