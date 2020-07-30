@@ -1,0 +1,26 @@
+class Solution {
+public:
+    int maxProduct(vector<int>& nums) {
+        if(nums.size() == 0)
+            return 0;
+        int currentMinProd = nums[0];
+        int currentMaxProd = nums[0];
+        int globalProd = nums[0];
+        
+        for(int i = 1; i < nums.size(); i++){
+            if(nums[i] < 0){
+                int temp = currentMaxProd;
+                currentMaxProd = currentMinProd;
+                currentMinProd = temp;
+            }
+           currentMaxProd = max(nums[i], currentMaxProd * nums[i]);
+           currentMinProd = min(nums[i], currentMinProd * nums[i]);
+            
+            if(currentMaxProd > globalProd)
+                globalProd = currentMaxProd;
+            
+        }
+        
+        return globalProd;
+    }
+};
