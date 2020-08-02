@@ -1,0 +1,73 @@
+**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    
+    ListNode* reverseLL(ListNode* head){
+       ListNode* prev = NULL;
+       ListNode* current = head;
+       ListNode* nextNode = head->next;
+        
+        while(nextNode != NULL){
+            current->next = prev;
+            prev = current;
+            current = nextNode;
+            nextNode = nextNode->next;
+        }
+        current->next = prev;
+        return current;
+    }
+    
+    
+    void reorderList(ListNode* head) {
+        if(head == NULL)
+            return;
+        if(head->next == NULL)
+            return;
+        
+        ListNode* slow = head;
+        ListNode* fast = head;
+        ListNode* slow_prev = NULL;
+        
+        while(fast != NULL && fast->next != NULL){
+            slow_prev = slow;
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        
+        slow_prev->next = NULL;
+
+        
+        ListNode* head2 = reverseLL(slow);
+        ListNode* head1 = head->next;
+        
+        ListNode* newTail = head;
+        ListNode* newHead = head;
+        
+        
+        bool reverse = true;
+        
+        while(head1 != NULL && head2 != NULL){
+           if(reverse){
+               newTail->next = head2;
+               head2 = head2->next;
+               reverse = false;
+           }
+            else{
+                newTail->next = head1;
+                head1 = head1->next;
+                reverse = true;
+            }
+            newTail = newTail->next;
+        }
+        newTail->next = head2;
+    }
+};
