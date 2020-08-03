@@ -1,0 +1,39 @@
+class Solution {
+public:
+    bool allCaps(string word){
+        for(int i = 0; i < word.size(); i++){
+            if(word[i] >= 'A' && word[i] <= 'Z')
+                continue;
+            
+            else
+                return false;
+        }
+        return true;
+    }
+    
+    bool allRemainingSmall(string word){
+        for(int i = 1; i < word.size(); i++){
+            if(word[i] >= 'a' && word[i] <= 'z')
+                continue;
+            else
+                return false;
+        }
+        return true;
+    }
+    
+    
+    bool detectCapitalUse(string word) {
+        if(word.size() == 0)
+            return false;
+        
+        if(word[0] >= 'A' && word[0] <= 'Z'){
+            if(allCaps(word))
+                return true;
+            else if(allRemainingSmall(word))
+                return true;
+        }
+        else if(word[0] >= 'a' && word[0] <= 'z' && allRemainingSmall(word))
+            return true;
+        return false;
+    }
+};
