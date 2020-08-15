@@ -1,0 +1,24 @@
+class Solution {
+public:
+    int minSubArrayLen(int s, vector<int>& nums) {
+        if(nums.size() == 0)
+            return 0;
+        
+        int windowStart = 0;
+        int globalLen = INT_MAX;
+        int sum = 0;
+        
+        for(int windowEnd = 0 ; windowEnd < nums.size(); windowEnd++){
+            sum += nums[windowEnd];
+            
+            while(sum >= s){
+                globalLen = min(globalLen, windowEnd - windowStart + 1);
+
+                sum = sum - nums[windowStart];
+                windowStart++;
+            }
+        }
+        
+         return globalLen == INT_MAX ? 0 : globalLen;
+    }
+};
