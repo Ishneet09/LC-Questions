@@ -1,0 +1,44 @@
+/**
+ * // This is the Master's API interface.
+ * // You should not implement it, or speculate about its implementation
+ * class Master {
+ *   public:
+ *     int guess(string word);
+ * };
+ */
+
+
+
+class Solution {
+public:
+   static bool myComp(string a, string b, Master& master){
+        
+        int tempA = master.guess(a);
+        int tempB = master.guess(b);
+        
+        return tempA <= tempB;
+        
+    }
+    
+    
+    void findSecretWord(vector<string>& wordlist, Master& master) {
+        sort(wordlist.begin(), wordlist.end(), myComp);
+        
+        int left = 0;
+        int right = wordlist.size() - 1;
+        
+        while(left <= right){
+            int mid = left + (right - left) / 2;
+            
+            int midGuessValue = master.guess(wordlist[mid]);
+            
+            if(midGuessValue == 6)
+                return;
+            else if(midGuessValue < 6)
+                left = mid + 1;
+            else
+                right = mid - 1;
+        }
+        return;
+    }
+};
