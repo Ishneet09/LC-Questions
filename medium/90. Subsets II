@@ -1,0 +1,39 @@
+class Solution {
+public:
+    
+void subsetsHelper(vector<int>& nums, int pos, vector<int>& temp, vector<vector<int>>& result){
+    
+    result.push_back(temp);
+
+   for(int i = pos; i < nums.size(); i++){
+       if(i > pos && nums[i - 1] == nums[i]){
+              continue;  
+       }
+      
+       temp.push_back(nums[i]);
+       subsetsHelper(nums, i + 1, temp, result);
+       temp.pop_back();
+   }
+
+return;
+}
+
+    
+    
+    vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+ 
+        if(nums.size() == 0){
+           return {};
+        }
+
+        sort(nums.begin(), nums.end());
+  
+       vector<vector<int>>result;
+       vector<int>temp;
+
+       subsetsHelper(nums, 0, temp, result);
+
+      return result;
+
+    }
+};
