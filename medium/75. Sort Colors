@@ -4,22 +4,24 @@ public:
         if(nums.size() == 0)
             return;
         
-        int p0 = 0;
-        int p1 = 0;
-        int p2 = 0;
+        int start = 0;
+        int end = nums.size() - 1;
+        int index = 0;
         
-        for(int num : nums){
-            nums[p2] = 2;
-            p2++;
-            
-            if(num < 2){
-                nums[p1] = 1;
-                p1++;
+        while(index <= end && start < end){
+            if(nums[index] == 0){
+                nums[index] = nums[start];
+                nums[start] = 0;
+                start++;
+                index++;
             }
-            
-            if(num < 1){
-                nums[p0] = 0;
-                p0++;
+            else if(nums[index] == 2){
+                nums[index] = nums[end];
+                nums[end] = 2;
+                end--;
+            }
+            else{
+                index++;
             }
         }
         
