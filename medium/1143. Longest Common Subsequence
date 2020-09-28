@@ -1,0 +1,24 @@
+class Solution {
+public:
+    int longestCommonSubsequence(string text1, string text2) {
+        if(text1 == "" || text2 == "")
+            return 0;
+        
+        int store[text2.size() + 1][text1.size() + 1];
+        
+        for(int text2row = 0; text2row < text2.size() + 1; text2row++){
+            for(int text1col = 0; text1col < text1.size() + 1; text1col++){
+                if(text2row == 0 || text1col == 0){
+                    store[text2row][text1col] = 0;
+                }
+                else if(text1[text1col - 1] == text2[text2row - 1]){
+                    store[text2row][text1col] = 1 + store[text2row - 1][text1col - 1];
+                }
+                else{
+                    store[text2row][text1col] = max(store[text2row - 1][text1col], store[text2row][text1col - 1]);
+                }
+            }
+        }
+        return store[text2.size()][text1.size()];
+    }
+};
