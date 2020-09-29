@@ -1,0 +1,37 @@
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        if(nums.size() == 0){
+            return 0;
+        }
+        
+        if(nums.size() == 1){
+            return nums[0];
+        }
+        
+        int moneyStore[nums.size()];
+        
+        
+        
+        moneyStore[0] = nums[0];
+        moneyStore[1] = nums[1];
+        
+        
+        for(int j = 2; j < nums.size(); j++){
+            int ans = INT_MIN;
+            
+            for(int i = 0; i <= j - 2; i++){
+                ans = max(ans, moneyStore[i]);
+            }
+            moneyStore[j] = nums[j] + ans; 
+        }
+        
+        int maxAmount = INT_MIN;
+        
+        for(int i = 0; i < nums.size(); i++){
+            maxAmount = max(maxAmount, moneyStore[i]);
+        }
+        return maxAmount;
+        
+    }
+};
