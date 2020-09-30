@@ -1,0 +1,62 @@
+class Solution {
+public:
+    
+    int robHelper(vector<int>& nums){
+        if(nums.size() == 0){
+            return 0;
+        }
+        if(nums.size() == 1){
+            return nums[0];
+        }
+        
+        
+        vector<int>store(nums.size(), 0);
+        
+        store[0] = nums[0];
+        store[1] = nums[1];
+        
+        for(int j = 2; j < nums.size(); j++){
+            int ans = INT_MIN;
+            for(int i = 0; i <= j - 2; i++){
+                ans = max(ans, store[i]);
+            }
+            store[j] = ans + nums[j];
+        }
+        
+        int maxAmount = INT_MIN;
+        
+        for(int i = 0; i < nums.size(); i++){
+            maxAmount = max(maxAmount, store[i]);
+        }
+        
+        return maxAmount;
+        
+    }
+        
+    
+    
+    int rob(vector<int>& nums) {
+        
+         if(nums.size() == 0){
+            return 0;
+        }
+        if(nums.size() == 1){
+            return nums[0];
+        }
+        
+        
+        vector<int>possibilityZero;
+        
+        for(int i = 0; i < nums.size() - 1; i++){
+            possibilityZero.push_back(nums[i]);
+        }
+        
+        vector<int>possibilityOne;
+        
+        for(int i = 1; i < nums.size(); i++){
+            possibilityOne.push_back(nums[i]);
+        }
+        
+        return max(robHelper(possibilityZero), robHelper(possibilityOne));
+    }
+};
