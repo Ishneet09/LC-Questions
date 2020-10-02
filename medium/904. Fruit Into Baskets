@@ -1,0 +1,34 @@
+class Solution {
+public:
+    int totalFruit(vector<int>& tree) {
+        if(tree.size() == 0)
+            return 0;
+        
+        unordered_map<int,int>fruitMap;
+        
+        int windowStart = 0;
+        int windowEnd = 0;
+        int len = INT_MIN;
+        
+        while(windowEnd < tree.size()){
+            if(fruitMap.size() <= 2){
+               fruitMap[tree[windowEnd]] = windowEnd;
+            }
+            
+            if(fruitMap.size() > 2){
+                int minIndex = INT_MAX;
+                auto it = fruitMap.begin();
+                while(it != fruitMap.end()){
+                    minIndex = min(minIndex, it->second); 
+                    it++;
+                }
+                
+                windowStart = minIndex + 1;
+                fruitMap.erase(tree[minIndex]);
+            }
+            len = max(len, windowEnd - windowStart + 1);
+            windowEnd++;
+        }
+        return len;
+    }
+};
