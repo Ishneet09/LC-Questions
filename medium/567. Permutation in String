@@ -1,0 +1,48 @@
+class Solution {
+public:
+    
+    bool checkStrings(vector<int>& smallVector, vector<int>& tempVector){
+      
+        
+        for(int j = 0; j < 26; j++){
+           if(smallVector[j] != tempVector[j])
+               return false;
+        }
+        
+        return true;
+    }
+    
+    
+    void fillVector(string s1, vector<int>& vec){
+        for(int i = 0; i < s1.size(); i++){
+           int index = s1[i] - 'a';
+            vec[index]++;
+        }
+    }
+    
+    
+    bool checkInclusion(string s1, string s2) {
+        if(s1 == s2)
+            return true;
+        
+        vector<int>smallVector(26, 0);
+        
+        fillVector(s1, smallVector);
+        
+        for(int i = 0; i < s2.size(); i++){
+            string temp = s2.substr(i, s1.size());
+            vector<int>tempVector(26, 0);
+            
+            fillVector(temp, tempVector);
+            
+            if(checkStrings(smallVector, tempVector))
+                return true;
+            
+            else
+                continue;
+            
+        }
+        
+        return false;
+    }
+};
