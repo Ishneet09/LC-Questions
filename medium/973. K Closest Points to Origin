@@ -1,0 +1,45 @@
+class Solution {
+public:
+    
+    float euclidianDistance(int x, int y){
+        int xSq = x * x;
+        int ySq = y * y;
+        float dist = sqrt(xSq + ySq);
+        return dist;
+    }
+    
+    
+    vector<vector<int>> kClosest(vector<vector<int>>& points, int k) {
+        if(points.size() == 0)
+            return {};
+        if(k == 0)
+            return {};
+        if(k == points.size())
+            return points;
+        
+        priority_queue<pair<float, int>>pq;
+        
+        for(int i = 0; i < points.size(); i++){
+            int x = points[i][0];
+            int y = points[i][1];
+            float distance = euclidianDistance(x, y);
+            pq.push({distance, i});
+        }
+        
+        int temp = 0;
+        vector<vector<int>>closestPoints;
+        
+        while(pq.size() != k){
+            pq.pop();
+        }
+        
+        while(temp < k){
+            pair<float, int>p = pq.top();
+            pq.pop();
+            int index = p.second;
+            closestPoints.push_back(points[index]);
+            temp++;
+        }
+        return closestPoints;
+    }
+};
