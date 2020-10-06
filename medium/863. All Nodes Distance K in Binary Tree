@@ -1,0 +1,83 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    
+    void makeParentMap(TreeNode* root, unordered_map<TreeNode*, TreeNode*>& parentMap){
+        if(root == NULL)
+            return;
+        
+        if(root->left)
+            parentMap[root->left] = root;
+        if(root->right)
+            parentMap[root->right] = root;
+        
+        makeParentMap(root->left, parentMap);
+        makeParentMap(root->right, parentMap);
+    }
+    
+    
+    vector<int> distanceK(TreeNode* root, TreeNode* target, int k) {
+        if(root == NULL || target == NULL)
+            return {};
+        if(k == 0)
+            return {target->val};
+        
+        unordered_map<TreeNode*, TreeNode*>parentMap;
+        
+        makeParentMap(root, parentMap);
+        
+        unordered_set<int>set;
+        
+        queue<TreeNode*>q;
+        q.push(target);
+        q.push(NULL);
+        
+        set.insert(target->val);
+        int temp = 0;
+        
+        while(q.size() != 0){
+            TreeNode* front = q.front();
+            q.pop();
+            
+            if(front == NULL){
+                temp++;
+                if(temp == k)
+                    break;
+                if(q.size() == 0)
+                    break;
+                q.push(NULL);
+                continue;
+            }
+            if(front->left && set.find(front->left->val) == set.end()){
+                set.insert(front->left->val);
+                q.push(front->left);
+            }
+            if(front->right && set.find(front->right->val) == set.end()){
+                set.insert(front->right->val);
+                q.push(front->right);
+            }
+            if(parentMap[front] != NULL && set.find(parentMap[front]->val) == set.end()){
+                set.insert(parentMap[front]->val);
+                q.push(parentMap[front]);
+            }
+            
+        }
+        vector<int>result;
+        if(q.size() != 0){
+            while(q.size() != 0){
+                TreeNode* front = q.front();
+                q.pop();
+                result.push_back(front->val);
+            }
+        }
+        return result;
+    }
+};
