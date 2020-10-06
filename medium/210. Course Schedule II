@@ -1,0 +1,72 @@
+class Solution {
+public:
+    
+    bool isCyclic(vector<vector<int>>& graph, int sv, vector<int>& visited){
+        if(visited[sv] == 2)
+            return true;
+        visited[sv] = 2;
+        
+        for(int node : graph[sv]){
+            if(visited[node] != 1 && isCyclic(graph, node, visited))
+                return true;
+        }
+        visited[sv] = 1;
+        return false;
+    }
+    
+    
+    
+    void topSort(vector<vector<int>>& graph, int sv, vector<int>& visited, vector<int>& order){
+        visited[sv] = 1;
+        
+        for(int node : graph[sv]){
+            if(visited[node] == 0)
+                topSort(graph, node, visited, order);
+        }
+        order.push_back(sv);
+        return;
+    }
+    
+    
+    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+        
+        if(numCourses == 0)
+            return {};
+       
+        if(prerequisites.size() == 0){
+            vector<int>order;
+            for(int i = 0; i < numCourses; i++){
+                order.push_back(i);
+            }
+            return order;
+        }
+        
+        vector<vector<int>>graph(numCourses);
+        
+        for(auto p : prerequisites){
+            graph[p[0]].push_back(p[1]);
+        }
+        
+        vector<int>visited(numCourses, 0);
+        
+       for(int i = 0; i < numCourses; i++){
+           if(visited[i] == 0 && isCyclic(graph, i, visited))
+               return {};
+       }
+        
+       
+        for(int i = 0; i < numCourses; i++){
+            visited[i] = 0;
+        }
+        
+        vector<int>order;
+        
+        
+        for(int i = 0; i < numCourses; i++){
+            if(visited[i] == 0){
+                topSort(graph, i, visited, order);
+            }
+        }
+        return order;
+    }
+};
