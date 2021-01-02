@@ -1,0 +1,26 @@
+class Solution {
+public:
+    
+    void fillMap(unordered_map<TreeNode*, TreeNode*>& map, TreeNode* orig, TreeNode* cloned){
+        if(orig == NULL && cloned == NULL)
+            return;
+        map[orig] = cloned;
+        
+        fillMap(map, orig->left, cloned->left);
+        fillMap(map, orig->right, cloned->right);
+        
+        return;
+    }
+    
+    
+    TreeNode* getTargetCopy(TreeNode* original, TreeNode* cloned, TreeNode* target) {
+        unordered_map<TreeNode*, TreeNode*>map;
+        
+        if(original == NULL)
+            return NULL;
+        
+        fillMap(map, original, cloned);
+        
+        return map[target];
+    }
+};
