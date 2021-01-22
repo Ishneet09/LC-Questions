@@ -1,0 +1,122 @@
+class Solution {
+public:
+    vector<vector<int>> queensAttacktheKing(vector<vector<int>>& queens, vector<int>& king) {
+       
+        vector<vector<int>>ans;
+        vector<vector<char>>board(8, vector<char>(8, '0'));
+        
+        board[king[0]][king[1]] = 'K';
+        
+        for(int i = 0; i < queens.size(); i++){
+            int row = queens[i][0];
+            int col = queens[i][1];
+            
+            board[row][col] = 'Q';
+        }
+        
+        int kingRow = king[0];
+        int kingCol = king[1];
+        
+        //up
+        if(kingRow - 1 >= 0){
+            int currRow = kingRow - 1;
+            while(currRow >= 0 && board[currRow][kingCol] != 'Q'){
+                currRow--;
+            }
+            if(currRow >= 0)
+                ans.push_back({currRow, kingCol});
+        }
+        
+        //Down
+        if(kingRow + 1 < 8){
+            int currRow = kingRow + 1;
+            
+            while(currRow <= 7 && board[currRow][kingCol] != 'Q'){
+                currRow++;
+            }
+            if(currRow <= 7)
+                ans.push_back({currRow, kingCol});
+        }
+        
+        //Right
+        if(kingCol + 1 < 8){
+            int currCol = kingCol + 1;
+            
+            while(currCol <= 7 && board[kingRow][currCol] != 'Q'){
+                currCol++;
+            }
+            if(currCol <= 7)
+                ans.push_back({kingRow, currCol});
+        }
+        
+        //left
+        if(kingCol - 1 >= 0){
+            int currCol = kingCol - 1;
+            
+            while(currCol >= 0 && board[kingRow][currCol] != 'Q'){
+                currCol--;
+            }
+            
+            if(currCol >= 0)
+                ans.push_back({kingRow, currCol});
+        }
+        
+        //diagLeftUp
+        if(kingRow - 1 >= 0 && kingCol - 1 >= 0){
+            int currRow = kingRow - 1;
+            int currCol = kingCol - 1;
+            
+            while(currRow >= 0 && currCol >= 0 && board[currRow][currCol] != 'Q'){
+                currRow--;
+                currCol--;
+            }
+            
+            if(currRow >= 0 && currCol >= 0)
+                ans.push_back({currRow, currCol});
+        }
+        
+        //diagRightUp
+        if(kingRow - 1 >= 0 && kingCol + 1 <= 7){
+            int currRow = kingRow - 1;
+            int currCol = kingCol + 1;
+            
+            while(currRow >= 0 && currCol <= 7 && board[currRow][currCol] != 'Q'){
+                currRow--;
+                currCol++;
+            }
+            
+            if(currRow >= 0 && currCol <= 7)
+                ans.push_back({currRow, currCol});
+        }
+        
+        //diagLeftDown
+        if(kingRow + 1 <= 7 && kingCol - 1 >= 0){
+            int currRow = kingRow + 1;
+            int currCol = kingCol - 1;
+            
+            while(currRow <= 7 && currCol >= 0 && board[currRow][currCol] != 'Q'){
+                currRow++;
+                currCol--;
+            }
+            
+            if(currRow <= 7 && currCol >= 0)
+                ans.push_back({currRow, currCol});
+        }
+        
+        //diagRightDown
+        if(kingRow + 1 <= 7 && kingCol + 1 <= 7){
+            int currRow = kingRow + 1;
+            int currCol = kingCol + 1;
+            
+            while(currRow <= 7 && currCol <= 7 && board[currRow][currCol] != 'Q'){
+                currRow++;
+                currCol++;
+            }
+            
+            if(currRow <= 7 && currCol <= 7)
+                ans.push_back({currRow, currCol});
+        }
+        return ans;
+        
+    }
+};
