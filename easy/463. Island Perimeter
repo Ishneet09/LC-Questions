@@ -1,0 +1,43 @@
+class Solution {
+public:
+    
+    void dfs(vector<vector<int>>& grid, int i, int j, int rows, int columns, int& perimeter){
+        if(i < 0 || j < 0 || i >= rows || j >= columns || grid[i][j] == 0 || grid[i][j] == -1)
+            return;
+        
+        if(i == 0 || grid[i - 1][j] == 0)
+            perimeter++;
+        if(i == rows - 1 || grid[i + 1][j] == 0)
+            perimeter++;
+        if(j == 0 || grid[i][j - 1] == 0)
+            perimeter++;
+        if(j == columns - 1 || grid[i][j + 1] == 0)
+            perimeter++;
+        
+        grid[i][j] = -1; 
+        
+        dfs(grid, i + 1, j, rows, columns, perimeter);
+        dfs(grid, i - 1, j, rows, columns, perimeter);
+        dfs(grid, i, j + 1, rows, columns, perimeter);
+        dfs(grid, i, j - 1, rows, columns, perimeter);
+        
+    }
+    
+    int islandPerimeter(vector<vector<int>>& grid) {
+        if(grid.size() == 0)
+            return 0;
+        
+        int rows = grid.size();
+        int columns = grid[0].size();
+        
+        int perimeter = 0;
+        
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j < columns; j++){
+                if(grid[i][j] == 1)
+                    dfs(grid, i, j, rows, columns, perimeter);
+            }
+        }
+        return perimeter;
+    }
+};
