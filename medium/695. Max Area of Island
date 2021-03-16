@@ -1,0 +1,40 @@
+class Solution {
+public:
+    
+    void dfs(vector<vector<int>>& grid, int i, int j, int rows, int columns, int& currentArea){
+        if(i < 0 || j < 0 || i >= rows || j >= columns || grid[i][j] == 0)
+            return;
+        
+        grid[i][j] = 0;
+        currentArea++;
+        
+        dfs(grid, i + 1, j, rows, columns, currentArea);
+        dfs(grid, i - 1, j, rows, columns, currentArea);
+        dfs(grid, i, j - 1, rows, columns, currentArea);
+        dfs(grid, i, j + 1, rows, columns, currentArea);
+    }
+    
+    
+    int maxAreaOfIsland(vector<vector<int>>& grid) {
+        if(grid.size() == 0)
+            return 0;
+        
+        int area = 0;
+        int currentArea = 0;
+        
+        int rows = grid.size();
+        int columns = grid[0].size();
+        
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j < columns; j++){
+                if(grid[i][j] == 1){
+                    dfs(grid, i, j, rows, columns, currentArea);
+                    area = max(area, currentArea);
+                    currentArea = 0;
+                }
+            }
+        }
+        
+        return area;
+    }
+};
