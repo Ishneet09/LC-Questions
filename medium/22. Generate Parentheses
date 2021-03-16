@@ -1,0 +1,29 @@
+class Solution {
+public:
+    
+    void generateParenthesisHelper(int n, int left, int right, string current, vector<string>& ans){
+        if(current.size() == 2*n){
+            ans.push_back(current);
+            return;
+        }
+        
+        if(left > 0 && left <= n)
+            generateParenthesisHelper(n, left - 1, right, current + '(', ans);
+        
+        if(right > 0 && left < right)
+            generateParenthesisHelper(n, left, right - 1, current + ')', ans);
+    }
+    
+    
+    
+    vector<string> generateParenthesis(int n) {
+        if(n == 0)
+            return {};
+        
+        vector<string>ans;
+        
+        generateParenthesisHelper(n, n, n, "", ans);
+        
+        return ans;
+    }
+};
