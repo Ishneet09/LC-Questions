@@ -1,0 +1,29 @@
+class Solution {
+public:
+    void moveZeroes(vector<int>& nums) {
+        if(nums.size() == 0)
+            return;
+        
+        if(nums.size() == 1)
+            return;
+        
+        int nonZeroPtr = 0;
+        int ptr = 0;
+        
+        while(ptr < nums.size()){
+            if(nums[ptr] != 0){
+                nums[nonZeroPtr] = nums[ptr];
+                ptr++;
+                nonZeroPtr++;
+            }
+            else{
+                ptr++;
+            }
+        }
+        
+        while(nonZeroPtr < nums.size()){
+            nums[nonZeroPtr] = 0;
+            nonZeroPtr++;
+        }
+    }
+};
