@@ -1,0 +1,62 @@
+class Solution {
+public:
+    int myAtoi(string s) {
+        if(s.size() == 0)
+            return 0;
+        
+        int i = 0;
+        
+        while(s[i] == ' ' || s[i] == '0')
+            i++;
+        
+        if(i < s.size() && isalpha(s[i]))
+            return 0;
+        
+        bool neg = false;
+        
+        if(i < s.size() && s[i] == '-'){
+            neg = true;
+            i++;
+        }
+        
+        else if(i < s.size() && s[i] == '+'){
+            i++;
+        }
+        
+        if(i < s.size() && isalpha(s[i]))
+            return 0;
+        
+        queue<char>q;
+        
+        while(i < s.size() && s[i] >= '0' && s[i] <= '9'){
+            q.push(s[i]);
+            i++;
+        }
+        
+        int power;
+        long num = 0;
+        
+        while(q.size() != 0){
+            char front = q.front();
+            power = q.size() - 1;
+            q.pop();
+            
+            long n = front - '0';
+            long t = pow(10, power);
+            num += (n * t);
+        }
+        
+        if(neg)
+            num = -1 * num;
+        
+        if(num < INT_MIN)
+            return INT_MIN;
+        
+        if(num > INT_MAX)
+            return INT_MAX;
+        
+        
+        return (int)num;
+                
+    }
+};
