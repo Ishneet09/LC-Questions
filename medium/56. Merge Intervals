@@ -1,0 +1,72 @@
+class Solution {
+public:
+    
+     vector<vector<int>> merge(vector<vector<int>>& intervals) {
+        if(intervals.size() == 0)
+            return {};
+        
+        if(intervals.size() == 1)
+            return intervals;
+        
+        sort(intervals.begin(), intervals.end());
+        
+        vector<vector<int>>result;
+        
+        int x1 = intervals[0][0];
+        int y1 = intervals[0][1];
+        int x2 = intervals[1][0];
+        int y2 = intervals[1][1];
+        
+        if(y1 >= x2){
+            if(y1 >= y2){
+                result.push_back({x1, y1});
+                intervals.erase(intervals.begin(), intervals.begin() + 2);
+            }
+            else if(y2 > y1){
+                result.push_back({x1, y2});
+                intervals.erase(intervals.begin(), intervals.begin() + 2);
+            }
+        }
+        
+        else{
+            result.push_back(intervals[0]);
+            intervals.erase(intervals.begin());
+        }
+        
+        int i = 0;
+        
+        while(i < intervals.size()){
+            vector<int>i1 = result.back();
+            vector<int>i2 = intervals[i];
+            
+            x1 = i1[0];
+            y1 = i1[1];
+            x2 = i2[0];
+            y2 = i2[1];
+            
+            
+            
+            if(y1 >= x2){
+                
+                result.pop_back();
+                i++;
+                
+                if(y1 >= y2){
+                    result.push_back({x1, y1});
+                }
+                else if(y2 > y1){
+                    result.push_back({x1, y2});
+                }
+            }
+            
+            else{
+                result.push_back(i2);
+                i++;
+            }
+            
+        }
+        
+        return result;
+    }
+        
+};
