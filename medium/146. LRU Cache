@@ -1,0 +1,57 @@
+class LRUCache {
+    
+    int size;
+    int currentCapacity;
+    unordered_map<int, int>LRUmap;
+    list<int>recentlyUsed;
+    
+public:
+    LRUCache(int capacity) {
+        size = capacity;
+        currentCapacity = 0;
+    }
+    
+    int get(int key) {
+        if(LRUmap.count(key) > 0){
+            recentlyUsed.remove(key);
+            recentlyUsed.push_front(key);
+            return LRUmap[key];
+        }
+        
+        return -1;
+    }
+    
+    void put(int key, int value) {
+       if(LRUmap.count(key) == 0){
+            if(currentCapacity < size){
+                LRUmap[key] = value;
+                currentCapacity++;
+                recentlyUsed.push_front(key);
+                return;
+            }
+            // do something
+            else{
+                int leastUsedKey = recentlyUsed.back();
+                recentlyUsed.pop_back();
+                recentlyUsed.push_front(key);
+                LRUmap.erase(leastUsedKey);
+                LRUmap[key] = value;
+            }
+            
+        }
+        
+        else{
+            LRUmap[key] = value;
+            recentlyUsed.remove(key);
+            recentlyUsed.push_front(key);
+        }
+        return;
+    }
+};
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache* obj = new LRUCache(capacity);
+ * int param_1 = obj->get(key);
+ * obj->put(key,value);
+ */
