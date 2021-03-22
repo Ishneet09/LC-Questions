@@ -1,0 +1,99 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    
+    void fillList(ListNode* head, vector<int>& v){
+        if(head == NULL)
+            return;
+        
+        v.push_back(head->val);
+        
+        fillList(head->next, v);
+    }
+    
+    
+    ListNode* makeLinkedList(vector<int>& v){
+        ListNode* head = NULL;
+        ListNode* tail = NULL;
+        
+        for(int n: v){
+            ListNode* newNode = new ListNode(n);
+            
+            if(head == NULL){
+                head = newNode;
+                tail = newNode;
+                continue;
+            }
+            
+            tail->next = newNode;
+            tail = newNode;
+        }
+        
+        tail->next = NULL;
+        return head;
+    }
+    
+    
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        if(l1 == NULL && l2 == NULL)
+            return NULL;
+        
+        if(l1 == NULL)
+            return l2;
+        if(l2 == NULL)
+            return l1;
+        
+        vector<int>v1;
+        vector<int>v2;
+        
+        ListNode* temp1 = l1;
+        ListNode* temp2 = l2;
+        
+        fillList(temp1, v1);
+        fillList(temp2, v2);
+        
+        int i1 = v1.size() - 1;
+        int i2 = v2.size() - 1;
+        
+        int carry = 0;
+        
+        vector<int>result;
+        
+        while(i1 >= 0 && i2 >= 0){
+            int sum = v1[i1] + v2[i2] + carry;
+            carry = sum / 10;
+            result.insert(result.begin(), sum % 10);
+            i1--;
+            i2--;
+        }
+        
+        while(i1 >= 0){
+            int sum = v1[i1] + carry;
+            carry = sum / 10;
+            result.insert(result.begin(), sum % 10);
+            i1--;
+        }
+        
+        while(i2 >= 0){
+            int sum = v2[i2] + carry;
+            carry = sum / 10;
+            result.insert(result.begin(), sum % 10);
+            i2--;
+        }
+        
+        if(carry != 0)
+            result.insert(result.begin(), carry);
+        
+        return makeLinkedList(result);
+
+    }
+};
