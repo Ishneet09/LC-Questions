@@ -1,0 +1,53 @@
+class Solution {
+public:
+    string removeDuplicates(string S) {
+        if(S.size() == 0)
+            return "";
+            
+            
+     -----------------sol 1-----------------
+        
+        /*string ans = "";
+        
+        for(char c: S){
+            if(ans.size() == 0){
+                ans = ans + c;
+                continue;
+            }
+            if(ans[ans.size() - 1] == c){
+                ans.pop_back();
+            }
+            else{
+                ans = ans + c;
+            }
+        }*/
+        
+        
+        ------------------sol 2---------------
+        stack<char>st;
+        
+        string ans = "";
+        
+        for(char c: S){
+            if(st.size() == 0){
+                st.push(c);
+                continue;
+            }
+            
+            if(st.size() != 0 && c == st.top()){
+                st.pop();
+            }
+            else{
+                st.push(c);
+            }
+        }
+        
+        while(st.size() != 0){
+            ans.insert(ans.begin(), st.top());
+            st.pop();
+        }
+        
+        
+        return ans;
+    }
+};
