@@ -1,0 +1,35 @@
+class Solution {
+public:
+    
+    // how much money can we save by sending person i to city a over city b?== greedy factor
+    
+    static bool cmp(vector<int>& v1, vector<int>& v2){
+        return (v1[0] - v1[1]) <= (v2[0] - v2[1]);
+    }
+    
+    
+    int twoCitySchedCost(vector<vector<int>>& costs) {
+        if(costs.size() == 0)
+            return 0;
+        
+        if(costs.size() == 1)
+            return costs[0][0] + costs[0][1];
+        
+        sort(costs.begin(), costs.end(), cmp);
+        
+        int minCost = 0;
+        
+        int temp = 0;
+        while(temp < costs.size() / 2){
+            minCost += costs[temp][0];
+            temp++;
+        }
+        
+        while(temp < costs.size()){
+            minCost += costs[temp][1];
+            temp++;
+        }
+        
+        return minCost;
+    }
+};
