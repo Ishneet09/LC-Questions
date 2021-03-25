@@ -1,0 +1,46 @@
+class Solution {
+public:
+    
+    vector<vector<int>>allPaths;
+    
+    void dfs(vector<vector<int>>& graph, int source, int target, vector<int>& current){
+        
+        if(source == target){
+            current.push_back(target);
+            allPaths.push_back(current);
+            return;
+        }
+        
+       // visited[source] = true;
+        current.push_back(source);
+        
+        for(int node: graph[source]){
+           // if(!visited[node])
+               dfs(graph, node, target, current);
+            
+            // backtrack to remove last node and make visited of curr false b/c this node can be a part of other paths as well. visited ki req ni hai b/c it is a directed ACYCLIC Graph => no infinite cycles
+           // visited[node] = false;
+            current.pop_back();
+        }
+        
+    }
+    
+    
+    
+    vector<vector<int>> allPathsSourceTarget(vector<vector<int>>& graph) {
+        
+        if(graph.size() == 0)
+            return {};
+        
+        vector<int>current;
+        
+        
+      //  vector<bool>visited(graph.size(), false);
+        int n = graph.size() - 1;
+        
+        dfs(graph, 0, n, current);
+        
+        return allPaths;
+        
+    }
+};
