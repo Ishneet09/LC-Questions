@@ -1,0 +1,49 @@
+class Solution {
+public:
+    string decodeString(string s) {
+        if(s.size() == 0)
+            return "";
+        
+        string currentString = "";
+        stack<int>countstack;
+        stack<string>stringstack;
+        
+        int k = 0;
+        
+        for(char c: s){
+            
+            if(isdigit(c)){
+                k = k * 10 + (c - '0');
+            }
+            
+            else if(c == '['){
+                countstack.push(k);
+                stringstack.push(currentString);
+                
+                k = 0;
+                currentString = "";
+            }
+            
+            else if(stringstack.size() != 0 && c == ']'){
+                string decodedString = stringstack.top();
+                stringstack.pop();
+                
+                int ktimes = countstack.top();
+                countstack.pop();
+                
+                while(ktimes > 0){
+                    decodedString += currentString;
+                    ktimes--;
+                }
+                currentString = decodedString;
+            }
+            
+            else{
+                currentString += c;
+            }
+            
+        }
+        
+        return currentString;
+    }
+};
