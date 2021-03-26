@@ -1,0 +1,75 @@
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* prev;
+    Node* next;
+    Node* child;
+};
+*/
+
+class Solution {
+public:
+    
+    Node* childHead = NULL;
+    Node* childTail = NULL;
+    
+    void findChildHeadTail(Node* head){
+        if(head->next == NULL){
+            childHead = head;
+            childTail = head;
+            return;
+        }
+        
+        childHead = head;
+        
+        while(head->next != NULL){
+            head = head->next;
+        }
+        
+        childTail = head;
+        return;
+    }
+    
+    Node* flatten(Node* head) {
+        
+        if(head == NULL)
+            return NULL;
+        
+        Node* temp = head;
+        
+       /* if(head->child != NULL){
+            Node* hChild = head->child;
+            head->next = hChild;
+            hChild->prev = head;
+        }*/
+        
+        while(temp != NULL){
+            if(temp->child != NULL){
+                Node* tempChild = temp->child;
+                findChildHeadTail(tempChild);
+                Node* nextToTemp = temp->next;
+                
+                if(nextToTemp != NULL){
+                    temp->next = childHead;
+                    childHead->prev = temp;
+                    childTail->next = nextToTemp;
+                    nextToTemp->prev = childTail;
+                    temp->child = NULL;
+                    childHead = childTail = NULL;
+                }
+                else{
+                    temp->next = childHead;
+                    childHead->prev = temp;
+                    temp->child = NULL;
+                }
+                
+            }
+            temp = temp->next;
+
+        }
+        
+        return head;
+    }
+};
