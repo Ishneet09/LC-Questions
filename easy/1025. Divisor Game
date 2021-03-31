@@ -1,0 +1,12 @@
+class Solution {
+public:
+    bool divisorGame(int n) {
+     /*If N = 1 then alice can never win because 0 < x < N and alice has to start first.
+If N=2 then alice will definetily wins because 0 < x < N and alice will choose 1 and then bob can't choose afterward.
+With this as a base if N=3 then alice can't win.
+if N=4 alice can win If she starts with 1 and N=3 will get to bob and bob loose.
+In the same way all multiple of two's alice can win but not for the case of odd onces.   */
+        
+        return n % 2 == 0;
+    }
+};
