@@ -1,0 +1,68 @@
+class BrowserHistory {
+public:
+    
+    vector<string>history;
+    int currPtr;
+    
+    BrowserHistory(string homepage) {
+        history.push_back(homepage);
+        currPtr = 0;
+    }
+    
+    void visit(string url) {
+        if(currPtr < history.size() - 1){
+            // if current is somewhere behind the last visted page=> remove all forward history AFTER curr
+            history.erase(history.begin() + currPtr + 1, history.end());
+        }
+        
+        history.push_back(url);
+        currPtr++;
+    }
+    
+    string back(int steps) {
+        string currUrl;
+        
+        if(currPtr - steps >= 0){
+            currUrl = history[currPtr - steps];
+            currPtr -= steps;
+            return currUrl;
+        }
+        
+        currPtr = 0;
+        return history[0];
+    }
+    
+    string forward(int steps) {
+        string currUrl;
+        
+        if(currPtr + steps < history.size()){
+            currUrl = history[currPtr + steps];
+            currPtr += steps;
+            return currUrl;
+        }
+        
+        currPtr = history.size() - 1;
+        return history[currPtr];
+    }
+};
+
+/**
+ * Your BrowserHistory object will be instantiated and called as such:
+ * BrowserHistory* obj = new BrowserHistory(homepage);
+ * obj->visit(url);
+ * string param_2 = obj->back(steps);
+ * string param_3 = obj->forward(steps);
+ */
+
+// also ye functions ni diye honge start with basic functions that should be in browser and implement these
+/*1. How much history? one month or more?
+2. Not in volatile memory- in PCs Permanatnt memory b/c history is stored.
+3. This memory is limited.
+4. If it becomes full, how will you remove stuff? LRU Approach?- will mess with the back and forward mthod
+5. How to store in memory? Key value? Key= Domain name value- network addr- DNS SYSTEM look up saved.
+6. No worry of scalability- har PC pe alag chalegi
+7. No worry of concurency- SIngle tab
+8. This small code peice will fit into larger browser code- therefore, it should consume less resources and time
+9. Eplain req of each given fn
+10. think about data structures to use and analyse
+11. Explain each fn*/
