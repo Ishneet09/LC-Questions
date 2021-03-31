@@ -1,0 +1,38 @@
+class Solution {
+public:
+    
+    string helper(string current){
+        int count = 1;
+        string ans = "";
+        
+        for(int i = 1; i < current.size(); i++){
+            if(current[i] == current[i - 1]){
+                count++;
+            } 
+            else{
+                ans += to_string(count) + current[i - 1];
+                count = 1;
+            }
+        }
+        
+        ans += to_string(count) + current[current.size() - 1];
+        
+        return ans;
+    }
+    
+    
+    string countAndSay(int n) {
+        
+        if(n == 1)
+            return "1";
+        
+        string current = "1";
+        
+        for(int i = 2; i <= n; i++){
+            current = helper(current);
+        }
+        
+        return current;
+        
+    }
+};
