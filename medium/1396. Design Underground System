@@ -1,0 +1,66 @@
+class UndergroundSystem {
+public:
+    
+    unordered_map<int, pair<string, int>>checkInMap;
+    map<pair<string, string>, pair<int, int>>timeKeeperMap;
+    
+    UndergroundSystem() {
+        
+    }
+    
+    void checkIn(int id, string stationName, int t) {
+        if(checkInMap.count(id) == 0){
+            checkInMap[id] = {stationName, t};
+        }
+        
+        return;
+    }
+    
+    void checkOut(int id, string stationName, int t) {
+        if(checkInMap.count(id) > 0){
+            string startStation = checkInMap[id].first;
+            string endStation = stationName;
+            
+            int startTime = checkInMap[id].second;
+            int endTime = t;
+            
+            if(timeKeeperMap.count({startStation, endStation}) == 0){
+                timeKeeperMap[{startStation, endStation}] = {endTime - startTime, 1};
+            }
+            else{
+                int total = timeKeeperMap[{startStation, endStation}].first + (endTime - startTime);
+                int trips = timeKeeperMap[{startStation, endStation}].second + 1;
+                
+                timeKeeperMap[{startStation, endStation}] = {total, trips};
+            }
+            
+            checkInMap.erase(id);
+        }
+        
+        return;
+    }
+    
+    double getAverageTime(string startStation, string endStation) {
+        if(timeKeeperMap.count({startStation, endStation}) > 0){
+            /*auto times = timeKeeperMap[{startStation, endStation}];
+            
+            double avgDiff = 0.0;
+            
+            for(auto p: times){
+                avgDiff += (p.second - p.first);
+            }*/
+            
+            return (double)timeKeeperMap[{startStation, endStation}].first / (double)timeKeeperMap[{startStation, endStation}].second;
+        }
+        
+        return 0.0;
+    }
+};
+
+/**
+ * Your UndergroundSystem object will be instantiated and called as such:
+ * UndergroundSystem* obj = new UndergroundSystem();
+ * obj->checkIn(id,stationName,t);
+ * obj->checkOut(id,stationName,t);
+ * double param_3 = obj->getAverageTime(startStation,endStation);
+ */
