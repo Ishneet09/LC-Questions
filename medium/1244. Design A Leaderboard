@@ -1,0 +1,62 @@
+class Leaderboard {
+public:
+    unordered_map<int, int>players;
+    Leaderboard() {
+        
+    }
+    
+    void addScore(int playerId, int score) {
+        if(players.count(playerId) == 0){
+            players[playerId] = score;
+        }
+        else{
+            players[playerId] += score;
+        }
+        
+        return;
+    }
+    
+    int top(int K) {
+        priority_queue<int>leaderBoard;
+
+        for(auto it: players){
+            leaderBoard.push(it.second);
+        }
+        
+        int sum = 0;
+        
+        while(K > 0){
+            sum += leaderBoard.top();
+            leaderBoard.pop();
+            K--;
+        }
+        
+        return sum;
+    }
+    
+    void reset(int playerId) {
+        players.erase(playerId);
+    }
+};
+
+/**
+ * Your Leaderboard object will be instantiated and called as such:
+ * Leaderboard* obj = new Leaderboard();
+ * obj->addScore(playerId,score);
+ * int param_2 = obj->top(K);
+ * obj->reset(playerId);
+ */
+
+//design-
+/*1. Probably players are playing some sort of game- so temp memory for leaderboard of each session.
+2. Game session exited- leaderboard for that particular session gone
+3. Dynamic list of players and their scores-. theerfore no priroty q in object but in fn itself so that the latest values in map are always reflected.
+4. map structure allows good scalability if number of players inc
+5. similaryly for pq for top k
+6. const TC for add, reset
+7. NlogK for top k
+8. Explain structure + req of each
+9. Functionality of each
+10. concurrency - no prob- map able to handle that
+11. if number of players for this game larget- consider scalig for even storing temp data because no of players playing at any time will be large.- hori/ verti/cloud/hybrid
+12. bst APPROACH tradeoff with this- at the expense of add/reset. */
