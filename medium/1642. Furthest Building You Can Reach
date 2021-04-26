@@ -1,0 +1,45 @@
+// soln - https://leetcode.com/problems/furthest-building-you-can-reach/discuss/1177210/Easy-Solution-w-Clear-Explanation-and-Comments-or-Priority-Queue-and-Multiset
+class Solution {
+public:
+    int furthestBuilding(vector<int>& heights, int bricks, int ladders) {
+        if(heights.size() == 0)
+            return -1;
+        
+        int i = 0;
+        priority_queue<int, vector<int>, greater<int>>pq;
+        
+        // keep using ladders until they are available
+        // less than ladders and not equal b/c = karne pe ek extra entry add ho jaegi in the pq
+        while(i < heights.size() - 1 && pq.size() < ladders){
+            int currClimb = heights[i + 1] - heights[i];
+            if(currClimb > 0){
+                pq.push(currClimb);
+            }
+            i++;
+        }
+        
+        while(i < heights.size() - 1){
+            int currClimb = heights[i + 1] - heights[i];
+            
+            if(currClimb > 0){
+                if(pq.size() != 0 && pq.top() < currClimb){
+                    bricks = bricks - pq.top();
+                    pq.pop();
+                    pq.push(currClimb);
+                }
+            
+                else{
+                bricks = bricks - currClimb;
+                }
+           }
+            
+            if(bricks < 0)
+                return i;
+            
+            i++;
+        }
+        
+        return heights.size() - 1;
+        
+    }
+};
