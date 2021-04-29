@@ -1,0 +1,33 @@
+class Solution {
+public:
+    
+    void dfs(int start, vector<vector<int>>& isConnected, vector<bool>& visited){
+        visited[start] = true;
+        
+        // cannot do int n: isConnected[node] b/c node will always be 0/1. We are interested in sending the 'node'[1,2,3....] to dfs. Not 0/1 always- this is an ad matrix. The former will work for ad list
+        for(int node = 0; node < isConnected[start].size(); node++){
+            if(!visited[node] && isConnected[start][node] == 1)
+                dfs(node, isConnected, visited);
+        }
+    }
+    
+    
+    int findCircleNum(vector<vector<int>>& isConnected) {
+        if(isConnected.size() == 0)
+            return 0;
+        
+        int n = isConnected.size();
+        
+        vector<bool>visited(n, false);
+        int provinces = 0;
+        
+        for(int i = 0; i < n; i++){
+            if(!visited[i]){
+                dfs(i, isConnected, visited);
+                provinces++;
+            }
+        }
+        
+        return provinces;
+  }
+};
