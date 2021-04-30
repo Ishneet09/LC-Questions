@@ -1,0 +1,23 @@
+class Solution {
+public:
+    vector<int> powerfulIntegers(int x, int y, int bound) {
+        unordered_set<int>pi;
+        
+        for(int xi = 1; xi < bound; xi = xi * x){
+            for(int yj = 1; yj < bound; yj = yj * y){
+                if(xi + yj <= bound)
+                    pi.insert(xi + yj);
+                
+                if(y == 1)
+                    break;
+            }
+            
+            if(x == 1)
+                break;
+        }
+        
+        return vector<int>(pi.begin(), pi.end());
+    }
+};
+
+
