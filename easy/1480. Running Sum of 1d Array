@@ -1,0 +1,31 @@
+class Solution {
+public:
+    vector<int> runningSum(vector<int>& nums) {
+        if(nums.size() == 0 || nums.size() == 1)
+            return nums;
+        
+        for(int i = 1; i < nums.size(); i++){
+            nums[i] = nums[i] + nums[i - 1];
+        }
+        return nums;
+        // can use extra array for runningSum but this is O(1) Space
+    }
+};
+
+-----------
+class Solution {
+public:
+    vector<int> runningSum(vector<int>& nums) {
+        if(nums.size() == 0 || nums.size() == 1)
+            return nums;
+        
+        vector<int>runningSum(nums.size());
+        runningSum[0] = nums[0];
+        
+        for(int i = 1; i < nums.size(); i++){
+            runningSum[i] = nums[i] + runningSum[i - 1];
+        }
+        
+        return runningSum;
+    }
+};
