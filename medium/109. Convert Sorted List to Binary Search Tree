@@ -1,0 +1,40 @@
+class Solution {
+public:
+     TreeNode* makeTree(vector<int>& treeList, int start, int end){
+        if(start > end)
+            return NULL;
+        
+        int mid = start + (end - start) / 2;
+        TreeNode* root = new TreeNode(treeList[mid]);
+        
+        TreeNode* leftRoot = makeTree(treeList, start, mid - 1);
+        TreeNode* rtRoot = makeTree(treeList, mid + 1, end);
+        
+        root->left = leftRoot;
+        root->right = rtRoot;
+        
+        return root;
+    }
+    
+    
+    TreeNode* sortedListToBST(ListNode* head) {
+        
+        if(head == NULL)
+            return NULL;
+        
+        if(head->next == NULL){
+            TreeNode* root = new TreeNode(head->val);
+            return root;
+        }
+        
+        ListNode* temp = head;
+        vector<int>treeList;
+        
+        while(temp != NULL){
+            treeList.push_back(temp->val);
+            temp = temp->next;
+        }
+        
+        return makeTree(treeList, 0, treeList.size() - 1);
+    }
+};
