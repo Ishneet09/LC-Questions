@@ -1,0 +1,116 @@
+class Solution {
+public:
+    
+   /* int findHeight(int sv, vector<vector<int>>& graph, vector<int>& visited){
+        visited[sv] = 1;
+        
+        int height = 0;
+        
+        for(int node: graph[sv]){
+            if(!visited[node])
+              height = max(height, findHeight(node, graph, visited));
+        }
+        
+        return 1 + height;
+    }*/
+    
+    
+    vector<int> findMinHeightTrees(int n, vector<vector<int>>& edges) {
+        
+        /*if(n == 1 && edges.size() == 0){
+           return {0};
+        }
+            
+        
+        vector<vector<int>>graph(n);
+        
+        for(auto edge: edges){
+            int from = edge[0];
+            int to = edge[1];
+            
+            graph[from].push_back(to);
+            graph[to].push_back(from);
+        }
+        
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>>pq;
+        vector<int>minLabels;
+        
+        int currMin = INT_MAX;
+        
+        for(int i = 0; i < n; i++){
+            vector<int>visited(n, 0);
+            int height = findHeight(i, graph, visited);
+            
+            if(minLabels.size() == 0){
+                minLabels.push_back(i);
+                currMin = height;
+                continue;
+            }
+            if(height == currMin){
+                minLabels.push_back(i);
+            }
+            if(height < currMin){
+                currMin = height;
+                minLabels.erase(minLabels.begin(), minLabels.end());
+                minLabels.push_back(i);
+            }
+        }*/
+        
+        /*int minHeight = pq.top().first;
+        int minNode = pq.top().second;
+        pq.pop();
+        minLabels.push_back(minNode);
+        
+        while(pq.size() != 0 && pq.top().first == minHeight){
+            minLabels.push_back(pq.top().second);
+            pq.pop();
+        }*/
+        
+        if(n <= 2){
+            vector<int>ans;
+            for(int i = 0; i < n; i++)
+                ans.push_back(i);
+            return ans;
+        }
+        
+        vector<vector<int>>graph(n);
+        vector<int>degree(n, 0);
+        
+        for(auto edge: edges){
+            int from = edge[0];
+            int to = edge[1];
+            
+            graph[from].push_back(to);
+            graph[to].push_back(from);
+            degree[to]++;
+            degree[from]++;
+        }
+        
+        vector<int>leaves;
+        for(int i = 0; i < n; i++){
+            if(degree[i] <= 1){
+                leaves.push_back(i);
+                degree[i] = 0;
+            }
+        }
+        
+        vector<int>newLeaves;
+        int totalLeaves = leaves.size();
+        
+        while(totalLeaves < n){
+            vector<int>newLeaves;
+            
+            for(int leaf: leaves){
+                for(int n: graph[leaf]){
+                    degree[n]--;
+                    if(degree[n] == 1)
+                        newLeaves.push_back(n);
+                }
+            }
+            leaves = newLeaves;
+            totalLeaves += newLeaves.size();
+        }
+        
+        return leaves;
+    }
+};
