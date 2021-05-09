@@ -57,3 +57,27 @@ public:
         return clonednode;
     }
 };
+
+
+
+
+
+----------DFS Solution------------
+
+Node* cloneGraph(Node* node){
+         
+         if(node == NULL)
+             return NULL;
+         
+         if(m.count(node) > 0)
+             return m[node];
+         
+         Node* newNode = new Node(node->val);
+         m[node] = newNode;
+         
+         for(auto neighbour: node->neighbors){
+             Node* clonedNeighbour = cloneGraph(neighbour);
+             m[node]->neighbors.push_back(clonedNeighbour);
+         }
+         return m[node];
+ }
