@@ -1,0 +1,30 @@
+class Solution {
+public:
+    int maxScore(vector<int>& cardPoints, int k) {
+        if(k == 1)
+            return max(cardPoints[0], cardPoints[cardPoints.size() - 1]);
+        
+        int windowSize = cardPoints.size() - k;
+        
+        int currMin = 0;
+        
+        //int i = 0;
+        
+        for(int i = 0; i < windowSize; i++){
+            currMin += cardPoints[i];
+        }
+        
+        int globalMin = currMin;
+        for(int i = windowSize; i < cardPoints.size(); i++){
+            currMin = currMin + cardPoints[i] - cardPoints[i - windowSize];
+            globalMin = min(globalMin, currMin);
+        }
+        
+        int totalPoints = 0;
+        for(int n: cardPoints){
+            totalPoints += n;
+        }
+        
+        return totalPoints - globalMin;
+    }
+};
