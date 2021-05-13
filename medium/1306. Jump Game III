@@ -1,0 +1,31 @@
+class Solution {
+public:
+    bool canReach(vector<int>& arr, int start) {
+        if(arr[start] == 0)
+            return true;
+        
+        vector<int>visited(arr.size(), false);
+        
+        queue<int>q;
+        q.push(start);
+        
+        while(q.size() != 0){
+            int index = q.front();
+            q.pop();
+            
+            if(arr[index] == 0)
+                return true;
+            
+            if(visited[index])
+                continue;
+            
+            if(index + arr[index] < arr.size())
+                q.push(index + arr[index]);
+            if(index - arr[index] >= 0)
+                q.push(index - arr[index]);
+            
+            visited[index] = true;
+        }
+        return false;
+    }
+};
