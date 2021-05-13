@@ -1,0 +1,19 @@
+class Solution {
+public:
+    int jump(vector<int>& nums) {
+        if(nums.size() == 1)
+            return 0;
+        
+        vector<int>jumpTracker(nums.size(), INT_MAX);
+        
+        jumpTracker[0] = 0;
+        
+        for(int i = 0; i < nums.size(); i++){
+            for(int j = i; j <= i + nums[i] && j < nums.size(); j++){
+                jumpTracker[j] = min(jumpTracker[j], jumpTracker[i] + 1);
+            }
+        }
+        
+        return jumpTracker[nums.size() - 1];
+    }
+};
