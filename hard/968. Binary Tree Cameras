@@ -1,0 +1,70 @@
+-------------Greedy Approach---------
+
+class Solution {
+public:
+    
+    
+    void helper(TreeNode* root, TreeNode* parent){
+        if(root == NULL)
+            return;
+        
+        helper(root->left, root);
+        helper(root->right, root);
+        
+        if((parent == NULL && set.find(root) == set.end()) || set.find(root->left) == set.end() || set.find(root->right) == set.end()){
+            cameras++;
+            set.insert(root);
+            set.insert(parent);
+            set.insert(root->left);
+            set.insert(root->right);
+        }
+    }
+    
+    unordered_set<TreeNode*>set;
+    int cameras = 0;
+
+    
+    int minCameraCover(TreeNode* root) {
+        set.insert(NULL);
+        
+        helper(root, NULL);
+        
+        return cameras;
+    }
+};
+
+
+
+
+------------Three State Solution-------------
+class Solution {
+public:
+    //-1 : If you are already covered
+     //0 : You have a camera
+     //1 : If you need a Camera
+    int cameras = 0;
+    
+    int helper(TreeNode* root){
+        if(root == NULL)
+            return 0;
+        
+        int lchild = helper(root->left);
+        int rchild = helper(root->right);
+        
+        if(lchild == 1 || rchild == 1){
+            cameras++;
+            return -1;
+        }
+        if(lchild == -1 || rchild == -1)
+            return 0;
+        
+        return 1;
+    }
+    
+    int minCameraCover(TreeNode* root) {
+        if(helper(root) == 1)
+            cameras++;
+        
+        return cameras;
+    }
+};
