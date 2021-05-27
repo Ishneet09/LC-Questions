@@ -1,0 +1,42 @@
+class Solution {
+public:
+    
+    bool isCyclic(int sv, vector<vector<int>>& graph, vector<int>& visited){
+        if(visited[sv] == 2)
+            return true;
+        
+        visited[sv] = 2;
+        
+        for(int n: graph[sv]){
+            if(visited[n] != 1 && isCyclic(n, graph, visited))
+                return true;
+        }
+        
+        visited[sv] = 1;
+        return false;
+    }
+    
+    
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+        if(graph.size() == 0)
+            return {};
+        
+        int n = graph.size();
+        
+        vector<int>safeNodes;
+        
+        for(int i = 0; i < n; i++){
+            vector<int>visited(n, 0);
+            
+            if(graph[i].size() == 0)
+                safeNodes.push_back(i);
+            
+            else if(isCyclic(i, graph, visited))
+                continue;
+            else
+                safeNodes.push_back(i);
+        }
+        
+        return safeNodes;
+    }
+};
