@@ -1,0 +1,54 @@
+class Solution {
+public:
+    
+    bool pathExists(int from, int to, vector<vector<int>>& graph, unordered_set<int>& visited){
+        if(from == to)
+            return true;
+        
+        visited.insert(from);
+        
+        for(int n: graph[from]){
+            if(visited.find(n) == visited.end()){
+                bool ans = pathExists(n, to, graph, visited);
+                if(ans)
+                    return ans;
+            }
+        }
+        return false;
+    }
+    
+    
+    
+    vector<int> findRedundantConnection(vector<vector<int>>& edges) {
+        
+        vector<vector<int>>graph(edges.size() + 1);
+        unordered_set<int>seen;
+        vector<int>ansEdge;
+        
+        for(auto edge: edges){
+            int from = edge[0];
+            int to = edge[1];
+            
+            // if even either of the vertex hasn't been added yet, you insert the edge
+            if(seen.find(from) == seen.end() || seen.find(to) == seen.end()){
+                graph[from].push_back(to);
+                graph[to].push_back(from);
+                seen.insert(from);
+                seen.insert(to);
+            }
+            //it means that both vertices are there in the graph, so is there a path b/w them already?
+            else{
+                unordered_set<int>visited;
+                if(pathExists(from, to, graph, visited))
+                    ansEdge = edge;
+                else{
+                    graph[from].push_back(to);
+                    graph[to].push_back(from);
+                }
+            }
+        }
+        
+        return ansEdge;
+        
+    }
+};
