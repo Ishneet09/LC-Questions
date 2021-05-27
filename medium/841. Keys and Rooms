@@ -1,29 +1,77 @@
+--------BFS----------
 class Solution {
 public:
     bool canVisitAllRooms(vector<vector<int>>& rooms) {
-        if(rooms.size() == 0)
-            return 0;
-        unordered_set<int>visited;
-        queue<int>q;
+       bool canVisitAllRooms(vector<vector<int>>& rooms) {
+      
         
-        for(int i = 0; i < rooms[0].size(); i++){
-            q.push(rooms[0][i]);
-        }
-        visited.insert(0);
+        if(rooms.size() == 0)
+            return false;
+        
+        int n = rooms.size();
+        
+        vector<int>visited(n, 0);
+        
+         queue<int>q;
+        q.push(0);
         
         while(q.size() != 0){
-            int front = q.front();
+            int room = q.front();
             q.pop();
-            if(visited.find(front) == visited.end()){
-                for(int i = 0; i < rooms[front].size(); i++){
-                    q.push(rooms[front][i]);
-                }
+            
+            visited[room] = 1;
+            
+            for(int key: rooms[room]){
+                if(visited[key] == 0)
+                    q.push(key);
             }
-            visited.insert(front);
         }
         
-        if(visited.size() == rooms.size())
-            return true;
-        return false;
+        for(int i = 0; i < n; i++){
+            if(visited[i] == 0)
+                return false;
+        }
+        
+        return true;
+    }
+};
+    
+    
+    
+---------DFS-----------
+
+class Solution {
+public:
+    
+   void dfs(int sv, vector<vector<int>>& graph, vector<int>& visited){
+        visited[sv] = 1;
+        
+        for(int n: graph[sv]){
+            if(visited[n] == 0)
+                dfs(n, graph, visited);
+        } 
+        return;
+    }
+    
+    
+    bool canVisitAllRooms(vector<vector<int>>& rooms) {
+      
+        
+        if(rooms.size() == 0)
+            return false;
+        
+        int n = rooms.size();
+        
+        vector<int>visited(n, 0);
+        
+      dfs(0, rooms, visited);
+        
+        for(int i = 0; i < n; i++){
+            if(visited[i] == 0)
+                return false;
+        }
+        return true;
+        
+        
     }
 };
