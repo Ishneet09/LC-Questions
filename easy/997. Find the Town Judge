@@ -37,3 +37,29 @@ public:
         
     }
 };
+
+
+-----------------Graph Solution------------much easier-------------
+
+ vector<vector<int>>incoming(N + 1);
+        vector<vector<int>>outgoing(N + 1);
+        
+        for(auto t: trust){
+            int from = t[0];
+            int to = t[1];
+            
+            outgoing[from].push_back(to);
+            incoming[to].push_back(from);
+        }
+        
+        int judge = -1;
+        
+        for(int i = 1; i <= N; i++){
+            if(outgoing[i].size() == 0)
+                judge = i;
+        }
+        
+        if(judge != -1)
+           return incoming[judge].size() ==  N - 1 ? judge : -1;
+        
+        return judge;
