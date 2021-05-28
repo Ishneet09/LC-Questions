@@ -1,0 +1,53 @@
+class Solution {
+public:
+    
+    bool findPath(char start, char end, unordered_map<char, vector<char>>& graph, unordered_set<char>& visited){
+        
+        if(start == end)
+            return true;
+        
+        visited.insert(start);
+        
+        for(char c: graph[start]){
+            if(visited.find(c) == visited.end() && findPath(c, end, graph, visited))
+                return true;
+        }
+        return false;
+    }
+    
+    
+    bool equationsPossible(vector<string>& equations) {
+        unordered_map<char, vector<char>>graph;
+        
+        for(string eq: equations){
+            if(eq[1] == '='){
+                char from = eq[0];
+                char to = eq[3];
+                
+                graph[from].push_back(to);
+                graph[to].push_back(from);
+            }
+        }
+        
+            
+        
+        for(string eq: equations){
+            if(eq[1] == '!'){
+                char start = eq[0];
+                char target = eq[3];
+                
+                if(start == target)
+                    return false;
+                
+                if(graph.count(start) == 0 || graph.count(target) == 0)
+                    continue;
+                
+                unordered_set<char>visited;
+                if(findPath(start, target, graph, visited))
+                    return false;
+            }
+        }
+        
+        return true;
+    }
+};
