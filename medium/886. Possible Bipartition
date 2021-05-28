@@ -1,45 +1,51 @@
 class Solution {
 public:
-    bool isBipartite(vector<vector<int>>& graph) {
-        //-1= no color
-        vector<int>coloured(graph.size(), -1);
+    bool possibleBipartition(int n, vector<vector<int>>& dislikes) {
+        // all nodes are initially uncoloured
+        vector<int>coloured(n + 1, -1);
         
-        // 1-red 2-green
+        vector<vector<int>>graph(n + 1);
         
+        for(auto d: dislikes){
+            int from = d[0];
+            int to = d[1];
+            
+            graph[from].push_back(to);
+            graph[to].push_back(from);
+        }
         
-     
-        for(int i = 0; i < graph.size(); i++){
-          
+        for(int i = 1; i <= n; i++){
             if(coloured[i] != -1)
                 continue;
             
+            // always in red colour, red->1
             coloured[i] = 1;
             queue<int>q;
             q.push(i);
             
             while(q.size() != 0){
-            int currNode = q.front();
-            q.pop();
-            
-            for(int neighbour: graph[currNode]){
+                int currNode = q.front();
+                q.pop();
                 
-                if(coloured[neighbour] == -1){
+                for(int neighbour: graph[currNode]){
+                   
+                    if(coloured[neighbour] == -1){
                     
-                    if(coloured[currNode] == 1)
-                        coloured[neighbour] = 2;
+                        if(coloured[currNode] == 1)
+                            coloured[neighbour] = 2;
+                        
+                        else if(coloured[currNode] == 2)
+                            coloured[neighbour] = 1;
+                        
+                        q.push(neighbour);
+                    }
                     
-                    else if(coloured[currNode] == 2)
-                        coloured[neighbour] = 1;
-                    
-                    q.push(neighbour);
+                    else if(coloured[neighbour] == coloured[currNode])
+                        return false;
                 }
-                else if(coloured[currNode] == coloured[neighbour])
-                    return false;
             }
         }
-    }
         
         return true;
-        
     }
 };
