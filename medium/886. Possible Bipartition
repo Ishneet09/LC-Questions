@@ -1,0 +1,45 @@
+class Solution {
+public:
+    bool isBipartite(vector<vector<int>>& graph) {
+        //-1= no color
+        vector<int>coloured(graph.size(), -1);
+        
+        // 1-red 2-green
+        
+        
+     
+        for(int i = 0; i < graph.size(); i++){
+          
+            if(coloured[i] != -1)
+                continue;
+            
+            coloured[i] = 1;
+            queue<int>q;
+            q.push(i);
+            
+            while(q.size() != 0){
+            int currNode = q.front();
+            q.pop();
+            
+            for(int neighbour: graph[currNode]){
+                
+                if(coloured[neighbour] == -1){
+                    
+                    if(coloured[currNode] == 1)
+                        coloured[neighbour] = 2;
+                    
+                    else if(coloured[currNode] == 2)
+                        coloured[neighbour] = 1;
+                    
+                    q.push(neighbour);
+                }
+                else if(coloured[currNode] == coloured[neighbour])
+                    return false;
+            }
+        }
+    }
+        
+        return true;
+        
+    }
+};
