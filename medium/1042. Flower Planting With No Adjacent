@@ -1,0 +1,43 @@
+class Solution {
+public:
+    vector<int> gardenNoAdj(int n, vector<vector<int>>& paths) {
+        
+        vector<int>coloured(n + 1, 1);
+        vector<vector<int>>graph(n + 1);
+        
+        // step1: making graph
+        for(auto p: paths){
+            int from = p[0];
+            int to = p[1];
+            
+            graph[from].push_back(to);
+            graph[to].push_back(from);
+        }
+        
+        // simple logic being: for assigning colour to the current garden, we see what all colours have been assigned to its neighbours and mark those colours. Then whatever colour is left, we use it for our curr garden
+        for(int garden = 1; garden <= n; garden++){
+            // size 5 b/c colours are 1,2,3,4
+            vector<int>usedColours(5, false);
+            
+            for(int neighbour: graph[garden]){
+                // coloured[neighbour] holds the colours assigned
+                usedColours[coloured[neighbour]] = true;
+            }
+            
+            for(int i = 4; i > 0; i--){
+                if(!usedColours[i]){
+                    coloured[garden] = i;
+                }
+            }
+        }
+        
+        vector<int>ans;
+        
+        for(int i = 1; i <= n; i++){
+            ans.push_back(coloured[i]);
+        }
+        
+        return ans;
+        
+    }
+};
