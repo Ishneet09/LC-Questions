@@ -1,0 +1,125 @@
+--------------RECURSIVE SOLUTION-------------
+class Solution {
+public:
+    
+    bool isInterleaveHelper(string s1, int i, string s2, int j, string res, string s3){
+        if(s3 == res && i == s1.size() && j == s2.size())
+            return true;
+        
+        bool ans1 = false;
+        bool ans2 = false;
+        
+        if(i < s1.size())
+            ans1 = isInterleaveHelper(s1, i + 1, s2, j, res + s1[i], s3);
+        if(j < s2.size())
+            ans2 = isInterleaveHelper(s1, i, s2, j + 1, res + s2[j], s3);
+        
+        return ans1 || ans2;
+    }
+    
+    
+    
+    bool isInterleave(string s1, string s2, string s3) {
+        
+        if(s1.size() + s2.size() != s3.size())
+            return false;
+        
+        return isInterleaveHelper(s1, 0, s2, 0, "", s3);
+        
+    }
+};
+
+
+--------------MEMOISATION-TOP DOWN DP---------------
+class Solution {
+public:
+    
+    bool isInterleaveHelper(string s1, int i, string s2, int j, string s3, int k, vector<vector<int>>& memo){
+        if(i == s1.size()){
+            return s2.substr(j) == s3.substr(k);
+        }
+        
+        if(j == s2.size()){
+            return s1.substr(i) == s3.substr(k);
+        }
+        
+        if(memo[i][j] != -1)
+            return memo[i][j];
+        
+        bool ans1 = false;
+        bool ans2 = false;
+        
+        ans1 = s1[i] == s3[k] && isInterleaveHelper(s1, i + 1, s2, j, s3, k + 1, memo);
+        ans2 = s2[j] == s3[k] && isInterleaveHelper(s1, i, s2, j + 1, s3, k + 1, memo);
+       
+        
+        memo[i][j] = ans1 || ans2;
+        
+        return memo[i][j];
+    }
+    
+    
+    
+    
+    bool isInterleave(string s1, string s2, string s3) {
+        
+        if(s1.size() + s2.size() != s3.size())
+            return false;
+        
+        vector<vector<int>>memo(s1.size(), vector<int>(s2.size(), -1));
+        
+        return isInterleaveHelper(s1, 0, s2, 0, s3, 0, memo);
+        
+    }
+};
+
+
+
+---------------DP- Bottom-Up-----------------
+class Solution {
+public:
+    bool isInterleave(string s1, string s2, string s3) {
+        
+        if(s1.size() + s2.size() != s3.size())
+            return false;
+        
+        vector<vector<bool>>dp(s1.size() + 1, vector<bool>(s2.size() + 1));
+        
+        // dp[i][j] = true=> s1[0..i] & s2[0..j] can be interleaved to form s3[0..(i+j)];
+        // i, j basically depict the length we are considering. so that's why the indices use i-1, j-1
+        
+        
+        // len(s1) = 0 && len(s2) = 0=> len(s3) = 0 + 0=> interleaving possible
+        dp[0][0] = true;
+        
+        // if len(s1) = 0 && len(s2) != 0=> interleaving possible iff s2 forms s3
+        for(int j = 1; j < s2.size() + 1; j++){
+            dp[0][j] = dp[0][j - 1] && s2[j - 1] == s3[j - 1];
+        }
+        
+        // if len(s2) = 0 && len(s1) != 0=> interleaving possible iff s1 forms s3
+        for(int i = 1; i < s1.size() + 1; i++){
+            dp[i][0] = dp[i - 1][0] && s1[i - 1] == s3[i - 1];
+        }
+        
+        // neither len is 0
+        for(int i = 1; i < s1.size() + 1; i++){
+            for(int j = 1; j < s2.size() + 1; j++){
+                
+                // k = index of s3 of len i + j formed
+                int k = i + j - 1;
+                
+                // the curr char at i/j should match and then isse pehle jo bachi hui str thi, vo ban jani chahiye
+                // try with s1
+                bool ans1 = s1[i - 1] == s3[k] && dp[i - 1][j];
+                // try with s2
+                bool ans2 = s2[j - 1] == s3[k] && dp[i][j - 1];
+                
+                dp[i][j] = ans1 || ans2;
+            }
+        }
+        
+        return dp[s1.size()][s2.size()];
+        
+    }
+};
