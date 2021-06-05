@@ -1,0 +1,118 @@
+--------------Recursive Solution---------------
+
+class Solution {
+public:
+    // ways = climbing 1/2 steps
+    // target = top floor = beyond the last index
+    // min cost reqd
+    // two start positions = 0 and 1 => there will be two calls to recursive function in the main fn
+    // one pointer reqd to go over the array in each recusrive call
+    
+    int minCostHelper(vector<int>& cost, int startPosition){
+        if(startPosition >= cost.size())
+            return 0;
+        
+        if(startPosition == cost.size() - 1)
+            return cost[startPosition];
+        
+        int minCost1 = minCostHelper(cost, startPosition + 1);
+        int minCost2 = minCostHelper(cost, startPosition + 2);
+        
+        return min(minCost1, minCost2) + cost[startPosition];
+    }
+    
+    
+    
+    
+    int minCostClimbingStairs(vector<int>& cost) {
+        
+        if(cost.size() == 0)
+            return 0;
+        
+        int fromStair0 = minCostHelper(cost, 0);
+        int fromStair1 = minCostHelper(cost, 1);
+        
+        return min(fromStair0, fromStair1);
+        
+    }
+};
+
+
+
+-----------------Memoisation Solution - Top Down-------------
+
+class Solution {
+public:
+    // ways = climbing 1/2 steps
+    // target = top floor = beyond the last index
+    // min cost reqd
+    // two start positions = 0 and 1 => there will be two calls to recursive function in the main fn
+    // one pointer reqd to go over the array in each recusrive call
+    
+    int minCostHelper(vector<int>& cost, int startPosition, vector<int>& memo){
+        if(startPosition >= cost.size())
+            return 0;
+        
+        if(startPosition == cost.size() - 1)
+            return cost[startPosition];
+        
+        if(memo[startPosition] != -1)
+            return memo[startPosition];
+        
+        int minCost1 = minCostHelper(cost, startPosition + 1, memo);
+        int minCost2 = minCostHelper(cost, startPosition + 2, memo);
+        
+        memo[startPosition] = min(minCost1, minCost2) + cost[startPosition];
+        
+        return memo[startPosition];
+    }
+    
+    
+    
+    
+    int minCostClimbingStairs(vector<int>& cost) {
+        
+        if(cost.size() == 0)
+            return 0;
+        
+        vector<int>memo(cost.size(), -1);
+        
+        int fromStair0 = minCostHelper(cost, 0, memo);
+        int fromStair1 = minCostHelper(cost, 1, memo);
+        
+        return min(fromStair0, fromStair1);
+        
+    }
+};
+
+
+
+---------------Bottom Up Solution - Tabulation-----------
+
+// dp[i] indicates the cost of reaching the i-th step and it doesn't include the cost of i-th step. So for current step, the min cost of reaching the i-th step will be 
+// min cost of reaching (i - 1)th step + cost[i - 1](b/c it's not included) and cost of reaching (i - 2)th step + cost[i - 2](b/c it's not included)
+
+
+class Solution {
+public:
+    int minCostClimbingStairs(vector<int>& cost) {
+        
+        if(cost.size() == 0)
+            return 0;
+        
+        // cost.size() + 1 b/c we want the cost of reaching beyond the last index
+        vector<int>dp(cost.size() + 1);
+        
+        // we can start from 0/1 => reaching them has 0 cost
+        dp[0] = 0;
+        dp[1] = 0;
+        
+        for(int i = 2; i <= cost.size(); i++){
+            dp[i] = min(dp[i - 1] + cost[i - 1], dp[i - 2] + cost[i - 2]);
+        }
+        
+        return dp[cost.size()];
+        
+    }
+};
+
