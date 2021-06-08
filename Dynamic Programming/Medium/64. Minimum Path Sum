@@ -1,0 +1,146 @@
+------------Recursive Solution--------------
+
+class Solution {
+public:
+    // target = top left to down right
+    // min sum
+    // ways = either move down or move right
+    
+    int minPathSumHelper(vector<vector<int>>& grid, int i, int j){
+        
+       // if(i < 0 || j < 0 || i >= grid.size() || j >= grid[0].size())
+         //   return 0;
+        
+        if(i == grid.size() - 1 && j == grid[0].size() - 1)
+            return grid[i][j];
+        
+        if(i < grid.size() - 1 && j < grid[0].size() - 1){
+           
+           int downSum = minPathSumHelper(grid, i + 1, j);
+           int rightSum = minPathSumHelper(grid, i, j + 1);
+        
+           return min(downSum, rightSum)  + grid[i][j];
+        }
+        
+        if(i < grid.size() - 1){
+            return grid[i][j] + minPathSumHelper(grid, i + 1, j);
+        }
+        
+        if(j < grid[0].size() - 1){
+            return grid[i][j] + minPathSumHelper(grid, i, j + 1);
+        }
+     
+        return 0;
+    }
+    
+    
+    int minPathSum(vector<vector<int>>& grid) {
+        
+        if(grid.size() == 0)
+            return 0;
+        
+        // starting from top left=> start posiiton is 0,0
+        return minPathSumHelper(grid, 0, 0);
+        
+    }
+};
+
+
+
+---------------Memoised------------------
+
+class Solution {
+public:
+    // target = top left to down right
+    // min sum
+    // ways = either move down or move right
+    
+    int minPathSumHelper(vector<vector<int>>& grid, int i, int j, vector<vector<int>>& memo){
+        
+       // if(i < 0 || j < 0 || i >= grid.size() || j >= grid[0].size())
+         //   return 0;
+        
+        if(i == grid.size() - 1 && j == grid[0].size() - 1)
+            return grid[i][j];
+        
+        if(memo[i][j] != -1)
+            return memo[i][j];
+        
+        if(i < grid.size() - 1 && j < grid[0].size() - 1){
+           
+           int downSum = minPathSumHelper(grid, i + 1, j, memo);
+           int rightSum = minPathSumHelper(grid, i, j + 1, memo);
+        
+           memo[i][j] = min(downSum, rightSum)  + grid[i][j];
+           return memo[i][j];
+        }
+        
+        if(i < grid.size() - 1){
+            memo[i][j] = grid[i][j] + minPathSumHelper(grid, i + 1, j, memo);
+            return memo[i][j];
+        }
+        
+        if(j < grid[0].size() - 1){
+            memo[i][j] = grid[i][j] + minPathSumHelper(grid, i, j + 1, memo);
+            return memo[i][j];
+        }
+     
+        return 0;
+    }
+    
+    
+    int minPathSum(vector<vector<int>>& grid) {
+        
+        if(grid.size() == 0)
+            return 0;
+        
+        // starting from top left=> start posiiton is 0,0
+        vector<vector<int>>memo(grid.size(), vector<int>(grid[0].size(), -1));
+        return minPathSumHelper(grid, 0, 0, memo);
+        
+    }
+};
+
+
+
+
+-----------------Bottom Up------------------
+
+class Solution {
+public:
+    int minPathSum(vector<vector<int>>& grid) {
+        
+        if(grid.size() == 0)
+            return 0;
+        
+        vector<vector<int>>dp(grid.size(), vector<int>(grid[0].size()));
+        
+        // dp[i][j] represents the minimum path sum where target = (i,j)
+        // when i = 0 && j = 0=> min path sum = value of grid[0][0]
+        dp[0][0] = grid[0][0];
+        
+        // when j = 0 => single column
+        for(int i = 1; i < grid.size(); i++){
+            dp[i][0] = dp[i - 1][0] + grid[i][0];
+        }
+        
+        // when i = 0 => single row
+        for(int j = 1; j < grid[0].size(); j++){
+            dp[0][j] = dp[0][j - 1] + grid[0][j];
+        }
+        
+        // now when neither i nor j is 0
+        
+        for(int i = 1; i < grid.size(); i++){
+            for(int j = 1; j < grid[0].size(); j++){
+                
+                // (i, j) tak pohnchne ke liye we either come from top or from its left b/c we are allowed to move only down or right respectively
+                dp[i][j] = min(dp[i - 1][j] + grid[i][j], dp[i][j - 1] + grid[i][j]);
+                
+            }
+        }
+        
+        return dp[grid.size() - 1][grid[0].size() - 1];
+        
+    }
+};
