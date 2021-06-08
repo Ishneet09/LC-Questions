@@ -1,0 +1,66 @@
+class Solution {
+public:
+    
+    vector<string>allNeighbours(string currStr){
+        vector<string>result;
+        
+        for(int i = 0; i < 4; i++){
+            string forward = currStr;
+            string backward = currStr;
+            
+            forward[i] = (forward[i] - '0' + 1 + 10) % 10 + '0';
+            backward[i] = (backward[i] - '0' - 1 + 10) % 10 + '0';
+            
+            result.push_back(forward);
+            result.push_back(backward);
+        }
+        
+        return result;
+    }
+    
+    
+    
+    int openLock(vector<string>& deadends, string target) {
+        
+        unordered_set<string>visited;
+        
+        for(string s: deadends){
+            visited.insert(s);
+        }
+        
+        if(visited.find("0000") != visited.end())
+            return -1;
+        
+        visited.insert("0000");
+        
+        queue<string>q;
+        q.push("0000");
+        
+        int minSteps = 0;
+        
+        while(q.size() != 0){
+            
+            int size = q.size();
+            
+            for(int i = 0; i < size; i++){
+                string currStr = q.front();
+                q.pop();
+                
+                if(currStr == target)
+                    return minSteps;
+                
+                for(string neighbour: allNeighbours(currStr)){
+                    if(visited.find(neighbour) != visited.end())
+                        continue;
+                    
+                    visited.insert(neighbour);
+                    q.push(neighbour);
+                }
+            }
+             minSteps++;
+
+        }
+        
+        return -1;
+    }
+};
