@@ -1,0 +1,162 @@
+-------------Recursive Solution---------
+
+// start - any element in the first row
+// target - till we reach an element in last row following the falling path
+// ways - diagonally left, right or exactly below
+// return min sum out of all the falling paths that exist
+
+class Solution {
+public:
+    
+    int pathSumHelper(vector<vector<int>>& matrix, int i, int j, int rows, int cols){
+        
+        // cannot return 0 b/c we are returning minimum of all at the end
+        if(i < 0 || j < 0 || i >= rows || j >= cols)
+            return INT_MAX;
+        
+        // this base case is IMP so that the integer is returned when we are in the last row. Otherwise 0 will be returned in the above base case which interferes with the overall prob b/c there are negative numbers 
+        if(i == rows - 1)
+            return matrix[i][j];
+        
+        int sum1 = pathSumHelper(matrix, i + 1, j - 1, rows, cols);
+        int sum2 = pathSumHelper(matrix, i + 1, j, rows, cols);
+        int sum3 = pathSumHelper(matrix, i + 1, j + 1, rows, cols);
+        
+        return min(sum1, min(sum2, sum3)) + matrix[i][j];
+        
+    }
+    
+    
+    
+    int minFallingPathSum(vector<vector<int>>& matrix) {
+        
+        if(matrix.size() == 0)
+            return 0;
+        
+        int rows = matrix.size();
+        int cols = matrix[0].size();
+        
+        int minSum = INT_MAX;
+        
+        // b/c we can start with any element in the first row
+        for(int j = 0; j < cols; j++){
+            minSum = min(minSum, pathSumHelper(matrix, 0, j, rows, cols));
+        }
+        
+        return minSum;
+    }
+};
+
+
+
+
+------------Memoised Solution--------------
+
+// start - any element in the first row
+// target - till we reach an element in last row following the falling path
+// ways - diagonally left, right or exactly below
+// return min sum out of all the falling paths that exist
+
+class Solution {
+public:
+    
+    int pathSumHelper(vector<vector<int>>& matrix, int i, int j, int rows, int cols, vector<vector<int>>& memo){
+        
+        // cannot return 0 b/c we are returning minimum of all at the end
+        if(i < 0 || j < 0 || i >= rows || j >= cols)
+            return INT_MAX;
+        
+        // this base case is IMP so that the integer is returned when we are in the last row. Otherwise 0 will be returned in the above base case which interferes with the overall prob b/c there are negative numbers 
+        if(i == rows - 1)
+            return matrix[i][j];
+        
+        if(memo[i][j] != INT_MAX)
+            return memo[i][j];
+        
+        int sum1 = pathSumHelper(matrix, i + 1, j - 1, rows, cols, memo);
+        int sum2 = pathSumHelper(matrix, i + 1, j, rows, cols, memo);
+        int sum3 = pathSumHelper(matrix, i + 1, j + 1, rows, cols, memo);
+        
+        memo[i][j] = min(sum1, min(sum2, sum3)) + matrix[i][j];
+        
+        return memo[i][j];
+        
+    }
+    
+    
+    
+    int minFallingPathSum(vector<vector<int>>& matrix) {
+        
+        if(matrix.size() == 0)
+            return 0;
+        
+        int rows = matrix.size();
+        int cols = matrix[0].size();
+        
+        int minSum = INT_MAX;
+        
+        
+        // b/c we can start with any element in the first row
+        for(int j = 0; j < cols; j++){
+            vector<vector<int>>memo(rows, vector<int>(cols, INT_MAX));
+
+            minSum = min(minSum, pathSumHelper(matrix, 0, j, rows, cols, memo));
+        }
+        
+        return minSum;
+    }
+};
+
+
+
+--------------Bottom Up------------
+
+// start = any element in the first row
+// target = any element in the first row
+// min sum reqd
+// three ways - diagonally left/right + bottom
+class Solution {
+public:
+    int minFallingPathSum(vector<vector<int>>& matrix) {
+     
+        if(matrix.size() == 0)
+            return 0;
+        
+        int rows = matrix.size();
+        int cols = matrix[0].size();
+        
+        // dp[i][j] will store the min path sum starting from (i,j)
+        vector<vector<int>>dp(rows, vector<int>(cols, INT_MAX));
+        
+        // for the last row, there is no falling path downwards, so the min sum for that row will be the integer itself
+        
+        for(int j = 0; j < cols; j++){
+            dp[rows - 1][j] = matrix[rows - 1][j];
+        }
+        
+        for(int i = rows - 2; i >= 0; i--){
+            for(int j = 0; j < cols; j++){
+                
+                int sum1 = INT_MAX, sum2 = INT_MAX, sum3 = INT_MAX;
+                
+                if(i + 1 < rows && j - 1 >= 0)
+                    sum1 = dp[i + 1][j - 1];
+                if(i + 1 < rows && j < cols)
+                    sum2 = dp[i + 1][j];
+                if(i + 1 < rows && j + 1 < cols)
+                    sum3 = dp[i + 1][j + 1];
+                
+                dp[i][j] = min(sum1, min(sum2, sum3)) + matrix[i][j];
+                
+            }
+        }
+        
+        int minSum = INT_MAX;
+        
+        for(int j = 0; j < cols; j++){
+            minSum = min(minSum, dp[0][j]);
+        }
+        
+        return minSum;
+    }
+};
