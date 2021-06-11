@@ -1,0 +1,142 @@
+----------------RECURSIVE SOLUTION------------
+
+class Solution {
+public:
+    
+    int minCostHelper(vector<int>& dayset, vector<int>& costs, int currIndex, int lastIndex){
+        if(currIndex > lastIndex)
+            return 0;
+        
+        // you don't need to travel on this day=>look for the cost starting from next day
+        if(dayset[currIndex] == 0)
+            return minCostHelper(dayset, costs, currIndex + 1, lastIndex);
+        
+        // try every option thereafter
+        int cost1 = minCostHelper(dayset, costs, currIndex + 1, lastIndex) + costs[0];
+        int cost2 = minCostHelper(dayset, costs, currIndex + 7, lastIndex) + costs[1];
+        int cost3 = minCostHelper(dayset, costs, currIndex + 30, lastIndex) + costs[2];
+        
+        // return the min of all
+        return min(cost1, min(cost2, cost3));
+    }
+    
+    
+    
+    int mincostTickets(vector<int>& days, vector<int>& costs) {
+        // 365 days in a year
+        vector<int>dayset(366, 0);
+        
+        // b/c its difficult to actually recurse b/c each element in the original vector is a day we need to travel, therefore, we keep an array of size 366 and mark every day we'll be travelling
+        for(int day: days){
+            dayset[day] = 1;
+        }
+        
+        
+        int lastIndex = days[days.size() - 1];
+        
+        return minCostHelper(dayset, costs, 0, lastIndex);
+    }
+};
+
+
+
+
+
+------------------Memoised Solution----------------
+
+class Solution {
+public:
+    
+    int minCostHelper(vector<int>& dayset, vector<int>& costs, int currIndex, int lastIndex, vector<int>& memo){
+        if(currIndex > lastIndex)
+            return 0;
+        
+        if(memo[currIndex] != -1)
+            return memo[currIndex];
+        
+        // you don't need to travel on this day=>look for the cost starting from next day
+        if(dayset[currIndex] == 0)
+            return minCostHelper(dayset, costs, currIndex + 1, lastIndex, memo);
+        
+        // try every option thereafter
+        int cost1 = minCostHelper(dayset, costs, currIndex + 1, lastIndex, memo) + costs[0];
+        int cost2 = minCostHelper(dayset, costs, currIndex + 7, lastIndex, memo) + costs[1];
+        int cost3 = minCostHelper(dayset, costs, currIndex + 30, lastIndex, memo) + costs[2];
+        
+        // return the min of all
+        memo[currIndex] = min(cost1, min(cost2, cost3));
+        
+        return memo[currIndex];
+    }
+    
+    
+    
+    int mincostTickets(vector<int>& days, vector<int>& costs) {
+        // 365 days in a year
+        vector<int>dayset(366, 0);
+        
+        // b/c its difficult to actually recurse b/c each element in the original vector is a day we need to travel, therefore, we keep an array of size 366 and mark every day we'll be travelling
+        for(int day: days){
+            dayset[day] = 1;
+        }
+        
+        // memo[i] indicates the min cost to travel from first to i-th day
+        vector<int>memo(366, -1);
+        
+        int lastIndex = days[days.size() - 1];
+        
+        return minCostHelper(dayset, costs, 0, lastIndex, memo);
+    }
+};
+
+
+-------------Bottom Up---------------
+
+class Solution {
+public:
+    int mincostTickets(vector<int>& days, vector<int>& costs) {
+        
+        //dp[i] will indicate the min cost of travelling till the i-th day
+
+        vector<int>dp(366);
+        dp[0] = 0;
+
+        
+        // mark the days we will travel to build up the cost=> an attempt at subproblems
+        vector<int>dayset(366, 0);
+        
+        for(int day: days){
+            dayset[day] = 1;
+        }
+        
+        
+        for(int i = 1; i <= days[days.size() - 1]; i++){
+            if(dayset[i] == 0){
+                // you consider the cost of the next day and add 0 cost=>no cost
+                dp[i] = dp[i - 1];
+            }
+            
+            else{
+                int cost1 = INT_MAX, cost2 = INT_MAX, cost3 = INT_MAX;
+                
+                cost1 = dp[i - 1] + costs[0];
+                
+                if(i - 7 >= 0)
+                    cost2 = dp[i - 7] + costs[1];
+                else
+                    cost2 = dp[0] + costs[1];
+                
+                if(i - 30 >= 0)
+                    cost3 = dp[i - 30] + costs[2];
+                else
+                    cost3 = dp[0] + costs[2];
+                
+                dp[i] = min(cost1, min(cost2, cost3));
+                    
+            }
+        }
+        
+        return dp[days[days.size() - 1]];
+        
+    }
+};
