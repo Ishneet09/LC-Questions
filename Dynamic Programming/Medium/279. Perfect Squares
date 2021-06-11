@@ -1,0 +1,106 @@
+---------------Recursive Solution----------
+
+// target - sum upto n or keep on subtracting from n till you get 0
+// start - 0 (in other words, n)
+// ways - all perfect squares less than n can be subtracted, starting from i = 1 to sqrt(n)- above that makes no sense it will become negative
+// find min squares that sum upto n
+
+
+class Solution {
+public:
+    int numSquares(int n) {
+        
+        int minSquares = INT_MAX;
+        
+        // 0 integers reqd for summing to 0
+        if(n < 1)
+           return 0;
+        
+        for(int i = 1; i <= sqrt(n); i++){
+            // +1 b/c we have subtracted one integer square.
+            int currMin = numSquares(n - (i * i)) + 1;
+            
+            if(currMin != INT_MAX)
+                minSquares = min(minSquares, currMin);
+        }
+            
+        return minSquares;
+    }
+};
+
+
+
+----------Memoised Solution---------
+
+// target - sum upto n or keep on subtracting from n till you get 0
+// start - 0 (in other words, n)
+// ways - all perfect squares less than n can be subtracted
+// find min squares that sum upto n
+
+
+class Solution {
+public:
+    int numSquaresHelper(int n, vector<int>& memo) {
+        
+        
+        // 0 integers reqd for summing to 0
+        if(n < 1)
+           return 0;
+        
+        if(memo[n] != INT_MAX)
+            return memo[n];
+        
+        for(int i = 1; i <= sqrt(n); i++){
+            // +1 b/c we have subtracted one integer square.
+            int currMin = numSquaresHelper(n - (i * i), memo) + 1;
+            
+            memo[n] = min(memo[n], currMin);
+        }
+            
+        return memo[n];
+    }
+    
+    int numSquares(int n){
+        if(n == 0)
+            return 0;
+        
+        if(n == 1)
+            return 1;
+        
+        // memo[i] depicts the min number of perfect squares reqd to sum upto n
+        vector<int>memo(n + 1, INT_MAX);
+        
+        return numSquaresHelper(n, memo);
+    }
+};
+
+
+
+------------Bottom Up------------
+
+class Solution {
+public:
+    int numSquares(int n) {
+        
+        if(n == 0)
+            return 0;
+        
+        if(n == 1)
+            return 1;
+        
+        // dp[i] represents the minimum number of perfect squares reqd to sum to i
+        vector<int>dp(n + 1, INT_MAX);
+        dp[0] = 0;
+        dp[1] = 1;
+        
+        
+        // the outer loop is for finding the ans to every subproblem
+        // inner loop for the ways- till sqrt(n) b/c usse upar to it will become negative
+        for(int currn = 2; currn <= n; currn++){
+            for(int i = 1; i <= sqrt(currn); i++){
+                dp[currn] = min(dp[currn], dp[currn - (i * i)] + 1);
+            }
+        }
+        return dp[n];
+    }
+};
