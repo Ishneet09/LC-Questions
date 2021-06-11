@@ -3,6 +3,7 @@
 class Solution {
 public:
     
+    // currIndex = current day,  lastIndex = lastDay
     int minCostHelper(vector<int>& dayset, vector<int>& costs, int currIndex, int lastIndex){
         if(currIndex > lastIndex)
             return 0;
