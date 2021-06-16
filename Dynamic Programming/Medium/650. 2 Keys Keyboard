@@ -1,0 +1,33 @@
+////// NOT EXACTLY DP. MORE OF A MATH PROBLEM
+// Solution Link- https://leetcode.com/problems/2-keys-keyboard/discuss/1259810/C%2B%2B-with-detail-explanation-and-logic-Commented-code
+
+
+
+class Solution {
+public:
+    int minSteps(int n) {
+        
+        if(n == 2)
+            return 2;
+        if(n == 1)
+            return 0;
+        
+        vector<int>dp(n + 1);
+        dp[2] = 2; // 2 operations for n = 2[CP]
+        
+        for(int i = 3; i <= n; i++){
+            int j = i / 2; // largest factor of n after n itself
+            
+            dp[i] = i; // max operations for any i will be i itself
+            
+            while(j >= 1){
+                if(i % j == 0){
+                    dp[i] = min(dp[i], dp[j] + i / j); // i/j makes up for remaining factor
+                }
+                j--;
+            }
+        }
+        
+        return dp[n];
+    }
+};
