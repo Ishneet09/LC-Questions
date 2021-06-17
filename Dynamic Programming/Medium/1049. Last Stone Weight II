@@ -1,0 +1,65 @@
+https://joseiciano.medium.com/last-stone-weight-ii-a-leetcode-problem-a37f49e55d13
+
+Solution^
+
+
+
+
+class Solution {
+public:
+    int lastStoneWeightII(vector<int>& stones) {
+        
+        if(stones.size() == 0)
+            return 0;
+        
+        int n = stones.size();
+        
+        int sum = 0;
+        
+        for(int weight: stones){
+            sum += weight;
+        }
+        
+        // dp[i][j] indicates whether is the possible to get sum(total weight) j with i number of stones
+        vector<vector<bool>>dp(n + 1, vector<bool>(sum + 1));
+        
+        // for the first col, j = 0 => sum = 0 which is possibel to achieve with all elements=> don't pick any element
+        
+        for(int i = 0; i <= n; i++){
+            dp[i][0] = true;
+        }
+        
+        // for the first row, i = 0=> no elements. sum j not equal to 0 cannot be achieved with 0 elements. Also, dp[0][0] will not be achieved.
+        
+        for(int j = 1; j <= sum; j++){
+            dp[0][j] = false;
+        }
+        
+        // starting from i = 1, j = 1 => considering sum j for every possible stones i
+        for(int i = 1; i <= n; i++){
+            for(int j = 1; j <= sum; j++){
+                // if the weight of the current stone(i - 1) b/c 0 indexed is less than curr weight j we are considering
+                if(stones[i - 1] <= j){
+                    // dp[i][j] will be true iff it is possible to make weight j - stones[i - 1](the curr weight) with i - 1 stones or iff it is possible to achieve weight j(sum j) with i - 1 stones=> weigt of i - 1 stones exceeded or was equal to j pehle se
+                    dp[i][j] = dp[i - 1][j - stones[i - 1]] || dp[i - 1][j];
+                }
+                
+                // if curr stone weight is not less, then the sum j with i items is possible only if it is possible with i - 1 stones
+                else
+                    dp[i][j] = dp[i - 1][j];
+                    
+            }
+        }
+        
+        int diff = INT_MAX;
+        
+        // now we try to find the max value of j(the sum) starting from sum/2 and try to make it as close as possible to this value of sum/2.Value of diff is updated as sum - 2*j.
+        // j loops from sum/2 to 0 as explained in the mediu blog
+        for(int j = sum / 2; j >= 0; j--){
+            if(dp[n][j])
+                diff = min(diff, sum - 2 * j);
+        }
+        
+        return diff;
+    }
+};
