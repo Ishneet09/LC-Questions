@@ -1,0 +1,94 @@
+----------Recursive-----------
+
+// start - first element in the triangle
+// end - any element in the last row
+// min sum reqd
+// ways- element i/ i + 1 in the next row
+// min sum reqd
+
+
+class Solution {
+public:
+    
+    // i for row, j for element in that row
+    int minTotalHelper(vector<vector<int>>& triangle, int i, int j){
+        
+        if(i == triangle.size() - 1){
+            return triangle[i][j];
+        }
+        
+        int minSum1 = minTotalHelper(triangle, i + 1, j);
+        int minSum2 = minTotalHelper(triangle, i + 1, j + 1);
+        
+        return min(minSum1 + triangle[i][j], minSum2 + triangle[i][j]);
+    }
+    
+    
+    
+    int minimumTotal(vector<vector<int>>& triangle) {
+        
+        if(triangle.size() == 0)
+            return 0;
+        
+        // one index for curr row, one index for curr element in that row
+        return minTotalHelper(triangle, 0, 0);
+        
+    }
+};
+
+
+
+
+------------Memoised------------
+
+// start - first element in the triangle
+// end - any element in the last row
+// min sum reqd
+// ways- element i/ i + 1 in the next row
+// min sum reqd
+
+
+class Solution {
+public:
+    
+    // i for row, j for element in that row
+    int minTotalHelper(vector<vector<int>>& triangle, int i, int j, vector<vector<int>>& memo){
+        
+        if(i == triangle.size() - 1){
+            return triangle[i][j];
+        }
+        
+        if(memo[i][j] != -1)
+            return memo[i][j];
+        
+        int minSum1 = minTotalHelper(triangle, i + 1, j, memo);
+        int minSum2 = minTotalHelper(triangle, i + 1, j + 1, memo);
+        
+        memo[i][j] = min(minSum1 + triangle[i][j], minSum2 + triangle[i][j]);
+        
+        return memo[i][j];
+    }
+    
+    
+    
+    int minimumTotal(vector<vector<int>>& triangle) {
+        
+        if(triangle.size() == 0)
+            return 0;
+        
+        int n = triangle.size() - 1;
+        int lastrow = triangle[n].size(); 
+        
+        // every vector is of different size, therefore, sabka size is set to size of largest to maintain uniformity
+        vector<vector<int>>memo(n, vector<int>(lastrow, -1));
+        
+        // one index for curr row, one index for curr element in that row
+        return minTotalHelper(triangle, 0, 0, memo);
+        
+    }
+};
+
+
+
+-----------Bottom Up------------
+
