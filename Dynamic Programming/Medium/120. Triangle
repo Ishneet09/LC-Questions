@@ -92,3 +92,26 @@ public:
 
 -----------Bottom Up------------
 
+class Solution {
+public:
+    int minimumTotal(vector<vector<int>>& triangle) {
+        
+        // we will start from the bottom and use the triangle array itself. No need of a new dp array b/c ultimately, hume triangle wale elements usmei add karne hi hai.
+        // triangle[l][i] depicts the min falling sum from element i of level l using which the min falling sum of upper elements are calculated=> the final ans will be at triangle[0][0]=> falling sum from first element of triangle
+        int levels = triangle.size();
+        
+        
+        // start from levels - 2 b/c the min falling sum for all elements in the last row ar the elements themselves.
+        // also, for every element i of level l, we reached there or are expected to go to element i/i + 1 of next level, l + 1. So, intuitively, sum bhi vahi se calculate kiya
+        for(int l = levels - 2; l >= 0; l--){
+            // level index = index of last element of that level=> <=l in the loop
+            for(int i = 0; i <= l; i++){
+                triangle[l][i] += min(triangle[l + 1][i], triangle[l + 1][i + 1]);
+            }
+        }
+        
+        return triangle[0][0];
+        
+    }
+};
+
