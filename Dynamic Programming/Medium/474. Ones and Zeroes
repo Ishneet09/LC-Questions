@@ -1,0 +1,125 @@
+-----------RECURSIVE----------
+
+// start - the complete array
+// end- a subset of this array
+// target - max size of this subset
+// ways - 1. choose the curr string if the number of ones and zeroes <= m & n resp OR 2 Skip the curr item completely if not
+// 1.- Ans will be max of a) choosing the curr str=> 
+class Solution {
+public:
+    
+    int maxSubsetSize(vector<vector<int>>& strings, int m, int n, int size){
+        if(size == 0)
+            return 0;
+        
+  
+        // choice 1: skip the curr str
+        int skip = maxSubsetSize(strings, m, n, size - 1);
+        
+        // choice 2: include the curr string
+        int choose = 0;
+        
+        if(m - strings[size - 1][0] >= 0 && n - strings[size - 1][1] >= 0)
+           choose= maxSubsetSize(strings, m - strings[size - 1][0], n - strings[size - 1][1], size - 1) + 1;
+        
+        return max(skip, choose);
+        
+    }
+    
+    
+    
+    int findMaxForm(vector<string>& strs, int m, int n) {
+        if(strs.size() == 0)
+            return 0;
+        
+        vector<vector<int>>strings;
+        
+        for(string s: strs){
+            int zeroes = 0;
+            int ones = 0;
+            
+            for(char c: s){
+                if(c == '0')
+                    zeroes++;
+                else
+                    ones++;
+            }
+            
+            strings.push_back({zeroes, ones});
+        }
+        
+  
+        return maxSubsetSize(strings, m, n, strs.size());
+    }
+};
+
+
+
+
+
+---------Memoised-------------
+// start - the complete array
+// end- a subset of this array
+// target - max size of this subset
+// ways - 1. choose the curr string if the number of ones and zeroes <= m & n resp OR 2 Skip the curr item completely if not
+// 1.- Ans will be max of a) choosing the curr str=> 
+class Solution {
+public:
+    
+    int maxSubsetSize(vector<vector<int>>& strings, int m, int n, int size, vector<vector<vector<int>>>& memo){
+        if(size == 0)
+            return 0;
+        
+        if(memo[size][m][n] != -1)
+            return memo[size][m][n];
+        
+        // choice 1: skip the curr str
+        int skip = maxSubsetSize(strings, m, n, size - 1, memo);
+        
+        // choice 2: include the curr string
+        int choose = 0;
+        
+        if(m - strings[size - 1][0] >= 0 && n - strings[size - 1][1] >= 0)
+           choose= maxSubsetSize(strings, m - strings[size - 1][0], n - strings[size - 1][1], size - 1, memo) + 1;
+        
+        memo[size][m][n] = max(skip, choose);
+        
+        return memo[size][m][n];
+    }
+    
+    
+    
+    int findMaxForm(vector<string>& strs, int m, int n) {
+        if(strs.size() == 0)
+            return 0;
+        
+        vector<vector<int>>strings;
+        
+        for(string s: strs){
+            int zeroes = 0;
+            int ones = 0;
+            
+            for(char c: s){
+                if(c == '0')
+                    zeroes++;
+                else
+                    ones++;
+            }
+            
+            strings.push_back({zeroes, ones});
+        }
+        
+        vector<vector<vector<int>>>memo(strs.size() + 1, vector<vector<int>>(m + 1, vector<int>(n + 1, -1)));
+        for(int i = 0; i < m + 1; i++){
+            for(int j = 0; j < n + 1; j++){
+                memo[0][i][j] = 0;
+            }
+        }
+        return maxSubsetSize(strings, m, n, strs.size(), memo);
+    }
+};
+
+
+
+-----------Bottom Up------------
+
