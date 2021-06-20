@@ -1,37 +1,37 @@
 ------------Recursive Solution-----------
 
-// start = 0
-// target = amount
-// looking the other way round = make amount to 0 using given coins s.t used coins are minimum
-// ways = the values in coins array
-// min number of coins reqd to make amount
-
+// start - 0 => amount
+// target - amount => make the amount 0
+// ways - diff denomination coins
+// min coins reqd
 class Solution {
 public:
-    
     int coinChangeHelper(vector<int>& coins, int amount) {
         
-        int minCoins = INT_MAX;
-     
         if(amount == 0)
             return 0;
+     
         
-        for(int i = 0; i < coins.size(); i++){
-            if(amount - coins[i] >= 0){
-                int currUsedCoins = coinChangeHelper(coins, amount - coins[i]);
-                
-                if(currUsedCoins != INT_MAX)
-                    minCoins = min(minCoins, currUsedCoins + 1);
+        int minCoins = INT_MAX;
+        int currCoins;
+        
+        for(int j = 0; j < coins.size(); j++){
+            if(coins[j] <= amount){
+              currCoins = coinChangeHelper(coins, amount - coins[j]);
+            
+              if(currCoins != INT_MAX)
+                  minCoins = min(minCoins, currCoins + 1);
             }
         }
         
         return minCoins;
-            
- }
+    }
     
     int coinChange(vector<int>& coins, int amount){
         
+        
         int ans = coinChangeHelper(coins, amount, memo);
+
         
         if(ans == INT_MAX)
             return -1;
@@ -44,44 +44,46 @@ public:
 
 
 
-----------------Top Down - [TLE]------------
-// start = 0
-// target = amount
-// looking the other way round = make amount to 0 using given coins s.t used coins are minimum
-// ways = the values in coins array
-// min number of coins reqd to make amount
+-----------------Memoised Solution--------------
 
+// start - 0 => amount
+// target - amount => make the amount 0
+// ways - diff denomination coins
+// min coins reqd
 class Solution {
 public:
-    
     int coinChangeHelper(vector<int>& coins, int amount, vector<int>& memo) {
         
-        //int minCoins = INT_MAX;
-     
         if(amount == 0)
             return 0;
         
-        if(memo[amount] != INT_MAX)
+        if(memo[amount] != -1)
             return memo[amount];
         
-        for(int i = 0; i < coins.size(); i++){
-            if(amount - coins[i] >= 0){
-                int currUsedCoins = coinChangeHelper(coins, amount - coins[i], memo);
-                
-                if(currUsedCoins != INT_MAX)
-                    memo[amount] = min(memo[amount], currUsedCoins + 1);
+        int minCoins = INT_MAX;
+        int currCoins;
+        
+        for(int j = 0; j < coins.size(); j++){
+            if(coins[j] <= amount){
+              currCoins = coinChangeHelper(coins, amount - coins[j], memo);
+            
+              if(currCoins != INT_MAX)
+                  minCoins = min(minCoins, currCoins + 1);
             }
         }
         
+         memo[amount] = minCoins;
         return memo[amount];
-            
-            
     }
     
     int coinChange(vector<int>& coins, int amount){
         
-        vector<int>memo(amount + 1, INT_MAX);
+        
+        // memo[i] depicts the min coins reqd for making amount i
+        vector<int>memo(amount + 1, -1);
+        
         int ans = coinChangeHelper(coins, amount, memo);
+
         
         if(ans == INT_MAX)
             return -1;
