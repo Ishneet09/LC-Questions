@@ -1,0 +1,177 @@
+--------------Recursive------------
+
+class Solution {
+public:
+    
+    int maxSquareHelper(vector<vector<char>>& matrix, int i, int j){
+        
+        if(i < 0 || j < 0 || i >= matrix.size() || j >= matrix[0].size())
+            return 0;
+        
+        if(matrix[i][j] == '0')
+            return 0;
+        
+       
+        // a square is completely equidistant => dow, right, diag
+        // move right
+        int right = maxSquareHelper(matrix, i, j + 1);
+        // move down
+        int down = maxSquareHelper(matrix, i + 1, j);
+        // move diagnoal
+        int diag = maxSquareHelper(matrix, i + 1, j + 1);
+        
+        
+        // this finds the length of the side of the largest square
+        return min(right, min(down, diag)) + 1;
+               
+    }
+    
+    
+    
+    int maximalSquare(vector<vector<char>>& matrix) {
+        
+        if(matrix.size() == 0)
+            return 0;
+        
+        int rows = matrix.size();
+        int cols = matrix[0].size();
+        
+        int maxArea = 0;
+        
+        for(int i = 0; i < rows; i++){
+            
+            for(int j = 0; j < cols; j++){
+                if(matrix[i][j] == '1'){
+                    int currArea = maxSquareHelper(matrix, i, j);
+                    
+                      maxArea = max(maxArea, currArea);
+                }
+            }
+        }
+        
+        // area of sq = side * side
+        return maxArea * maxArea;
+    
+    }
+};
+
+
+
+
+
+
+---------------Memoisation-------------------
+
+class Solution {
+public:
+    
+    int maxSquareHelper(vector<vector<char>>& matrix, int i, int j, vector<vector<int>>& memo){
+        
+        if(i < 0 || j < 0 || i >= matrix.size() || j >= matrix[0].size())
+            return 0;
+        
+        if(matrix[i][j] == '0')
+            return 0;
+        
+        if(memo[i][j] != -1)
+            return memo[i][j];
+        
+        // a square is completely equidistant => dow, right, diag
+        // move right
+        int right = maxSquareHelper(matrix, i, j + 1, memo);
+        // move down
+        int down = maxSquareHelper(matrix, i + 1, j, memo);
+        // move diagnoal
+        int diag = maxSquareHelper(matrix, i + 1, j + 1, memo);
+        
+        
+        // this finds the length of the side of the largest square
+        memo[i][j] = min(right, min(down, diag)) + 1;
+        
+        return memo[i][j];
+        
+    }
+    
+    
+    
+    int maximalSquare(vector<vector<char>>& matrix) {
+        
+        if(matrix.size() == 0)
+            return 0;
+        
+        int rows = matrix.size();
+        int cols = matrix[0].size();
+        
+        int maxArea = 0;
+        
+        for(int i = 0; i < rows; i++){
+            
+            // declare it here- declaring it down gives TLE probably b/c then the same vector is declared a lot many times. 
+            vector<vector<int>>memo(rows, vector<int>(cols, -1));
+
+            for(int j = 0; j < cols; j++){
+                if(matrix[i][j] == '1'){
+                    //vector<vector<int>>memo(rows, vector<int>(cols, -1));
+                    int currArea = maxSquareHelper(matrix, i, j, memo);
+                    
+                      maxArea = max(maxArea, currArea);
+                }
+            }
+        }
+        
+        // area of sq = side * side
+        return maxArea * maxArea;
+    
+    }
+};
+
+
+
+
+
+
+
+-------------Bottom Up------------
+
+class Solution {
+public:
+    int maximalSquare(vector<vector<char>>& matrix) {
+        
+        int rows = matrix.size();
+        int cols = matrix[0].size();
+        
+        // dp[i][j] indicates the len the largest square that can be formed from the curr cell provided curr cell in matrix is 1=> matrix[i][j] = 1, (i,j) is the bottom right corner square of a possible larger square
+        vector<vector<int>>dp(rows, vector<int>(cols));
+        
+        // mark every occurance of 1 in mtrix as 1 in dp b/c that will be atleast the min len for every individual square
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j < cols; j++){
+                if(matrix[i][j] == '1')
+                    dp[i][j] = 1;
+            }
+        }
+        
+        int maxlen = 0;
+        
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j < cols; j++){
+               
+                // only if there is a possibility of making a square=> dp[i][j ] = 1
+                if(dp[i][j] == 1 && i - 1 >= 0 && j - 1 >= 0){
+                    // just like recursion
+                    dp[i][j] = min(dp[i - 1][j], min(dp[i - 1][j - 1], dp[i][j - 1])) + 1;
+                }
+            }
+        }
+        
+
+        // finding the maxlen
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j < cols; j++){
+                maxlen = max(maxlen, dp[i][j]);
+            }
+        }
+        
+        return maxlen * maxlen;
+    }
+};
