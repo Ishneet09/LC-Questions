@@ -1,0 +1,58 @@
+class Solution {
+public:
+    
+    bool isSubsequence(string word, unordered_map<char, vector<int>>& smap){
+        int currIndex = -1;
+        
+        for(int j = 0; j < word.size(); j++){
+            // iterator pointing to either the upper bound val or end iterator
+            auto pos = upper_bound(smap[word[j]].begin(), smap[word[j]].end(), currIndex);
+            
+            if(pos == smap[word[j]].end())
+                return false;
+            
+            // assigning the index which is an element in smap[word[j]] pointed to by iterator pos stored at index pos - .begin()
+            currIndex = smap[word[j]][pos - smap[word[j]].begin()];
+        }
+        
+        return true;
+    }
+    
+    
+    
+    
+    int numMatchingSubseq(string s, vector<string>& words) {
+        
+        if(words.size() == 0)
+            return 0;
+        
+        if(s == "")
+            return 0;
+        
+        // storing indices of all chars of s
+        unordered_map<char, vector<int>>smap;
+        
+        for(int i = 0; i < s.size(); i++){
+            smap[s[i]].push_back(i);
+        }
+        
+        // storing frequency of each word in words
+        unordered_map<string, int>wordcount;
+        
+        for(string word: words){
+            wordcount[word]++;
+        }
+        
+        int count = 0;
+        
+        for(auto p: wordcount){
+            string word = p.first;
+            int freq = p.second;
+            
+            if(isSubsequence(word, smap))
+                count += freq;
+        }
+        
+        return count;
+    }
+};
