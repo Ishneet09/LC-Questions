@@ -1,3 +1,55 @@
+---------Checking if every word is a subsequence or not [TLE] -------------------o(nl)=> n = len(s), l = max len of word in words
+
+class Solution {
+public:
+    bool isSubsequence(string s, string word){
+        if(word == "")
+            return true;
+        int sptr = 0;
+        int wptr = 0;
+        
+        while(sptr < s.size() && wptr < word.size()){
+            if(s[sptr] == word[wptr]){
+                sptr++;
+                wptr++;
+            }
+            else{
+                sptr++;
+            }
+        }
+        
+        return wptr == word.size();
+    }
+    
+    
+    
+    int numMatchingSubseq(string s, vector<string>& words) {
+        
+        if(words.size() == 0)
+            return 0;
+        
+        if(s == "")
+            return 0;
+        
+        int count = 0;
+        
+        for(string word: words){
+            if(isSubsequence(s, word))
+                count++;
+        }
+        
+        return count;
+        
+    }
+};
+
+
+
+
+
+
+--------------------Map + Binary Search- upper_bound()-----------------
+
 class Solution {
 public:
     
