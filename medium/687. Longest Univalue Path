@@ -11,34 +11,43 @@
  */
 class Solution {
 public:
-    int maxPath = 0;
+    int maxLen = 0;
     
-    int longestUnivaluePathHelper(TreeNode* root) {
+    
+    int longestLenHelper(TreeNode* root){
+        
+        // base case - no root, no lenght
         if(root == NULL)
             return 0;
         
-        int leftLen = longestUnivaluePathHelper(root->left);
-        int rightLen = longestUnivaluePathHelper(root->right);
+        // imagine the tree like its supposed to be for recursive problems, get left & rt length
+        int leftLen = longestLenHelper(root->left);
+        int rightLen = longestLenHelper(root->right);
         
+        // to accomodate the root;
         int leftCheck = 0;
         int rightCheck = 0;
         
+        // the path is composed of the edges so that's why if the root val matches left/right child, we increment by 1
+        
         if(root->left && root->val == root->left->val)
             leftCheck = leftLen + 1;
-        
         if(root->right && root->val == root->right->val)
             rightCheck = rightLen + 1;
         
-        maxPath = max(maxPath, leftCheck + rightCheck);
+        // update maxPath to check for root inclusion at every node
+        maxLen = max(maxLen, leftCheck + rightCheck);
         
+        // the root is included in either of the paths b/c a match was found with only one
         return max(leftCheck, rightCheck);
+        
     }
     
-    int longestUnivaluePath(TreeNode* root){
-     
+    
+    
+    int longestUnivaluePath(TreeNode* root) {
+        longestLenHelper(root);
         
-        longestUnivaluePathHelper(root);
-        return maxPath;
-        
+        return maxLen;
     }
 };
