@@ -1,0 +1,67 @@
+--------------RECURSIVE---------
+
+class Solution {
+public:
+
+    
+    ListNode* newHead = NULL;
+    ListNode* newTail = NULL;
+    
+    void reverseHelper(ListNode* head){
+        if(head->next == NULL){
+            newHead = head;
+            newTail = head;
+            return;
+        }
+        
+        reverseHelper(head->next);
+        
+        newTail->next = head;
+        newTail = newTail->next;
+        
+        return;
+    }
+    
+    
+    ListNode* reverseList(ListNode* head){
+        
+        if(head == NULL)
+            return NULL;
+        
+        if(head->next == NULL)
+            return head;
+        
+        reverseHelper(head);
+        newTail->next = NULL;
+        return newHead;
+        
+    }
+};
+
+
+
+---------------ITERATIVE------------------
+
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        
+        if(head == NULL)
+            return NULL;
+        if(head->next == NULL)
+            return head;
+        
+        ListNode* prev = NULL;
+        ListNode* curr = head;
+        ListNode* nextNode = head->next;
+        
+        while(nextNode != NULL){
+            curr->next = prev;
+            prev = curr;
+            curr = nextNode;
+            nextNode = nextNode->next;
+        }
+        curr->next = prev;
+        return curr;
+    }
+};
