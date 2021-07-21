@@ -2,34 +2,31 @@ class Solution {
 public:
     
     vector<int> searchRangeHelper(vector<int>& nums, int target, int left, int right){
-        while(left < right){
+        while(left <= right){
+            
             int mid = left + (right - left) / 2;
             
             if(nums[mid] == target){
+                int start = mid;
+                int end = mid;
                 
-                int temp1 = mid;
-                int temp2 = mid;
+                while(start - 1 >= 0 && nums[start - 1] == target)
+                    start--;
+                while(end + 1 < nums.size() && nums[end + 1] == target)
+                    end++;
                 
-                while(temp1 - 1 >= 0 && nums[temp1 - 1] == target)
-                    temp1--;
-                while(temp2 + 1 < nums.size() && nums[temp2 + 1] == target)
-                    temp2++;
-                
-                return {temp1, temp2};
-                
+                return {start, end};
             }
             
             else if(nums[mid] < target)
                 left = mid + 1;
-            
             else
                 right = mid - 1;
+            
         }
         
-        if(left == right && nums[left] == target)
-            return {left, left};
-        
         return {-1, -1};
+        
     }
     
     
