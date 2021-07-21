@@ -1,3 +1,6 @@
+-----------------Recursive Solution--------------
+
+
 /**
  * Definition for a binary tree node.
  * struct TreeNode {
@@ -25,3 +28,35 @@ public:
         return helper(root, LONG_MIN, LONG_MAX);   
     }
 };
+
+
+------------------Iterative SOLUTION----------
+
+ if(root == NULL)
+            return true;
+        
+        stack<pair<TreeNode*, pair<long, long>>>st;
+        st.push({root, {LONG_MIN, LONG_MAX}});
+        
+        while(st.size() != 0){
+            auto current = st.top();
+            st.pop();
+            
+            TreeNode* currRoot = current.first;
+            long rootValue = currRoot->val;
+            long minVal = current.second.first;
+            long maxVal = current.second.second;
+            
+            if(rootValue <= minVal || rootValue >= maxVal)
+                return false;
+            
+            if(currRoot->left){
+                st.push({currRoot->left, {minVal, rootValue}});
+            }
+            
+            if(currRoot->right){
+                st.push({currRoot->right, {rootValue, maxVal}});
+            }
+        }
+        
+        return true;
