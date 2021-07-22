@@ -1,0 +1,99 @@
+---------------Recursive Solution--------------
+
+class Solution {
+public:
+    
+    // target - climb to top => climb n stairs
+    // ways - 1 or 2 steps
+    
+    
+    int climbStairs(int n) {
+        
+        if(n == 0)
+            return 0;
+        
+        if(n == 1)
+            return 1;
+        
+        if(n == 2)
+            return 2;
+        
+        return climbStairs(n - 1) + climbStairs(n - 2);
+        
+    }
+};
+
+
+
+-----------------Memoised-----------------
+
+class Solution {
+public:
+    
+    int climbStairsHelper(int n, vector<int>& memo){
+        
+        if(n == 0)
+            return 0;
+        if(n == 1)
+            return 1;
+        if(n == 2)
+            return 2;
+        
+        if(memo[n] != -1)
+            return memo[n];
+        
+        memo[n] = climbStairsHelper(n - 1, memo) + climbStairsHelper(n - 2, memo);
+        
+        return memo[n];
+        
+    }
+    
+    
+    int climbStairs(int n) {
+        
+        if(n == 0)
+            return 0;
+        
+        if(n == 1)
+            return 1;
+        
+        if(n == 2)
+            return 2;
+        
+        vector<int>memo(n + 1, -1);
+        
+        climbStairsHelper(n, memo);
+        
+        return memo[n];
+        
+    }
+};
+
+
+-------------------DP Solution----------------
+
+class Solution {
+public:
+    int climbStairs(int n) {
+        
+        if(n == 0)
+            return 0;
+        if(n == 1)
+            return 1;
+        if(n == 2)
+            return 2;
+        
+        vector<int>dp(n + 1, 0);
+        
+        // base cases represented
+        dp[1] = 1;
+        dp[2] = 2;
+        
+        // value for each computed
+        for(int step = 3; step <= n; step++){
+            dp[step] = dp[step - 1] + dp[step - 2];
+        }
+        
+        return dp[n];
+    }
+};
