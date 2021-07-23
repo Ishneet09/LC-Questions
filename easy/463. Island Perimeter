@@ -1,7 +1,12 @@
 class Solution {
 public:
+    // the solution is simply based on figuring out the exposure of each land cell to water. Two cases:
+    // 1. The cell is a boundary cell - row 0/ col0/ row n - 1/ col n-1
+    //=> a definite increase in perimeter
+    // 2. The cell is not a boundary cell in which case we need to check on how many sides is water present. For every side on which water is present, the perimeter increases by 1
     
-    void dfs(vector<vector<int>>& grid, int i, int j, int rows, int columns, int& perimeter){
+    void traverseIsland(vector<vector<int>>& grid, int i, int j, int rows, int columns, int &perimeter){
+        
         if(i < 0 || j < 0 || i >= rows || j >= columns || grid[i][j] == 0 || grid[i][j] == -1)
             return;
         
@@ -14,16 +19,21 @@ public:
         if(j == columns - 1 || grid[i][j + 1] == 0)
             perimeter++;
         
-        grid[i][j] = -1; 
+        grid[i][j] = -1;
         
-        dfs(grid, i + 1, j, rows, columns, perimeter);
-        dfs(grid, i - 1, j, rows, columns, perimeter);
-        dfs(grid, i, j + 1, rows, columns, perimeter);
-        dfs(grid, i, j - 1, rows, columns, perimeter);
+        traverseIsland(grid, i + 1, j, rows, columns, perimeter);
+        traverseIsland(grid, i - 1, j, rows, columns, perimeter);
+        traverseIsland(grid, i, j - 1, rows, columns, perimeter);
+        traverseIsland(grid, i, j + 1, rows, columns, perimeter);
         
+        return;
     }
     
+    
+    
+    
     int islandPerimeter(vector<vector<int>>& grid) {
+        
         if(grid.size() == 0)
             return 0;
         
@@ -34,10 +44,12 @@ public:
         
         for(int i = 0; i < rows; i++){
             for(int j = 0; j < columns; j++){
-                if(grid[i][j] == 1)
-                    dfs(grid, i, j, rows, columns, perimeter);
+                if(grid[i][j] == 1){
+                    traverseIsland(grid, i, j, rows, columns, perimeter);
+                }
             }
         }
+        
         return perimeter;
     }
 };
