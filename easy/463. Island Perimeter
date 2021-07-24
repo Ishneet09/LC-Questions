@@ -1,3 +1,5 @@
+----------------[DFS BASED]---------------
+
 class Solution {
 public:
     // the solution is simply based on figuring out the exposure of each land cell to water. Two cases:
@@ -51,5 +53,48 @@ public:
         }
         
         return perimeter;
+    }
+};
+
+
+
+
+----------------[ITERATIVE]---------------
+
+class Solution {
+public:
+    // the solution is simply based on figuring out the exposure of each land cell to water. Two cases:
+    // 1. The cell is a boundary cell - row 0/ col0/ row n - 1/ col n-1
+    //=> a definite increase in perimeter
+    // 2. The cell is not a boundary cell in which case we need to check on how many sides is water present. For every side on which water is present, the perimeter increases by 1
+    
+   
+    
+     int islandPerimeter(vector<vector<int>>& grid) {
+        
+        if(grid.size() == 0)
+            return 0;
+        
+        int rows = grid.size();
+        int columns = grid[0].size();
+        
+        int islandCells = 0;
+        int neighbourCells = 0;
+         
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j < columns; j++){
+                if(grid[i][j] == 1){
+                islandCells++;
+                    
+                if(i - 1 >= 0 && grid[i - 1][j] == 1)
+                    neighbourCells++;
+                if(j - 1 >= 0 && grid[i][j - 1] == 1)
+                    neighbourCells++;
+                }
+            }
+        }
+        
+        return islandCells * 4 - neighbourCells * 2;
+         
     }
 };
