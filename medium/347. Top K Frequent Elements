@@ -1,36 +1,103 @@
+------------[MIN PRIORITY QUEUE]----------
+
 class Solution {
 public:
-    
-    
     vector<int> topKFrequent(vector<int>& nums, int k) {
-        if(k == nums.size())
-            return nums;
         
-        if(k == 1 && nums.size() == 1)
+        if(nums.size() == 0)
+            return {};
+        if(k == 0)
+            return {};
+        
+        if(k == nums.size())
             return nums;
         
         unordered_map<int, int>map;
         
-        for(int i = 0; i < nums.size(); i++){
-            map[nums[i]]++;
+        for(int num: nums){
+            map[num]++;
         }
         
-        priority_queue<pair<int, int>>pq;
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>>pq;
         
-        for(auto it : map){
-            pq.push({it.second, it.first});
+        for(auto it: map){
+            int number = it.first;
+            int freq = it.second;
+            
+            pq.push({freq, number});
+            
+            if(pq.size() > k)
+                pq.pop();
         }
         
-        int temp = 0;
+        vector<int>ans;
         
-        vector<int>result;
-        
-        while(temp < k){
-            pair<int, int> p = pq.top();
+        while(pq.size() != 0){
+            auto p = pq.top();
             pq.pop();
-            result.push_back(p.second);
-            temp++;
+            ans.push_back(p.second);
         }
-        return result;
+        
+        return ans;
+    }
+};
+
+
+
+----------------[O(N) SOLUTION ------------USING BUCKET SORT LIKE APPROACH]-------------
+
+class Solution {
+public:
+    vector<int> topKFrequent(vector<int>& nums, int k) {
+        
+        if(k == 0)
+            return {};
+        
+        if(nums.size() == 0)
+            return {};
+        
+        unordered_map<int, int>map;
+        
+        // the normal frq mapping
+        for(int num: nums){
+            map[num]++;
+        }
+        
+        int n = nums.size();
+        
+        // the max freq of a number won't be ever be greater than n
+        vector<vector<int>>buckets(n + 1);
+        
+        // the freq are not unique
+        // the freq forms the bucket number, the element goes inside that freq
+        for(auto it: map){
+            int bucketNumber = it.second;
+            int number = it.first;
+            
+            buckets[bucketNumber].push_back(number);
+        }
+        
+        vector<int>ans;
+        
+        // we now simply extract the k elements from the buckets starting from behind b/c that denotes the highest freq
+        for(int i = n; i >= 0; i--){
+            // no need o continue the search if k elements are found
+            if(k == 0)
+                break;
+            
+            if(buckets[i].size() == 0)
+                continue;
+            
+            
+            for(int num: buckets[i]){
+                // k goes here b/c we are concerned with extracting out k elements not considering k buckets[frequencies]  
+                if(k > 0){
+                    ans.push_back(num);
+                    k--;
+                } 
+            }
+        }
+        
+        return ans;
     }
 };
