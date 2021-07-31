@@ -1,0 +1,45 @@
+------------W/O USING INBUILT substr() function----------
+
+class Solution {
+public:
+    int strStr(string haystack, string needle) {
+        
+        if(needle == "")
+            return 0;
+        
+        for(int index = 0; index < haystack.size(); index++){
+            if(haystack[index] == needle[0]){
+               int h = index;
+                int n = 0;
+                
+                while(h < haystack.size() && n < needle.size()){
+                    if(haystack[h] == needle[n]){
+                        h++;
+                        n++;
+                    }
+                    else
+                      break;
+                }
+                
+                if(n == needle.size())
+                    return index;
+            }
+        }
+         return -1;
+    }
+};
+
+
+
+-----------------Using substr function---------------
+
+ int m = haystack.size();
+        int n = needle.size();
+        
+        
+        for(int i = 0; i < m - n + 1; i++){
+            if(haystack.substr(i, n) == needle)
+                return i;
+        }
+        
+        return -1;
