@@ -1,0 +1,32 @@
+class Solution {
+public:
+    string removeDuplicateLetters(string s) {
+     
+        unordered_map<char, int>counter;
+        unordered_map<char, bool>existed;
+        
+        for(char c: s){
+            counter[c]++;
+            existed[c] = false;
+        }
+        
+        string ans = "";
+        
+        for(char c: s){
+            counter[c]--;
+            
+            if(!existed[c]){
+                while(ans.size() > 0 && c < ans.back() && counter[ans.back()] > 0){
+                    existed[ans.back()] = false;
+                    ans.pop_back();
+                }
+                
+                ans += c;
+                existed[c] = true;
+            }
+        }
+        
+        return ans;
+        
+    }
+};
