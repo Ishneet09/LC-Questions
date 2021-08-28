@@ -1,0 +1,89 @@
+----------------------RECURSIVE--------------
+
+class Solution {
+public:
+    bool isMatchHelper(string text, string pattern) {
+        
+        // if they match, they must end at the same time even if there are * or . present
+        if(pattern.size() == 0)
+            return text.size() == 0;
+        
+        
+        // matching the first character
+        bool firstMatch = text.size() != 0 && pattern.size() != 0 && ((text[0] == pattern[0]) || pattern[0] == '.');
+        
+        //if the sec char is * => two choices:
+        //1. The char occuring before * is repaerting 0 times(not repeating),we need to start comparing skipping this part of pattern ie (char + *)
+        //2. The char occuring before * reapeats one or more times, in which case we have to move forward one place in the text && take into consideration the firstMatch found as well
+        
+        if(pattern.size() >= 2 && pattern[1] == '*')
+            return isMatchHelper(text, pattern.substr(2)) || (firstMatch && isMatchHelper(text.substr(1), pattern));
+
+        // * wasn't present => so first match and move one char forward in both
+           return firstMatch && isMatchHelper(text.substr(1), pattern.substr(1));
+    }
+    
+    bool isMatch(string text, string pattern){
+        if(text.size() == 0 && pattern.size() == 0)
+            return true;
+        
+        if(text.size() == 0 || pattern.size() == 0)
+            return false;
+                
+        return isMatchHelper(text, pattern);
+    }
+};
+
+
+
+-------------------DP BOTTOM UP--------------
+
+class Solution {
+public:
+    bool isMatch(string text, string pattern) {
+        
+        if(text.size() == 0 && pattern.size() == 0)
+            return true;
+        
+        if(text.size() == 0 || pattern.size() == 0)
+            return false;
+        
+        vector<vector<bool>>dp(text.size() + 1, vector<bool>(pattern.size() + 1, false));
+        dp[0][0] = true;
+        
+        // handles cases like a*, a*b*c* etc
+        for(int i = 1; i < pattern.size() + 1; i++){
+            if(pattern[i - 1] == '*')
+                dp[0][i] = dp[0][i - 2];
+        }
+        
+        for(int i = 1; i < text.size() + 1; i++){
+            for(int j = 1; j < pattern.size() + 1; j++){
+                
+                if(i == 0 && j == 0){
+                     continue;
+                }
+                
+                if(i == 0 || j == 0){
+                    dp[i][j] = false;
+                    continue;
+                }
+                
+                // text[i - 1] && pattern[i - 1] b/c i, j here refer to len of both string matched=> it goes out of bound for indices
+                if(text[i - 1] == pattern[j - 1] || pattern[j - 1] == '.'){
+                    dp[i][j] = dp[i - 1][j - 1];
+                }
+                else if(pattern.size() >= 2 && pattern[j - 1] == '*'){
+                    dp[i][j] = dp[i][j - 2];
+                    // j - 2 refer to prev char than curr=> prev index, i - 1 refers to curr index of str here
+                        if(pattern[j - 2] == '.' || pattern[j - 2] == text[i - 1])
+                            dp[i][j] = dp[i][j] || dp[i - 1][j];
+                }
+                else{
+                    dp[i][j] =  false;
+                }
+            }
+        }
+        return dp[text.size()][pattern.size()];
+    }
+};
