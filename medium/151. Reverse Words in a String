@@ -1,0 +1,42 @@
+class Solution {
+public:
+    string reverseWords(string s) {
+       
+       if(s.size() == 0)
+           return "";
+        
+        int startIndex = 0;
+        int endIndex = s.size() - 1;
+        
+        while(s[startIndex] == ' ')
+            startIndex++;
+        
+        while(s[endIndex] == ' ')
+            endIndex--;
+        
+        string newS = "";
+        string word = "";
+        
+        for(int i = startIndex; i <= endIndex;){
+            if(isalnum(s[i])){
+                word += s[i];
+                i++;
+            }
+            
+            else{
+                int temp = i + 1;
+                while(s[temp] == ' ')
+                    temp++;
+                
+                i = temp;
+                
+                word = ' ' + word;
+                newS.insert(0, word);
+                word = "";
+            }
+        }
+        
+
+        return newS.insert(0, word);
+    }
+};
