@@ -1,0 +1,47 @@
+class BSTIterator {
+private:
+    vector<int>bst;
+    int nextElementIndex;
+    
+    void inorderBST(TreeNode* root, vector<int>& bst){
+        
+        if(root == NULL)
+            return;
+        
+        inorderBST(root->left, bst);
+        bst.push_back(root->val);
+        inorderBST(root->right, bst);
+        
+        return;
+    }
+    
+public:
+    BSTIterator(TreeNode* root) {
+        inorderBST(root, bst);
+        nextElementIndex = 0;
+    }
+    
+    int next() {
+        
+        if(nextElementIndex == bst.size())
+            return -1;
+        
+        int currNext = bst[nextElementIndex];
+        nextElementIndex++;
+        return currNext;
+    }
+    
+    bool hasNext() {
+        if(nextElementIndex > bst.size() - 1)
+            return false;
+        
+        return true;
+    }
+};
+
+/**
+ * Your BSTIterator object will be instantiated and called as such:
+ * BSTIterator* obj = new BSTIterator(root);
+ * int param_1 = obj->next();
+ * bool param_2 = obj->hasNext();
+ */
