@@ -1,42 +1,48 @@
 class Solution {
 public:
     string multiply(string num1, string num2) {
-        int m = num1.size();
-        int n = num2.size();
         
         if(num1 == "0" || num2 == "0")
             return "0";
         
+        int m = num1.size();
+        int n = num2.size();
+        
         vector<int>product(m + n, 0);
         
-        for(int i = m - 1; i >= 0; i--){
-            for(int j = n - 1; j >= 0; j--){
+        for(int i = m - 1; i >= 0; i++){
+            for(int j = n - 1; j >= 0; j++){
                 
                 int prod = (num1[i] - '0') * (num2[j] - '0');
                 
+                // sec last or nth position 
                 int p1 = i + j;
+                // last or nth position
                 int p2 = i + j + 1;
                 
+                // add over the current value to at p2 to what we've found b/c value at p2 rn is prev carry over
                 int sum = prod + product[p2];
                 
-                // taking the last digit
+                //take the final val
                 product[p2] = sum % 10;
                 
-                // carry is added
+                // carry over the remaining to what might already be npt 0 => +=
                 product[p1] += sum / 10;
-                
             }
         }
         
-        string finalProduct = "";
+        string productStr = "";
         
-        for(int n: product){
-            char ch = n + '0';
+        for(int p: product){
+            // this needs to be done before we append it to productStr
+            char ch = p + '0';
             
-            if(n != 0 || (n == 0 && finalProduct.size() != 0))
-                finalProduct += ch;
+            // product array has been initialised to 0. So, in case we find a 0 begore product array ends=>leading 0. eg: num1 = "2", num2 = "3", then, if we don't put this check, ans will be "06" instead of "6."
+            //We're using productStr b/c agar uska size 0 hai abhi currently when you get a 0, => ki ye leading 0 hai vector ka
+            if(ch != 0 || (ch == 0 && productStr.size() != 0))
+                productStr += (p + '0');
         }
         
-        return finalProduct;
+        return productStr;
     }
 };
