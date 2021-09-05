@@ -1,0 +1,144 @@
+--------------Recursive----------[TLE]
+
+class Solution {
+public:
+    
+    int decodeHelper(string s, int index, int len){
+        
+        // curr char is '0', we can't do anything now
+        if(index < len && s[index] == '0')
+            return 0;
+        
+        // string processed comp=>one way to decode it
+        if(index >= len)
+            return 1;
+        
+        int ways = 0;
+        
+        // case 1: picking one element-curr index => index inc by 1
+        if(s[index] != '0')
+            ways = decodeHelper(s, index + 1, len);
+        
+        // case 2: picking a couple => >= 10 && <= 26
+        if(index + 1 < len && ((s[index] == '1' && s[index + 1] <= '9') || (s[index] == '2' && s[index + 1] <= '6')))
+            ways += decodeHelper(s, index + 2, len);
+                
+        return ways;
+    }
+    
+    
+    
+    int numDecodings(string s) {
+        
+        if(s.size() == 0)
+            return 0;
+        
+        return decodeHelper(s, 0, s.size(), memo);
+        
+        
+    }
+};
+
+
+
+
+-----------------Memoised--------------
+
+
+class Solution {
+public:
+    
+    int decodeHelper(string s, int index, int len, vector<int>& memo){
+        
+        // curr char is '0', we can't do anything now
+        if(index < len && s[index] == '0')
+            return 0;
+        
+        // string processed comp=>one way to decode it
+        if(index >= len)
+            return 1;
+        
+        if(memo[index] != -1)
+            return memo[index];
+        
+        int ways = 0;
+        
+        // case 1: picking one element-curr index => index inc by 1
+        if(s[index] != '0')
+            ways = decodeHelper(s, index + 1, len, memo);
+        
+        // case 2: picking a couple => >= 10 && <= 26
+        if(index + 1 < len && ((s[index] == '1' && s[index + 1] <= '9') || (s[index] == '2' && s[index + 1] <= '6')))
+            ways += decodeHelper(s, index + 2, len, memo);
+        
+        memo[index] = ways;
+        
+        return ways;
+    }
+    
+    
+    
+    int numDecodings(string s) {
+        
+        if(s.size() == 0)
+            return 0;
+        
+        //memo[index] = number of ways to decode string of len index
+        vector<int>memo(s.size(), -1);
+        
+        return decodeHelper(s, 0, s.size(), memo);
+                
+    }
+};
+
+
+
+------------------Bottom up--------------
+
+
+class Solution {
+public:
+    int numDecodings(string s) {
+     
+        if(s.size() == 0)
+            return 0;
+        
+        
+        // dp[index] = number of ways to decode str of len index
+        vector<int>dp(s.size() + 1, 0);
+        
+        // if len is 0, only one way which "no way"
+        dp[0] = 1;
+        
+        // if len is 1, then if first char is not '0', then 1, else 0
+        dp[1] = s[0] == '0' ? 0 : 1;
+        
+        // i here denotes len of s, hence,for accessing element, we use i - 1
+        for(int i = 2; i <= s.size(); i++){
+            //curr digit
+            int currDigit = s[i - 1] - '0';
+            //prev digit
+            int prevDigit = s[i - 2] - '0';
+            
+            //forming the number
+            int num = prevDigit * 10 + currDigit;
+            
+            // case 1
+            if(currDigit != 0){
+                dp[i] += dp[i - 1];
+            }
+            
+            // case 2
+            if(num >= 10 && num <= 26){
+                dp[i] += dp[i - 2];
+            }
+        }
+        
+        // returning number of ways to decode str of len s.size()
+        return dp[s.size()];
+    }
+};
+
+
+------------------Bottom Up------------
+
