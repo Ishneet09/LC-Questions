@@ -1,3 +1,5 @@
+------------------SOL 1-----------------
+
 /**
  * Definition for a binary tree node.
  * struct TreeNode {
@@ -34,6 +36,50 @@ public:
     
     void flatten(TreeNode* root) {
         root = buildList(root);
+        return;
+    }
+};
+
+
+
+
+------------------SOL 2--------------
+
+class Solution {
+public:
+    
+    TreeNode* findRightMost(TreeNode* root){
+        
+        if(root == NULL)
+            return NULL;
+        
+        TreeNode* temp = root;
+        
+        while(temp->right){
+            temp = temp->right;
+        }
+        
+        return temp;
+    }
+    
+    
+    void flatten(TreeNode* root) {
+        
+        if(root == NULL)
+            return;
+        
+        flatten(root->left);
+        flatten(root->right);
+        
+        TreeNode* rtMost = findRightMost(root->left);
+        TreeNode* rtChild = root->right;
+        root->right = root->left;
+        root->left = NULL;
+        if(rtMost != NULL)
+          rtMost->right = rtChild;
+        else
+            root->right = rtChild;
+        
         return;
     }
 };
