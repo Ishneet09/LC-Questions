@@ -1,0 +1,36 @@
+class Solution {
+public:
+    int divide(int dividend, int divisor) {
+        
+        // edge case
+        if(dividend == INT_MIN && divisor == -1)
+            return INT_MAX;
+        
+        long tempDiv = abs(dividend);
+        long tempDis = abs(divisor);
+        
+        long result = 0;
+        
+        // while the divisor can be taken away from dividend
+        while(tempDiv - tempDis >= 0){
+            int count = 0;
+            
+            // shifting divisor to left once(doubling it) count times
+            while(tempDiv - (tempDis << 1 << count) >= 0){
+                count++;    
+            }
+            
+            // b/c the divisor is already shifted above one extra time, we need to add 1 to accomodate this increment
+            result += 1 << count;
+            
+            // decrementing the divisor 
+            tempDiv -= (tempDis << count);
+        }
+        
+        // accomodating the sign
+        return (dividend >= 0) == (divisor >= 0) ? result : -result;
+    }
+};
+
+// see algo made easy for explanation
+// nideesh t for code expl
