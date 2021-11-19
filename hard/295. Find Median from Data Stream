@@ -1,0 +1,61 @@
+class MedianFinder {
+private:
+    priority_queue<int>lowerHalf;// maxheap
+    priority_queue<int, vector<int>, greater<int>>upperHalf;//minheap
+    
+public:
+    MedianFinder() {
+        // start afresh for every new object
+        while(upperHalf.size() != 0){
+            upperHalf.pop();
+        }
+        
+        while(lowerHalf.size() != 0){
+            lowerHalf.pop();
+        }
+    }
+    
+    void addNum(int num) {
+        // if empty, we consider it to be in lower half
+        if(lowerHalf.size() == 0 && upperHalf.size() == 0){
+            lowerHalf.push(num);
+            return;
+        }
+        // if not empty, then we see which side it fits in. If it is greater than last element of lowerHalf, then push it to other side.Else keep it here
+        if(num > lowerHalf.top()){
+            upperHalf.push(num);
+        }
+        else {
+            lowerHalf.push(num);
+        }
+        
+        // size of lowerHalf can be at most 1 + size(upperHalf) therefore balance the sides
+        
+        if(lowerHalf.size() > upperHalf.size() + 1){
+            upperHalf.push(lowerHalf.top());
+            lowerHalf.pop();
+        }
+        if(upperHalf.size() > lowerHalf.size()){
+            lowerHalf.push(upperHalf.top());
+            upperHalf.pop();
+        }
+        return;
+    }
+    
+    double findMedian() {
+        // even length
+      if(lowerHalf.size() == upperHalf.size()){
+          return (lowerHalf.top() + upperHalf.top()) / 2.0;
+      }
+        // odd length
+        return lowerHalf.top();
+    }
+   
+};
+
+/**
+ * Your MedianFinder object will be instantiated and called as such:
+ * MedianFinder* obj = new MedianFinder();
+ * obj->addNum(num);
+ * double param_2 = obj->findMedian();
+ */
