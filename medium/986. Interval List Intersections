@@ -1,0 +1,40 @@
+lass Solution {
+public:
+    vector<vector<int>> intervalIntersection(vector<vector<int>>& firstList, vector<vector<int>>& secondList) {
+        
+        // if either or both lists are empty, theer is no intersection
+        if(firstList.size() == 0 && secondList.size() == 0)
+            return {};
+        
+        if(firstList.size() == 0 || secondList.size() == 0)
+            return {};
+        
+        // for discarding the interval
+        int firstPtr = 0;
+        int secondPtr = 0;
+        
+        vector<vector<int>>intersection;
+        
+        while(firstPtr < firstList.size() && secondPtr < secondList.size()){
+            auto firstInterval = firstList[firstPtr];
+            auto secondInterval = secondList[secondPtr];
+            
+            // figuring out the new start + end point
+            int newStartPoint = max(firstInterval[0], secondInterval[0]);
+            int newEndPoint = min(firstInterval[1], secondInterval[1]);
+            
+            // the inetrval in either A/B with the smallest end point can intersect only with any one interval in B/A b/c each interval in both A and B are disjoint. So, basically, if an interval intersects with more than one interval, then those two intervals won't be disjoint and as a result, that will be a contradiction. So, no need to check every interval with all others
+            
+            // discard smaller endpoint interval
+            if(newStartPoint <= newEndPoint)
+              intersection.push_back({newStartPoint, newEndPoint});
+            
+            if(firstInterval[1] < secondInterval[1])
+                firstPtr++;
+            else
+                secondPtr++;
+        }
+        
+        return intersection;
+    }
+};
