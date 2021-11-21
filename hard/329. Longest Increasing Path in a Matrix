@@ -1,0 +1,62 @@
+// four ways to go - left, down, right, up
+// max path length to be found
+class Solution {
+private:
+    
+    int traverse(int i, int j, vector<vector<int>>& matrix, vector<vector<int>>& pathStore){
+        
+        if(i < 0 || j < 0 || i >= matrix.size() || j >= matrix[0].size())
+            return 0;
+        
+        int left = 0, right = 0, down = 0, up = 0;
+        
+        // path[i][j] stores the max length path that starts from (i, j)
+        if(pathStore[i][j] != -1)
+            return pathStore[i][j];
+        
+        // go in the direction only if the current element is less than the next element
+        //down
+        if(i + 1 < matrix.size() && matrix[i][j] < matrix[i + 1][j]){
+            down = traverse(i + 1, j, matrix, pathStore);
+        }
+        
+        // up
+        if(i - 1 >= 0 && matrix[i][j] < matrix[i - 1][j]){
+            up = traverse(i - 1, j, matrix, pathStore);
+        }
+        
+        // right
+        if(j + 1 < matrix[0].size() && matrix[i][j] < matrix[i][j + 1]){
+            right = traverse(i, j + 1, matrix, pathStore);
+        }
+        
+        // left
+        if(j - 1 >= 0 && matrix[i][j] < matrix[i][j - 1]){
+            left = traverse(i, j - 1, matrix, pathStore);
+        }
+        
+        pathStore[i][j] = max(max(left, right), max(up, down)) + 1;
+        return pathStore[i][j];
+    }
+    
+    
+public:
+    // target - longest increasing path
+    // ways - move up/down/left/right
+    int longestIncreasingPath(vector<vector<int>>& matrix) {
+        if(matrix.size() == 0)
+            return 0;
+        
+        int maxIncPath = 0;
+        vector<vector<int>>pathStore(matrix.size(), vector<int>(matrix[0].size(), -1));
+        
+        for(int i = 0; i < matrix.size(); i++){
+            for(int j = 0; j < matrix[0].size(); j++){
+                int currPath = traverse(i, j, matrix, pathStore);
+                maxIncPath = max(maxIncPath, currPath);
+            }
+        }
+        
+        return maxIncPath;
+    }
+};     
