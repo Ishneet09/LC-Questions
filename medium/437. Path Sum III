@@ -11,17 +11,25 @@
  */
 class Solution {
 public:
-    int calsum(TreeNode* root, int sum){
+   
+    int calculateSumAtNode(TreeNode* root, int sum){
         if(root == NULL)
             return 0;
         
-        return (root->val == sum) + calsum(root->left, sum - root->val) + calsum(root->right, sum - root->val);
+        // check if the root's value is equal to sum=> you've found the path with the valid sum
+        // before sending the sum down, make sure to decrement the current root' value
+        return (root->val == sum) + calculateSumAtNode(root->left, sum - root->val) + calculateSumAtNode(root->right, sum - root->val);
     }
     
+    
     int pathSum(TreeNode* root, int sum) {
+        
         if(root == NULL)
             return 0;
         
-        return calsum(root, sum) + pathSum(root->left, sum) + pathSum(root->right, sum);
+        // at every node, we call calSum() to check the sum at every path from that node and since we are interested in the number of paths, as soon as we find a sum at any node, we will return true(1) and that counts one path and we simple recurse for left and right and call calSum()
+        
+        return calculateSumAtNode(root, sum) + pathSum(root->left, sum) + pathSum(root->right, sum);
+        
     }
 };
