@@ -1,0 +1,64 @@
+/*
+1. For a array sorted in desc order, no next larger lexicographically permutation is possible. its just the reverse of the given array.
+2. Apply this concept to get the next larget but smallest of larger permuations of the given array.
+3. Find the index i such that a[i] > a[i - 1].
+4. This implies that all elemenst to right of i - 1 are in desc order so none of their arrangements can give us a permutation
+5. So this means that we need to replace a[i - 1] with obv a larger element to get the next larget permu.
+6. But what will be that larget number? WE find just the next larger element than a[i-1] from its right side and swap them.
+7. The new permu obtained will be large, but not just the next larger as compared to given array. So for that, we need to reverse the elements to the right of index i - 1 so that they are in asc order and we get the just the next largest permu.
+8. CASES TO CONSIDER-
+If swapIndex ie i - 1 is -1 after the loop, => the array is in desc order. So reverse the array and you're done
+If justNextLargerElement is -1, => justNextLarger Index was nums.size() - 1. So initialise it
+
+*/
+
+
+
+class Solution {
+public:
+    void nextPermutation(vector<int>& nums) {
+        
+        if(nums.size() <= 1)
+            return;
+        
+        int swapIndex = -1;
+        
+        // find the index where nums[i] > nums[i - 1] & all others on right are in desc order
+        for(int i = nums.size() - 1; i > 0; i--){
+            if(nums[i] > nums[i - 1]){
+                swapIndex = i - 1;
+                break;
+            }
+        }
+        
+        // the array was in desc order
+        if(swapIndex == -1){
+            reverse(nums.begin(), nums.end());
+            return;
+        }
+        
+        // find the just the next number greater than a[ i -1] on its right. swap them
+        int justLargerIndex = -1;
+        for(int i = swapIndex + 1; i < nums.size(); i++){
+            if(nums[i] > nums[swapIndex])
+                continue;
+            else {
+                justLargerIndex = i - 1;
+                break;
+            }
+        }
+        // done b/c if justLargerIndex is still -1, then the last index was the just larger one bu it wasn't updated b/c loop ended
+        if(justLargerIndex == -1)
+            justLargerIndex = nums.size() - 1;
+        
+        //swap
+        int temp = nums[swapIndex];
+        nums[swapIndex] = nums[justLargerIndex];
+        nums[justLargerIndex] = temp;
+        
+        // reverse b/c you are interested in just the next larger permutation. Permuation w/o  reverse will be large but just not exactly lexicographically the next larger but smallest
+        reverse(nums.begin() + swapIndex + 1, nums.end());
+        
+        return;
+    }
+};
