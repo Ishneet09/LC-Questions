@@ -1,0 +1,52 @@
+class Solution {
+public:
+    string minRemoveToMakeValid(string s) {
+        
+        if(s == "")
+            return "";
+        
+        stack<pair<char, int>>st;
+        unordered_set<int> skip;
+        
+        for(int i = 0; i < s.size(); i++){
+            // push an empty brace along with its index in the stack
+            if(s[i] == '('){
+                st.push({'(', i});
+            }
+            else if(s[i] == ')'){
+                // you got a closing ), does it have a corresponding (? If yes, ok else this ) doesn't have an opening, you need t skip this index in final string
+                if(st.size() > 0){
+                    st.pop();
+                    continue;
+                }
+                // do not include this lone bracket
+                else{
+                    skip.insert(i);
+                }
+            }
+            else
+                continue;
+        }
+        
+        // take into account all the opening braces that were not paired wirh closing braces
+        while(st.size() != 0){
+            skip.insert(st.top().second);
+            st.pop();
+        }
+        
+        // we skip every index present in skip map
+        
+        string newStr = "";
+        
+        for(int i = 0; i < s.size(); i++){
+            if(skip.find(i) == skip.end()){
+                newStr += s[i];
+            }
+            else{
+                continue;
+            }
+        }
+        
+        return newStr;
+    }
+};
