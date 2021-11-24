@@ -1,0 +1,74 @@
+Given two sparse vectors, compute their dot product.
+
+Implement class SparseVector:
+
+SparseVector(nums) Initializes the object with the vector nums
+dotProduct(vec) Compute the dot product between the instance of SparseVector and vec
+A sparse vector is a vector that has mostly zero values, you should store the sparse vector efficiently and compute the dot product between two SparseVector.
+
+Follow up: What if only one of the vectors is sparse?
+
+
+
+
+class SparseVector {
+private:
+    
+    vector<pair<int, int>> sparseNums;
+    int size;
+    
+public:
+    
+    // efficient storage by storing only the non-zero numbers and their index for calculating dot product
+    SparseVector(vector<int> &nums) {
+        for(int i = 0; i < nums.size(); i++){
+            if(nums[i] == 0)
+                continue;
+            else
+                sparseNums.push_back({i, nums[i]});
+        }
+        size = sparseNums.size();
+    }
+    
+    // Return the dotProduct of two sparse vectors
+    int dotProduct(SparseVector& vec) {
+        int dProduct = 0;
+        
+        if(this->size == 0 || vec.size == 0)
+            return 0;
+        
+        int ptr1 = 0;
+        int ptr2 = 0;
+        
+        
+        while(ptr1 < this->size && ptr2 < vec.size){
+            // multiply the numbers only if they are at same index=> both indices are non zero
+            int index1 = this->sparseNums[ptr1].first;
+            int index2 = vec.sparseNums[ptr2].first;
+            
+            if(index1 == index2){
+                int num1 = this->sparseNums[ptr1].second;
+                int num2 = vec.sparseNums[ptr2].second;
+                
+                dProduct += (num1 * num2);
+                ptr1++;
+                ptr2++;
+            }
+            // possibility of finding a match for index2
+            else if(index1 < index2){
+                ptr1++;
+            }
+            // possibility of finding a match for index 1
+            else {
+                ptr2++;
+            }
+                
+        }
+        return dProduct;
+    }
+};
+
+// Your SparseVector object will be instantiated and called as such:
+// SparseVector v1(nums1);
+// SparseVector v2(nums2);
+// int ans = v1.dotProduct(v2);
