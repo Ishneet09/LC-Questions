@@ -1,3 +1,5 @@
+---------------- if only 1 removal is allowed-----------
+
 class Solution {
 private:
     bool palindrome(string& s, int left, int right){
@@ -40,3 +42,77 @@ public:
         return true;
     }
 };
+
+
+
+
+--------------if n removals are allowed-----------
+
+/*int isPalindrome(string& s1, string& s2, int len1, int len2, vector<vector<int>>& memo){
+    if(len1 == 0)
+        return len2;
+    
+    if(len2 == 0)
+        return len1;
+    
+    if(memo[len1][len2] !+= -1)
+        return memo[len1][len2];
+    
+    // both chars are equal, leave both the chars, move ahead
+    if(s1[len1 - 1] == s2[len2 - 1])
+        return isPalindrome(s1, s2, len1 - 1, len2 - 1);
+    
+    // unequal chars - choose the min out of both
+    memo[len1][len2] = 1 + min(isPalindrome(s1, s2, len1 - 1, len2), isPalindrome(s1, s2, len1, len2 - 1));
+    
+    return memo[len1][len2];
+}
+
+
+
+
+// what if n deleteions are allowed-?
+bool validPalindrome(string s, int n){
+    
+    string s1 = s;
+    strig s2 = reverse(s.begin(), s.end());
+    
+    vector<vector<int>>memo(s.size(), vector<int>(s2.size(), -1));
+    
+    return isPalindrome(s1, s2, s.size(), s.size(), memo) <= 2*n;
+    
+}
+
+
+// bottom up approach
+
+bool isPalindrome(string s, int n){
+    if(s.size() == 0)
+        return 0;
+    
+    // dp[i][j] denotes number of chars to be removed if str1 is of length i and str2 is of length j
+    vector<vector<int>>dp[s.size() + 1][s.size() + 1];
+    
+    sring s1 = s;
+    string s2 = reverse(s.begin(), s.end());
+    
+    for(int i = 0; i < s.size(); i++){
+        for(int j = 0; j < s.size(); j++){
+            // accomodating base cases
+            if(i == 0){
+                dp[i][j] = j;
+            }
+            else if(j == 0){
+                dp[i][j] = i;
+            }
+            else if(s1[i - 1] == s2[j - 1]){
+                dp[i][j] = dp[i - 1][j - 1];
+            }
+            else {
+                dp[i][j] = 1 + min(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
+    }
+    
+    return dp[s.size()][s.size()];
+}*/
