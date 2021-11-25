@@ -1,0 +1,78 @@
+------------O(N), O(N)--------
+
+class Solution {
+public:
+    Node* lowestCommonAncestor(Node* p, Node * q) {
+        
+        unordered_set<Node*>pAncestors;
+        pAncestors.insert(p);
+        
+        while(p->parent != NULL){
+            pAncestors.insert(p->parent);
+            p = p->parent;
+        }
+        
+        Node* tempQ = q;
+        while(q->parent != NULL){
+        // look for both q & q's parent b/c there is  possibility of q being the lca itself
+            if(pAncestors.find(q) != pAncestors.end())
+                return q;
+            
+            if(pAncestors.find(q->parent) != pAncestors.end())
+                return q->parent;
+            
+            q = q->parent;
+        }
+        
+        // if after all this, you still dont find your answer, then its def q b/c it is the only node left which was not inserted into the set. So its def above p and its LCA.
+        return tempQ;
+    }
+};
+
+
+
+-------O(N), O(1)-----------
+
+if(p == NULL || q == NULL)
+            return NULL;
+        
+        Node* pCopy = p;
+        Node* qCopy = q;
+        int pDistance = 0;
+        int qDistance = 0;
+        
+        // cal distance(no. of edges) of p from root, root's parent is NULL
+        while(p->parent != NULL){
+            p = p->parent;
+            pDistance++;
+        }
+        
+        // cal distance of q from root, root's parent is NULL
+        while(q->parent != NULL){
+            q = q->parent;
+            qDistance++;
+        }
+        
+        
+        // get them at same level
+        q = qCopy;
+        while(qDistance > pDistance){
+            q = q->parent;
+            qDistance--;
+        }
+        
+        p = pCopy;
+        while(pDistance > qDistance){
+            p = p->parent;
+            pDistance--;
+        }
+        
+        //Now both are at same depth, so we just go above unless we find the common node where they intersect
+        while(p != q){
+            p = p->parent;
+            q = q->parent;
+        }
+        
+        return p;
+
+
