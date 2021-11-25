@@ -1,0 +1,121 @@
+----------BRUTE FORCE-----------
+
+class Solution {
+public:
+    int subarraySum(vector<int>& nums, int k) {
+        
+        if(nums.size() == 0)
+            return 0;
+        
+        int count = 0;
+        
+        for(int start = 0; start < nums.size(); start++){
+            for(int end = start + 1; end <= nums.size(); end++){
+                int sum = 0;
+                
+                for(int i = start; i < end; i++){
+                    sum += nums[i];
+                }
+                if(sum == k)
+                    count++;
+            }
+        }
+        
+        return count;
+    }
+};
+
+
+-------------O(N2), O(N)-------------
+
+class Solution {
+public:
+    int subarraySum(vector<int>& nums, int k) {
+        
+        if(nums.size() == 0)
+            return 0;
+        
+        vector<int>sums(nums.size() + 1);
+        
+        sums[0] = 0;
+        
+        int count = 0;
+        
+        
+        // b/c we need to find cumulative sum of last element as well. Not going till one extra element at end will skip that b/c sums[i] = sum till i - 1 not i
+        for(int i = 1; i < nums.size() + 1; i++){
+            sums[i] = sums[i - 1] + nums[i - 1];
+        }
+        
+        for(int start = 0; start < nums.size(); start++){
+            for(int end = start + 1; end <= nums.size(); end++){
+                if(sums[end] - sums[start] == k)
+                    count++;
+            }
+        }
+        
+        return count;
+    }
+};
+
+
+
+--------------O(N2), O(1)--------------
+
+class Solution {
+public:
+    int subarraySum(vector<int>& nums, int k) {
+        
+        if(nums.size() == 0)
+            return 0;
+                
+        int count = 0;
+        
+        // we are taking the cumulative sum while running akong, so consider start froming from end = start so that curr element is also included
+        for(int start = 0; start < nums.size(); start++){
+            int sum = 0;
+            for(int end = start; end < nums.size(); end++){
+                sum += nums[end];
+                if(sum == k)
+                  count++;
+            }
+        }
+        
+        return count;
+    }
+};
+
+
+
+-------------O(N), O(N) ------------------
+
+class Solution {
+public:
+    int subarraySum(vector<int>& nums, int k) {
+        
+        if(nums.size() == 0)
+            return 0;
+        
+        unordered_map<int, int>map;
+        int count = 0;
+        int sum = 0;
+        
+        for(int i = 0; i < nums.size(); i++){
+            // 1. add to current sum
+            sum += nums[i];
+            
+            // if equal to k, increment value of count
+            if(sum == k)
+                count++;
+            
+            // if more subarrays of sum k exist when running sum gets its current value, add them to count
+            if(map.count(sum - k) > 0)
+                count += map[sum - k];
+     
+            // increment frequency of current sum
+            map[sum]++;
+        }
+        
+        return count;
+    }
+};
