@@ -1,0 +1,53 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+    // basically like normal find lca ut p and q may or may not exist in the tree. So accomodate that
+private:
+    bool nodeExists(TreeNode* p, TreeNode* root){
+        // no root=>no nodes
+        if(root == NULL)
+            return false;
+        
+        // return true if node exists on either side
+        return root == p || nodeExists(p, root->left) || nodeExists(p, root->right);
+    }
+    
+    
+    TreeNode* findLCA(TreeNode* root, TreeNode* p, TreeNode* q){
+        if(root == NULL)
+            return NULL;
+        
+        if(root == p || root == q)
+            return root;
+        
+        TreeNode* leftAns = findLCA(root->left, p, q);
+        TreeNode* rightAns = findLCA(root->right, p, q);
+        
+        if(!leftAns)
+            return rightAns;
+        if(!rightAns)
+            return leftAns;
+        
+        return root;
+    }
+    
+    
+    
+public:
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        if(p == NULL || q == NULL)
+            return NULL;
+        
+        if(nodeExists(p, root) && nodeExists(q, root))
+            return findLCA(root, p, q);
+        
+        return NULL;
+    }
+};
