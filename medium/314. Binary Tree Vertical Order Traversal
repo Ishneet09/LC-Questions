@@ -1,0 +1,45 @@
+
+--------O(N), O(N)---------
+//Solution using map will not produce values from left to right.
+
+       
+        if(root == NULL)
+            return {};
+        
+        vector<vector<int>>columnOrder;
+        
+        int minColumn = INT_MAX;
+        int maxColumn = INT_MIN;
+        
+        queue<pair<TreeNode*, int>>q;
+        q.push({root, 0});
+        
+        unordered_map<int, vector<int>>map;
+        
+        while(q.size() != 0){
+            auto front = q.front();
+            q.pop();
+            
+            TreeNode* node = front.first;
+            int columnIndex = front.second;
+            
+            map[columnIndex].push_back(node->val);
+            
+            if(node->left){
+                q.push({node->left, columnIndex - 1});
+            }
+            if(node->right){
+                q.push({node->right, columnIndex + 1});
+            }
+            
+            minColumn = min(minColumn, columnIndex);
+            maxColumn = max(maxColumn, columnIndex);
+        }
+        
+        for(int i = minColumn; i <= maxColumn; i++){
+            if(map.count(i) > 0){
+                columnOrder.push_back(map[i]);
+            }
+        }
+        
+        return columnOrder;
