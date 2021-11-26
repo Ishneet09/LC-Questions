@@ -1,0 +1,100 @@
+-----------O(N), O(N)--------------
+
+class Solution {
+private:
+    
+    void findInorder(Node* root, vector<Node*>& inorder){
+        
+        if(root == NULL)
+            return;
+        
+        findInorder(root->left, inorder);
+        inorder.push_back(root);
+        findInorder(root->right, inorder);
+        
+        return;
+    }
+    
+public:
+    Node* treeToDoublyList(Node* root) {
+        if(root == NULL)
+            return NULL;
+        
+        if(root->left == NULL && root->right == NULL){
+            root->left = root;
+            root->right = root;
+            return root;
+        }
+        
+        vector<Node*>inorderBST;
+        findInorder(root, inorderBST);
+        
+        for(int i = 1; i < inorderBST.size() - 1; i++){
+            Node* prev = inorderBST[i - 1];
+            Node* current = inorderBST[i];
+            Node* next = inorderBST[i + 1];
+            
+            current->left = prev;
+            current->right = next;
+        }
+        
+        Node* firstNode = inorderBST[0];
+        Node* lastNode = inorderBST[inorderBST.size() - 1];
+        
+        firstNode->left = lastNode;
+        firstNode->right = inorderBST[1];
+        lastNode->left = inorderBST[inorderBST.size() - 2];
+        lastNode->right = firstNode;
+        
+        return firstNode;
+    }
+};
+
+
+
+-------------O(N), O(1)---------------
+
+class Solution {
+private:
+    
+    // the construction takes place just like we construct a normal linked list
+    Node* firstNode = NULL;
+    Node* lastNode = NULL;
+    
+    void constructList(Node* root){
+        
+        // root is the current node to connect
+        // lastNode is the last node of the currently constructed list
+        if(root == NULL)
+            return;
+        
+        constructList(root->left);
+        
+        if(firstNode == NULL){
+            firstNode = root;
+            lastNode = root;
+        }
+        else {
+            root->left = lastNode;
+            lastNode->right = root;
+            lastNode = root;
+        }
+        
+        constructList(root->right);
+    }
+    
+public:
+    Node* treeToDoublyList(Node* root) {
+        
+        if(root == NULL)
+            return NULL;
+        
+        constructList(root);
+        
+        // we need to connect both first and last node to each other for a circular connection
+        firstNode->left = lastNode;
+        lastNode->right = firstNode;
+        
+        return firstNode;
+    }
+};
