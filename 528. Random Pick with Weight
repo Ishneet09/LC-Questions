@@ -1,0 +1,38 @@
+// This is the problem statement which we extracted-
+/*Let us rephrase the problem now, given a list of offsets (i.e. prefix sums) and a target offset, our task is to fit the target offset into the list so that the ascending order is maintained.*/
+
+class Solution {
+public:
+    
+    // here we make the prefix sum list
+    vector<int>temp;
+    Solution(vector<int>& w) {
+        
+        
+        for(int i = 0; i < w.size(); i++){
+            if(temp.size() == 0)
+                temp.push_back(w[0]);
+            else
+                temp.push_back(w[i] + temp.back());
+        }
+        
+    }
+    
+    int pickIndex() {
+        // here we generate the target offset by using the last number which is the cumulative sum of all numbers
+        // rand() generates a random number in the range [0, RAND_MAX). % with last element gets it down to the necessary range
+        int random_number = rand() % temp.back();
+        
+        // here we find where the target offset will be placed into the list we have
+        auto it = upper_bound(temp.begin(), temp.end(), random_number);
+        
+        // an iterator is returned above so we subtract the beginning
+        return it - temp.begin();
+    }
+};
+
+/**
+ * Your Solution object will be instantiated and called as such:
+ * Solution* obj = new Solution(w);
+ * int param_1 = obj->pickIndex();
+ */
