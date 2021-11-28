@@ -1,0 +1,65 @@
+/*
+1. Th elogic here is to first def find the swap index.
+2. Now we look for the max possible digit to the right of swapIndex incl the swapIndex(its possible that swapIndex itself is the max possible digit)
+3. Next, we now need to swap it with some digit which is at a place that is as significant as possible => as nearest to the left side and also is less than the max number found in step 2 to the right of swap iNDEX
+4. You find the firsty occuring smaller number to the left of swapIndex (inc swapIndex - it is possible that the smaller is the digit at swapIndex).
+5. We swap this prev occuring index & the larger elemet index found on right
+
+*/
+class Solution {
+public:
+    int maximumSwap(int num) {
+        
+        if(num == 0)
+            return 0;
+        
+        string numStr = to_string(num);
+        
+        if(numStr.size() == 1)
+            return num;
+        
+        // find the point where the problem occurs => desc order is disturbed
+        int swapIndex = -1;
+        
+        for(int i = 1; i < numStr.size(); i++){
+            if(numStr[i - 1] >= numStr[i]){
+                continue;
+            }
+            else {
+                swapIndex = i - 1;
+                break;
+            }
+        }
+        
+        // => desc order is maintained so no need of swapping
+        if(swapIndex == -1)
+            return num;
+        
+        // find  the largest digit on right incl the swapIndex element
+        int maxAfterSwapIndex = -1;
+        char currMax = numStr[swapIndex];
+        
+        for(int i = swapIndex; i < numStr.size(); i++){
+            if(currMax <= numStr[i]){
+                maxAfterSwapIndex = i;
+                currMax = numStr[i];
+            }
+        }
+        
+        // find the first smaller occuring digit n left of swapIndex incl swapIndex to left of swapIndex
+        int prevSwapIndex = swapIndex;
+        
+        for(int i = 0; i <= swapIndex; i++){
+            if(numStr[i] < numStr[maxAfterSwapIndex]){
+                prevSwapIndex = i;
+                break;
+            }
+        }
+        
+        // swap these
+        swap(numStr[maxAfterSwapIndex], numStr[prevSwapIndex]);
+        
+        // return this new str
+        return stoi(numStr);
+    }
+};
