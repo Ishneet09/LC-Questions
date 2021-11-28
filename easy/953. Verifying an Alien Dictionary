@@ -1,0 +1,46 @@
+class Solution {
+public:
+    bool isAlienSorted(vector<string>& words, string order) {
+        
+        unordered_map<char, int>orderMap;
+        
+        // make a map to compare the order of chars while comparing strs
+        for(int i = 0; i < order.size(); i++){
+            orderMap[order[i]] = i;
+        }
+        
+        for(int i = 0; i < words.size() - 1; i++){
+            string firstWord = words[i];
+            string secondWord = words[i + 1];
+            
+            // if the first letter of first str is strictly less or both strs are equal, continue.
+            if(orderMap[firstWord[0]] < orderMap[secondWord[0]] || firstWord == secondWord)
+                continue;
+            
+            // else, compare char by char
+            int firstPtr = 0;
+            int secondPtr = 0;
+            
+            
+            while(firstPtr < firstWord.size() && secondPtr < secondWord.size()){
+                char firstChar = firstWord[first];
+                char secondChar = secondWord[second];
+                
+                if(orderMap[firstChar] <= orderMap[secondChar]){
+                    firstPtr++;
+                    secondPtr++;
+                    continue;
+                }
+                
+                return false;
+            }
+            
+            // make sure the second substr len is not a substr of first plus its against rules to have smaller len str later on
+            if(secondWord.size() < firstWord.size() && firstWord.find(secondWord) != string::npos)
+                return false;
+        }
+        
+        // if you reach here, its sorted
+        return true;
+    }
+};
