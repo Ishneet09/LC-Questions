@@ -1,0 +1,126 @@
+------------O(N), O(1)------------
+
+class Solution {
+public:
+    string simplifyPath(string path) {
+        
+        if(path == "/" || path == ".")
+            return path;
+        
+        if(path == "/." || path == "/..")
+            return "/";
+        
+        string canonicalPath = "";
+        
+        for(int i = 0; i < path.size(); i++){
+            if(path[i] == '/'){
+                if(i == 0 || canonicalPath.size() == 0)
+                    canonicalPath += path[i];
+                else if(canonicalPath.back() == '/')
+                    continue;
+                else if(i == path.size() - 1)
+                    continue;
+                else
+                    canonicalPath += path[i];
+            }
+            
+            else if(path[i] == '.' && path[i - 1] == '/'){
+                int dots = 0;
+                
+                while(i < path.size() && path[i] == '.'){
+                    dots++;
+                    i++;
+                }
+                
+                i = i - 1;
+                
+                if(dots == 1 && path[i + 1] == '/')
+                    continue;
+                
+                else if(dots == 2 && (path[i + 1] == '/' || i == path.size() - 1)){
+                    
+                    
+                    int slashes = 2;
+                    while(canonicalPath.size() > 0 && slashes > 0){
+                        if(canonicalPath.back() == '/')
+                            slashes--;
+                        canonicalPath.pop_back();
+                    }
+                }
+                
+                else{
+                    while(dots > 0){
+                        canonicalPath += '.';
+                        dots--;
+                    }
+                }
+            }
+            else{
+                canonicalPath += path[i];
+            }
+        }
+        
+        if(canonicalPath.back() == '.' && canonicalPath[canonicalPath.size() - 2] == '/')
+            canonicalPath.pop_back();
+        
+        while(canonicalPath.size() > 0 && canonicalPath.back() == '/')
+            canonicalPath.pop_back();
+        
+        return canonicalPath.size() == 0 ? "/" : canonicalPath;
+    }
+};
+
+
+---------------O(N), O(N)--------------
+if(path == "")
+            return "";
+        
+        // ste p 1: split string based on delimiter /
+        // This way, all you have now are "" or dots or directory names
+        // no need to worry about slashes
+        vector<string> pathString;
+        
+        int start = 0;
+        int end = path.find("/");
+        
+        while(end != -1){
+            pathString.push_back(path.substr(start, end - start));
+            // size of delim is 1
+            start = end + 1;
+            // find delim starting from new start now
+            end = path.find("/", start);
+        }
+        
+        // the last remaining part of the path
+        pathString.push_back(path.substr(start, end - start));
+        
+        stack<string>st;
+        
+        for(string str: pathString){
+            // if empty str or single dot=> no operation- ignore
+            if(str == "" || str == "."){
+                continue;
+            }
+            // double dots- go one level up the current directory=> pop the directory if stack is not empty
+            else if(str == ".."){
+                if(st.size() > 0)
+                  st.pop();
+            }
+            // if > 2 dots or any other valid directory name
+            else {
+                st.push(str);
+            }
+        }
+        
+        string canonicalPath = "";
+        
+        // build the can. path by appending slashes b/w two valid dir names
+        while(st.size() > 0){
+            canonicalPath.insert(0, "/" + st.top());
+            st.pop();
+        }
+        
+        // possibility of only dots=> can. path ,ight be empty
+        return canonicalPath.size() > 0 ? canonicalPath : "/";
+    }
+};
