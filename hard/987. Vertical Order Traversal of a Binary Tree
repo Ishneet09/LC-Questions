@@ -10,33 +10,75 @@
  * };
  */
 class Solution {
-public:
+private:
     
-    void helper(TreeNode* root, unordered_map<int, vector<int>>& m, int X){
-        if(root == NULL)
-            return;
+    static bool comp(const pair<int, int>& p1, const pair<int , int>& p2){
+        if(p1.first < p2.first)
+            return true;
         
-        m[X].push_back(root->val);
-        
-        helper(root->left, m, X - 1);
-        helper(root->right, m, X + 1);
+        return (p1.first == p2.first && p1.second < p2.second);
     }
     
     
+public:
+
     vector<vector<int>> verticalTraversal(TreeNode* root) {
+        // Here we need sorting from top to bottom and asc order for nodes in same row & col
+        // we need row index b/c if col is same, then first elements from upper rows should appear. If there are many, we sort them in asc order. Then elements from next row in asc order and so on
+        
         if(root == NULL)
             return {};
         
-        unordered_map<int, vector<int>>m;
+        if(root->left == NULL && root->right == NULL)
+            return {{root->val}};
         
-        helper(root, m, 0);
+        // node, (column, row) pair
+        queue<pair<TreeNode*, pair<int, int>>>q;
+        q.push({root, {0, 0}});
         
-        vector<vector<int>>ans;
+        // column -> (row, node_value)
+        unordered_map<int, vector<pair<int, int>>>columnMap;
         
-        for(auto it: m){
-            ans.push_back(it.second);
+        int minColumn = INT_MAX;
+        int maxColumn = INT_MIN;
+        
+        while(q.size() != 0){
+            auto front = q.front();
+            q.pop();
+            
+            TreeNode* node = front.first;
+            int column = front.second.first;
+            int row = front.second.second;
+            
+            columnMap[column].push_back({row, node->val});
+            
+            if(node->left){
+                q.push({node->left, {column - 1, row + 1}});
+            }
+            
+            if(node->right){
+                q.push({node->right, {column + 1, row + 1}});
+            }
+            
+            minColumn = min(minColumn, column);
+            maxColumn = max(maxColumn, column);
         }
         
-        return ans;
+        vector<vector<int>>columnValues;
+        
+        for(int column = minColumn; column <= maxColumn; column++){
+            if(columnMap.count(column) > 0){
+                auto rowValueVector = columnMap[column];
+                sort(rowValueVector.begin(), rowValueVector.end(), comp);
+                
+                vector<int>nodeValues;
+                for(auto p: rowValueVector){
+                    nodeValues.push_back(p.second);
+                }
+                columnValues.push_back(nodeValues);
+            }
+        }
+        
+        return columnValues;
     }
 };
