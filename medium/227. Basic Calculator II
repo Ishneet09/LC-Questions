@@ -1,10 +1,14 @@
+-----------O(N), O(N)----------
+
 class Solution {
 private:
     
-    int precedence(char c){
+    /*int precedence(char c){
+        // * = /
         if(c == '*' || c == '/')
             return 2;
     
+        // + = -
         if(c == '+' || c == '-')
             return 1;
         
@@ -19,12 +23,12 @@ private:
         if(op == '+')
             return n1 + n2;
         return n1 - n2;
-    }
+    }*/
     
 public:
     int calculate(string s) {
         
-        if(s.size() == 0)
+        /*if(s.size() == 0)
             return 0;
         
         stack<int>numbers;
@@ -33,16 +37,20 @@ public:
         for(int i = 0; i < s.size();){
             char c = s[i];
             
-            if(c == ' ')
+            if(c == ' '){
+                i++;
                 continue;
+            }
             
             if(c >= '0' && c <= '9'){
+                // there can >1-digit number. Form those here
                 int currNumber = 0;
                 while(i < s.size() && s[i] >= '0' && s[i] <= '9'){
                     currNumber = (currNumber * 10) + (s[i] - '0');
                     i++;
                     
                 }
+                
                 numbers.push(currNumber);
                 continue;
             }
@@ -53,12 +61,14 @@ public:
                     i++;
                     continue;
                 }
-                if(operators.size() > 0 && (precedence(c) - precedence(operators.top()) >= 0)){
+                // current operator has strictly higher precedence.
+                if(operators.size() > 0 && (precedence(c) - precedence(operators.top()) > 0)){
                     operators.push(c);
                     i++;
                     continue;
                 }
                 else{
+                    // keep on removing operators until the current op has strictly higher perecednec
                     while(operators.size() > 0 && (precedence(c) - precedence(operators.top()) <= 0)){
                       int number2 = numbers.top();
                       numbers.pop();
@@ -85,6 +95,52 @@ public:
             numbers.push(calculate(op, number1, number2));
         }
         
-        return numbers.top();
+        return numbers.top();*/
+        
+        
     }
 };
+
+
+
+-------------O(N), O(1)---------------
+
+ if(s.size() == 0)
+            return 0;
+        
+        // number formed now
+        int currentNumber = 0;
+        // holds the last evaluated result of all sub expressions we have seen so as to club them as a single number b/c if result = a + b, it is OK if we add a first and then b
+        int lastNumber = 0;
+        int result = 0;
+        // to start b/c + makes it easy to accomodate a -
+        char operation = '+';
+        
+        for(int i = 0; i < s.size(); i++){
+            char currentChar = s[i];
+            
+            if(currentChar >= '0' && currentChar <= '9'){
+                currentNumber = (currentNumber * 10) + (currentChar - '0');
+            }
+            
+            if((!isdigit(currentChar) && currentChar != ' ') || i == s.size() - 1){
+                // think of result = exp1(=lastNumber) + exp2(=remaining exp)=> so you accommodate remaining exp now
+                if(operation == '+' || operation == '-'){
+                    result += lastNumber;
+                    lastNumber = operation == '+' ? currentNumber : -currentNumber;
+                }
+                else if(operation == '*'){
+                    lastNumber = lastNumber * currentNumber;
+                }
+                else if(operation == '/'){
+                    lastNumber = lastNumber / currentNumber;
+                }
+                operation = currentChar;
+                currentNumber = 0;
+            }
+        }
+        
+        // add the rem portion of the exp
+        result += lastNumber;
+        
+        return result;
