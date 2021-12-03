@@ -1,0 +1,121 @@
+class Solution {
+private:
+    
+    bool isValidInteger(string number){
+        if(number == "" || number == "+" || number == "-")
+            return false;
+        
+        int i = 0;
+        
+        while(i < number.size()){
+            // integer can have a +/- sign before it
+            if(i == 0 && (number[i] == '-' || number[i] == '+' ))
+                i++;
+            
+            else if(isdigit(number[i]))
+                i++;
+            else
+                return false;
+        }
+        
+        return true;
+    }
+    
+    bool isValidDecimal(string number){
+        
+        if(number == "" || number == "." || number == "+" || number == "-")
+            return false;
+        
+        bool isDotSeen = false;
+        
+        int i = 0;
+        
+        while(i < number.size()){
+            if(number[i] == '.' && !isDotSeen){
+                isDotSeen = true;
+                i++;
+                continue;
+            }
+            else if(isdigit(number[i])){
+                i++;
+                continue;
+            }
+            else{
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    
+public:
+    bool isNumber(string s) {
+        
+        if(s.size() == 0)
+            return false;
+        
+        if(s == "." || s == "e" || s == "E" || s == "+" || s == "-")
+            return false;
+        
+        string number = "";
+        string afterDecimal = "";
+        bool exponentExists = false;
+
+        
+        for(int i = 0; i < s.size(); i++){
+            char current = s[i];
+            
+            if(current == '-' || current == '+'){
+                if(i == 0)
+                    continue;
+                
+                return false;
+            }
+            
+            else if(isdigit(current)){
+                number += current;
+                continue;
+            }
+            
+            else if(current == '.'){
+                number += current;
+                continue;
+            }
+            
+            else if(current == 'e' || current == 'E'){
+                if(i == 0)
+                    return false;
+                
+                exponentExists = true;
+                // proceed only if the stuff before the exponent is valid
+                if(isValidDecimal(number) || isValidInteger(number)){
+                    i++;
+                    // form the exponent part
+                    while(i < s.size()){
+                        if(isdigit(s[i]) || s[i] == '-' || s[i] == '+'){
+                            afterDecimal += s[i];
+                            i++;
+                        }
+                        else {
+                            return false;
+                        }
+                    }
+                }
+                else {
+                    return false;
+                }
+            }
+            else {
+                return false;
+            }
+        }
+        
+        if(exponentExists){
+                if(!isValidInteger(afterDecimal))
+                    return false;
+            }
+        
+        // if exponent never existed, check if the decimal/interger is valid
+        return isValidInteger(number) || isValidDecimal(number);
+    }
+};
