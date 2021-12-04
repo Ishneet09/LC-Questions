@@ -1,0 +1,46 @@
+// the approach here is to group the strings toheehre based on some common key. Key will be a string
+// Every string will be boiled down to a key by using an offset value. 
+// The offset value is the distance of the first char of the string from begnning ie 'a'
+// Then every char will be boiled down to that offset value.
+// All strings that boil down to a common key will lie in the same group.
+class Solution {
+private:
+     
+    char shift(char c, int offset){
+        
+        // if offset adjustment forces c to be less than the alphabet itself
+        // cyclic adjustment, eg: az,ba=> az -> az, ba -> a -1 < a. so we convert it to z
+        // will generally be used when some chars in str are in desc order wrt to first char
+        if(c - offset < 'a'){
+            return c + (26 - offset);
+        }
+        
+        return c - offset;
+    }
+    
+public:
+    vector<vector<string>> groupStrings(vector<string>& strings) {
+        
+        if(strings.size() == 0)
+            return {};
+        
+        vector<vector<string>>groups;
+        
+        unordered_map<string, vector<string>>stringMap;
+        
+        for(string currentStr: strings){
+            string key = currentStr;
+            int offset = currentStr[0] - 'a';
+            
+            for(int i = 0; i < key.size(); i++){
+                key[i] = shift(key[i], offset);
+            }
+            stringMap[key].push_back(currentStr);
+        }
+        
+        for(auto it: stringMap){
+            groups.push_back(it.second);
+        }
+        return groups;
+    }
+};
