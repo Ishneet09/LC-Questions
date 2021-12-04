@@ -1,0 +1,48 @@
+class Solution {
+private: 
+    void findValidExpressions(string num, int target, int index, string currExpression, vector<string>& validExpressions, long currEvaluation, long prevOperandValue){
+    
+    if(index == num.size()){
+        if(currEvaluation == target){
+            validExpressions.push_back(currExpression);
+        }
+        return;
+    }
+    
+    for(int i = index; i < num.size(); i++){
+        
+        // to avoid operands like "05"
+        if(i != index && num[index] == '0')
+            break;
+        
+        string currOperand = num.substr(index, i + 1 - index);
+        long currOperandValue = stol(currOperand);
+        
+        if(index == 0){
+            findValidExpressions(num,target, i + 1, currExpression + currOperand, validExpressions, currEvaluation + currOperandValue, currOperandValue);
+        }
+    
+        else {
+            findValidExpressions(num, target, i + 1, currExpression + "+" + currOperand, validExpressions, currEvaluation + currOperandValue, currOperandValue);
+            
+            findValidExpressions(num, target, i + 1, currExpression + "-" + currOperand, validExpressions, currEvaluation - currOperandValue, -currOperandValue);
+            
+            findValidExpressions(num, target, i + 1, currExpression + "*" + currOperand, validExpressions, currEvaluation - prevOperandValue + (currOperandValue * prevOperandValue), currOperandValue * prevOperandValue);
+        }
+    }
+    
+    return;
+}    
+    
+public:
+    vector<string> addOperators(string num, int target) {
+        if(num.size() == 0)
+            return {};
+        
+        vector<string>validExpressions;
+        
+        findValidExpressions(num, target, 0, "", validExpressions, 0, 0);
+        
+        return validExpressions;
+    }
+};
