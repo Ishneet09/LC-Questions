@@ -1,0 +1,41 @@
+//https://leetcode.com/problems/exclusive-time-of-functions/discuss/1577858/C%2B%2B-the-idea-is-simple-there-is-at-most-one-function-running-at-a-time.
+class Solution {
+public:
+    vector<int> exclusiveTime(int n, vector<string>& logs) {
+        if(n == 0)
+            return {};
+        
+        if(logs.size() == 0)
+            return {};
+        
+        vector<int>exclusiveTimes(n, 0);
+        
+        stack<int>eventIDs;
+        
+        int previousTimeStamp = -1;
+        
+        for(int i = 0; i < logs.size(); i++){
+            string log = logs[i];
+
+            int first = log.find_first_of(":");
+            int second = log.find_last_of(":");
+            int currentEventID = stoi(log.substr(0, first));
+            int timestamp =  stoi(log.substr(second + 1));
+            char eventType = log[first + 1];
+            
+            if(eventType == 's'){
+                if(eventIDs.size() != 0){
+                    exclusiveTimes[eventIDs.top()] += timestamp - previousTimeStamp;
+                }
+                previousTimeStamp = timestamp;
+                eventIDs.push(currentEventID);
+            }
+            else if(eventType == 'e'){
+                exclusiveTimes[currentEventID] += timestamp - previousTimeStamp + 1;
+                eventIDs.pop();
+                previousTimeStamp = timestamp + 1;
+            }
+        }
+        return exclusiveTimes;
+    }
+};
