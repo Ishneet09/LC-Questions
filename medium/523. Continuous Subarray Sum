@@ -1,0 +1,44 @@
+// https://dev.to/sphoorthi/leetcode-continuous-subarray-sum-459o
+class Solution {
+public:
+    bool checkSubarraySum(vector<int>& nums, int k) {
+        if(nums.size() == 0)
+            return false;
+        
+        if(nums.size() == 1){
+            return false;
+        }
+         
+        
+        // (remainder->index adding which that remainder was obtained)
+        unordered_map<int, int>modulusMap;
+        
+        // we are looking for the presence of modulus. the second time it occurs, we know that the sumI - sumJ is multiple of k. but what if sumI/sumJ itself is a multiple of k. Adding 0 is for that purpose
+        modulusMap[0] = -1;
+        
+        int runningSum = 0;
+        
+        for(int i = 0; i < nums.size(); i++){
+            
+            if(nums[i] != 0){
+                 runningSum += nums[i];
+
+                // checking index!= i - 1 to ensure that the prev occurence of this modulus was somewhere before i - 1 ensuring that the running sum at that point consisted of >= 2 elements
+                if(modulusMap.count(runningSum % k) > 0){
+                     if(modulusMap[runningSum % k] != i - 1)
+                            return true;
+                }
+                
+                else
+                    modulusMap[runningSum % k] = i;
+            }
+            else {
+               if(i > 0 && nums[i - 1] == 0)
+                    return true;
+                if(i + 1 < nums.size() && nums[i + 1] == 0)
+                    return true;
+            }
+        }
+        return false;
+    }
+};
