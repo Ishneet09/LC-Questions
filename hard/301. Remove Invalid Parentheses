@@ -1,0 +1,78 @@
+class Solution {
+private:
+    
+    void getValidExpressions(string s, int index, string currStr, unordered_set<string>& validStrings, int leftRem, int rightRem, int leftCount, int rightCount){
+        
+        if(index == s.size()){
+            if(leftRem == 0 && rightRem == 0)
+                validStrings.insert(currStr);
+        }
+        
+        else {
+            
+            // discard ( or )
+            if(s[index] == '(' && leftRem > 0){
+                getValidExpressions(s, index + 1, currStr, validStrings, leftRem - 1, rightRem, leftCount, rightCount);
+            }
+            
+           else if(s[index] == ')' && rightRem > 0){
+                getValidExpressions(s, index + 1, currStr, validStrings, leftRem, rightRem - 1, leftCount, rightCount);
+            }
+            
+            // it is an alphabet
+            if(s[index] != '(' && s[index] != ')'){
+                getValidExpressions(s, index + 1, currStr + s[index], validStrings, leftRem, rightRem, leftCount, rightCount);
+            }
+            
+            // include (
+            else if(s[index] == '('){
+                getValidExpressions(s, index + 1, currStr + '(', validStrings, leftRem, rightRem, leftCount + 1, rightCount);
+            }
+            
+        else if(s[index] == ')' && rightCount < leftCount){
+                getValidExpressions(s, index + 1, currStr + ')', validStrings, leftRem, rightRem, leftCount, rightCount + 1);
+            }
+        
+        }
+        
+        return;
+    }
+    
+public:
+    vector<string> removeInvalidParentheses(string s) {
+        
+        if(s.size() == 1 && (s[0] == ')' || s[0] == '('))
+            return {""};
+        
+        // finding the count of opening and closing unbaanced parenthesis
+        int left = 0;
+        int right = 0;
+        
+        for(char ch: s){
+            if(ch == '('){
+                left++;
+            }
+            else if(ch == ')'){
+                if(left > 0)
+                    left--;
+                else if(left == 0)
+                    right++;
+            }
+            else {
+                continue;
+            }
+        }
+        
+        unordered_set<string>validStrings;
+        
+        getValidExpressions(s, 0, "", validStrings, left, right, 0, 0);
+        
+        vector<string>validStringsVector;
+        
+        for(auto str: validStrings){
+            validStringsVector.push_back(str);
+        }
+        
+        return validStringsVector;
+    }
+};
