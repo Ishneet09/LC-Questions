@@ -1,0 +1,46 @@
+class Solution {
+private:
+    
+    void findSentences(string s, unordered_set<string>& wordSet, int index, string currentSentence, vector<string>& sentences){
+        
+        if(index == s.size()){
+            // remove the space which is last inserted after the last valid word is appended
+            currentSentence.pop_back();
+            sentences.push_back(currentSentence);
+            return;
+        }
+        
+        string currWord = "";
+        
+        for(int i = index; i < s.size(); i++){
+            currWord += s[i];
+            
+            // if the currWord is a valid word, recurse on the remaining portion of the string or else, continue
+            if(wordSet.find(currWord) != wordSet.end()){
+                findSentences(s, wordSet, i + 1, currentSentence + currWord + " ", sentences);
+            }
+        }
+        return;
+    }
+    
+public:
+    vector<string> wordBreak(string s, vector<string>& wordDict) {
+        if(s.size() == 0)
+            return {};
+        
+        if(wordDict.size() == 0)
+            return {};
+        
+        vector<string>sentences;
+        
+        unordered_set<string>wordSet;
+        
+        for(string word: wordDict){
+            wordSet.insert(word);
+        }
+        
+        findSentences(s, wordSet, 0, "", sentences);
+        
+        return sentences;
+    }
+};
