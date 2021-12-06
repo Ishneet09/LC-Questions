@@ -55,3 +55,54 @@ public:
         return encodedProduct;
     }
 };
+
+
+
+-----------------O(N)-----------PASSES-------
+
+ if(encoded1.size() == 0 && encoded2.size() == 0)
+            return {};
+        
+        int i = 0;
+        int j = 0;
+        
+        vector<vector<int>>encodedProduct;
+        
+        while(i < encoded1.size() && j < encoded2.size()){
+            auto pair1 = encoded1[i];
+            auto pair2 = encoded2[j];
+            
+            int value1 = pair1[0];
+            int value2 = pair2[0];
+            int freq1 = pair1[1];
+            int freq2 = pair2[1];
+            
+            vector<int> productPair = {value1 * value2, min(freq1, freq2)};
+            
+            if(freq1 == freq2){
+                i++;
+                j++;
+            }
+            else if(freq1 > freq2){
+                // the number of elements left to be processed
+                encoded1[i][1] = freq1 - freq2;
+                j++;
+            }
+            else if(freq2 > freq1){
+                encoded2[j][1] = freq2 - freq1;
+                i++;
+            }
+            
+            // check if last inserted element in final ans is not same as current value
+            
+            int len = encodedProduct.size();
+            
+            if(encodedProduct.size() > 0 && encodedProduct.back()[0] == productPair[0]){
+                encodedProduct.back()[1] += productPair[1];
+            }
+            else{
+                encodedProduct.push_back(productPair);
+            }
+        }
+        
+        return encodedProduct;
