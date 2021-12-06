@@ -1,0 +1,57 @@
+--------------O(N)----------------[TLE]
+
+class Solution {
+public:
+    vector<vector<int>> findRLEArray(vector<vector<int>>& encoded1, vector<vector<int>>& encoded2) {
+        
+        if(encoded1.size() == 0 && encoded2.size() == 0)
+            return {};
+        
+        vector<int>nums1;
+        vector<int>nums2;
+        
+        for(auto encoded: encoded1){
+            int value = encoded[0];
+            int freq = encoded[1];
+            
+            while(freq > 0){
+                nums1.push_back(value);
+                freq--;
+            }
+        }
+        
+        for(auto encoded: encoded2){
+            int value = encoded[0];
+            int freq = encoded[1];
+            
+            while(freq > 0){
+                nums2.push_back(value);
+                freq--;
+            }
+        }
+        
+        vector<int>product(nums1.size());
+        
+        for(int i = 0; i < nums1.size(); i++){
+            product[i] = nums1[i] * nums2[i];
+        }
+        
+        vector<vector<int>>encodedProduct;
+        
+        int freq = 1;
+        
+        for(int i = 0; i + 1 < nums1.size(); i++){
+            if(product[i] == product[i + 1]){
+                freq++;
+            }
+            else {
+                encodedProduct.push_back({product[i], freq});
+                freq = 1;
+            }
+        }
+        
+        encodedProduct.push_back({product[product.size() - 1], freq});
+        
+        return encodedProduct;
+    }
+};
