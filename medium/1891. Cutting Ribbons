@@ -1,0 +1,47 @@
+class Solution {
+private:
+    
+    int getCountPieces(vector<int>& ribbons, int currlength){
+        
+        int pieces = 0;
+        
+        for(int len: ribbons){
+            pieces += len / currlength;
+        }
+        return pieces;
+    }
+    
+public:
+    int maxLength(vector<int>& ribbons, int k) {
+     
+        if(ribbons.size() == 0)
+            return 0;
+        
+        if(k == 0)
+            return 0;
+        
+        //[1, maxRibbonElement] is the range of all possible of lens of max peice
+        // Bruet force- check every length, will run for maxelement * N times = O(N)
+        int minLength = 1;
+        int maxLength = INT_MIN;
+        
+        for(int len: ribbons){
+            maxLength = max(maxLength, len);
+        }
+        
+        // reduce no of checks. if midlen gives the reqd count => this isn't the maxLen. There is a possiblilty of greater len
+        // else if you dont get count, move to right side b/c you are seeing a large value of x
+        while(minLength <= maxLength){
+            int midLength = minLength + (maxLength - minLength) / 2;
+            
+            // 
+            if(getCountPieces(ribbons, midLength) >= k){
+                minLength = midLength + 1;
+            }
+            else {
+                maxLength = midLength - 1;
+            }
+        }
+        return maxLength;
+    }
+};
