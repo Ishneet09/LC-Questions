@@ -1,0 +1,36 @@
+class Solution {
+public:
+    vector<int> findDiagonalOrder(vector<vector<int>>& mat) {
+        
+        if(mat.size() == 0)
+            return {};
+        
+        int rows = mat.size();
+        int columns = mat[0].size();
+        
+        // max sum will be rows - 1 + columns - 1 ie indices of very last element
+        vector<vector<int>>diagonalMap(rows + columns, vector<int>());
+        
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j < columns; j++){
+                diagonalMap[i + j].push_back(mat[i][j]);
+            }
+        }
+        
+        vector<int>diagonalElements;
+        
+        for(int index = 0; index < diagonalMap.size(); index++){
+            auto currVector = diagonalMap[index];
+            
+            if(index % 2 == 0){
+                reverse(currVector.begin(), currVector.end());
+            }
+            
+            for(int num: currVector){
+                diagonalElements.push_back(num);
+            }
+        }
+        
+        return diagonalElements;
+    }
+};
