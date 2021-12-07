@@ -1,0 +1,79 @@
+-------------O(1) TC & O(N) SC---------
+
+class Solution {
+private:
+    
+    unordered_map<int, vector<int>>numsMap;
+    
+public:
+    Solution(vector<int>& nums) {
+        for(int i = 0; i < nums.size(); i++){
+            numsMap[nums[i]].push_back(i);
+        }
+    }
+    
+    int pick(int target) {
+        // we need to select a rando index
+        auto indices = numsMap[target];
+        
+        // get the index of the target_index to be returned
+        int index = rand() % indices.size();
+        
+        // return
+        return indices[index];
+    }
+};
+
+
+
+--------------O(N) TC O(1) SC--------------
+class Solution {
+private:
+    
+    //unordered_map<int, vector<int>>numsMap;
+    vector<int>randomIndexNums;
+    
+public:
+    Solution(vector<int>& nums) {
+        /*for(int i = 0; i < nums.size(); i++){
+            numsMap[nums[i]].push_back(i);
+        }*/
+        
+        randomIndexNums = nums;
+    }
+    
+    int pick(int target) {
+        // we need to select a rando index
+        /*auto indices = numsMap[target];
+        
+        // get the index of the target_index to be returned
+        int index = rand() % indices.size();
+        
+        // return
+        return indices[index];*/
+        
+        // In this new solution, we do exactly what we did above but instead of storing all the indices and dividing rand() by their count at the end, we do it on the go and keep updating index
+        
+        // count of elements equal to target
+        int count = 0;
+        int randomIndex;
+        
+        for(int i = 0; i < randomIndexNums.size(); i++){
+            if(randomIndexNums[i] == target){
+                count++;
+                
+                if(rand() % count == 0){
+                    randomIndex = i;
+                }
+            }
+        }
+        
+        return randomIndex;
+    }
+};
+
+/**
+ * Your Solution object will be instantiated and called as such:
+ * Solution* obj = new Solution(nums);
+ * int param_1 = obj->pick(target);
+ */
