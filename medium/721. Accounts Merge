@@ -1,0 +1,86 @@
+/*DFS I don't know why do they always have to complicate things with so much writeup. I'll share my thoughts and code in Python.
+
+We need a mechanism that somehow merges accounts together: if 2 accounts have even one same email, we basically merge them. If there are no same emails, then those are different accounts.
+Approach: DFS on undirected graph (with email as nodes)
+We treat each account as an individual component (subgraph) and make sure that all nodes (emails) within it are connected.
+This is can be done by adding edges from all emails (nodes) in that account to every other email (node) in the same account. (i.e. a fully-connected graph)
+But instead of doing this, we just need to add enough edges to make the component connected so that using DFS, starting at any node in the component, we can reach every other node in it
+idea being that if there's a path from A to B and path from A to C in an undirected graph, we can go from B->C or C->B through A (mutually reachable)
+Once we have created components out of each account assuming each account is unique and a component in itself, we perform DFS.
+if there were to be any "overlapping" accounts, then by adding edges in the undirected graph, we would have ensured that nodes are mutually reachable through the common emails (nodes)*/
+
+/*Here N is the number of accounts and K is the maximum length of an account.
+
+Time complexity: O(NKlogNK)
+
+In the worst case, all the emails will end up belonging to a single person. The total number of emails will be N*KN∗K, and we need to sort these emails. DFS traversal will take NKNK operations as no email will be traversed more than once.
+
+Space complexity: O(NK)O(NK)
+
+Building the adjacency list will take O(NK)O(NK) space. In the end, visited will contain all of the emails hence it will use O(NK)O(NK) space. Also, the call stack for DFS will use O(NK)O(NK) space in the worst case.*/
+
+class Solution {
+private:
+    
+    unordered_map<string, unordered_set<string>>emailGraph;
+    unordered_set<string> seen;
+    
+    void dfs(string email, vector<string>& connectedEmails){
+        if(seen.find(email) != seen.end())
+            return;
+        
+        seen.insert(email);
+        connectedEmails.push_back(email);
+        
+        for(string neighbor: emailGraph[email]){
+            dfs(neighbor, connectedEmails);
+        }
+        return;
+    }
+    
+public:
+    vector<vector<string>> accountsMerge(vector<vector<string>>& accounts) {
+        if(accounts.size() == 0){
+            return {};
+        }
+            
+        // make a graph s.t. for every account, the first email is connected t every other email so that we have a way of reaching every email from every other email in that account
+        
+        for(auto account: accounts){
+            for(int email = 1; email < account.size(); email++){
+                string from = account[1];
+                string to = account[email];
+                
+                emailGraph[to].insert(from);
+                emailGraph[from].insert(to);
+            }
+        }
+        
+        // now start merging the accounts
+        // for this, for every first email, if it exists in seen set => related accounts to it are already merged. Continue.
+        // else
+        // start dfs from that email. through that email, all connections to it to all other emails will be found and can be merged. The name will be same as that of curr account we are looking
+        
+        vector<vector<string>>mergedAccounts;
+        
+        for(auto account: accounts){
+            string email = account[1];
+            string name = account[0];
+            
+            if(seen.find(email) != seen.end())
+                continue;
+            
+            vector<string>connectedEmails;
+            dfs(email, connectedEmails);
+            
+            // sort all connected emails
+            sort(connectedEmails.begin(), connectedEmails.end());
+            // insert name at beginning
+            connectedEmails.insert(connectedEmails.begin(), name);
+            
+            mergedAccounts.push_back(connectedEmails);
+        }
+        
+        return mergedAccounts;
+    }
+};
