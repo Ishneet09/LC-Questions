@@ -1,0 +1,128 @@
+class Solution {
+public:
+    vector<int> findClosestElements(vector<int>& arr, int k, int x) {
+        
+        /*if(arr.size() == 0)
+            return {};
+        
+        if(k == 0)
+            return {};
+        
+        if(k == arr.size())
+            return arr;
+        
+        // find the location where x occurs or where the smallest element just greater than x occurs- binary search implementation
+        int crossOverPoint = lower_bound(arr.begin(), arr.end(), x) - arr.begin();
+        
+        int left = crossOverPoint - 1;
+        int right = crossOverPoint;
+        
+        while(k > 0){
+            // left < 0 => that left side is exhausted but still elements are left to be added
+            if(left < 0 || (right < arr.size() && (abs(x - arr[left]) > abs(x - arr[right]))))
+                right++;
+            else
+                left--;
+            
+            k--;
+        }
+        
+        vector<int>ans;
+        
+        // ek extra decrement and ek extra decrement hua jab we included last added left value and last added right value. Hence, start from left + 1 & end at right - 1.
+        for(int i = left + 1; i <= right - 1; i++){
+            ans.push_back(arr[i]);
+        }
+        
+        return ans;*/
+        
+        if(arr.size() == 0)
+            return {};
+        
+        if(k == 0)
+            return {};
+        
+        if(k == arr.size())
+            return arr;
+        
+        int left = 0;
+        int right = arr.size() - 1;
+        
+        int leftIndex;
+        int rightIndex;
+        
+        while(left <= right){
+            int mid = left + (right - left) / 2;
+            
+            if(arr[mid] == x){
+                leftIndex = mid;
+                rightIndex = mid + 1;
+                break;
+            }
+            
+            else if(arr[mid] > x){
+                if(mid == 0){
+                    leftIndex = mid;
+                    rightIndex = mid + 1;
+                    break;
+                }
+                
+                if(arr[mid - 1] <= x){
+                    leftIndex = mid - 1;
+                    rightIndex = mid;
+                    break;
+                }
+                else {
+                    right = mid - 1;
+                }
+            }
+            
+            else if(arr[mid] < x){
+                if(mid == arr.size() - 1){
+                    leftIndex = mid - 1;
+                    rightIndex = mid;
+                    break;
+                }
+                
+                if(arr[mid + 1] >= x){
+                    leftIndex = mid;
+                    rightIndex = mid + 1;
+                    break;
+                }
+                else {
+                    left = mid + 1;
+                }
+            }
+        }
+        
+        vector<int>kClosest;
+        
+        while(k > 0){
+            if(leftIndex >= 0 && rightIndex < arr.size()){
+                if(abs(x - arr[leftIndex]) <= abs(x - arr[rightIndex])){
+                    kClosest.push_back(arr[leftIndex]);
+                    leftIndex--;
+                }
+                    
+                else {
+                    kClosest.push_back(arr[rightIndex]);
+                    rightIndex++;
+                }
+                    
+            }
+            else if(leftIndex >= 0 && rightIndex >= arr.size()){
+                kClosest.push_back(arr[leftIndex]);
+                leftIndex--;
+            }
+            else if(rightIndex < arr.size() && leftIndex < 0){
+                kClosest.push_back(arr[rightIndex]);
+                rightIndex++;
+            }
+            k--;
+        }
+        
+       sort(kClosest.begin(), kClosest.end());
+ 
+        return kClosest;
+    }
+};
