@@ -1,0 +1,41 @@
+/*This might be the simplest solution I have seen so far! Basically, always ensures that you work with at most K zeros in your window, and adjust your window to fit only K zeros in our window anytime we go over K. And even if we are worried about losing out on the maximum possible value, there is no problem because we calculate max at every step. Very intuitive.*/
+class Solution {
+public:
+    int longestOnes(vector<int>& nums, int k) {
+        
+        if(nums.size() == 0)
+            return 0;
+        
+        if(k >= nums.size())
+            return nums.size();
+        
+        int windowStart = 0;
+        int windowEnd = 0;
+        int zeros = 0;
+        int maxLen = INT_MIN;
+        
+        // typical sliding window, keep inc the window. 
+        for(windowEnd = 0; windowEnd < nums.size(); windowEnd++){
+            // once you see a zero, you include i, increment its count
+            if(nums[windowEnd] == 0)
+                zeros++;
+            
+            // if thet become greater, start expelling them
+            if(zeros > k){
+                while(windowStart <= windowEnd && zeros > k){
+                    // expel the zero
+                    if(nums[windowStart] == 0)
+                        zeros--;
+                    
+                    // dec the window
+                    windowStart++;
+                }
+            }
+            
+            // update len at every step
+            maxlen = max(maxLen, windowEnd - windowStart + 1);
+        }
+        
+        return maxLen;
+    }
+};
