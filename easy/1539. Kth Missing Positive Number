@@ -1,0 +1,67 @@
+----------O(N)------------
+
+class Solution {
+public:
+    int findKthPositive(vector<int>& arr, int k) {
+        
+        if(arr.size() == 0)
+            return -1;
+        
+        if(k == 0)
+            return -1;
+        
+        if(k <= arr[0])
+            return k;
+        
+        // accommodating the missing elements before arr[0]
+        // missing elements b/w arr[i], arr[i-1] are arr[i] - arr[i - 1] - 1
+        k = k - arr[0] - 1;
+        
+        for(int i = 1; i < arr.size() - 1; i++){
+            int currMissing = arr[i] - arr[i - 1] - 1;
+            
+            // => this is where the kth missing element lies
+            if(currMissing <= k)
+                return arr[i] + k;
+            
+            // accomodate missing elements b/w these elements
+            k = k - currMissing;
+        }
+        
+        // k is greater than last element
+        return arr[arr.size() - 1] - k;
+    }
+};
+
+
+
+-------------O(log n)---------------
+
+if(arr.size() == 0)
+            return -1;
+        
+        if(k == 0)
+            return -1;
+        
+        // BS to find where the kth element will lie
+        // wrt to any integer, number of missing elements will be - arr[index] - index - 1
+        
+        
+        int left = 0;
+        int right = arr.size() - 1;
+        
+        while(left <= right){
+            int mid = left + (right - left) / 2;
+            
+            // if number of missing elements is less than k, go to left side to search
+            if(arr[mid] - mid - 1 < k)
+                left = mid + 1;
+            else
+                right = mid - 1;
+        }
+        
+        // now right will cross left
+        // left = right + 1
+        // kth missing element will like b/w arr[right] & arr[left]
+        // so kth missing will be (arr[right] + k) - (arr[right] - right - 1)
+        return left + k;
