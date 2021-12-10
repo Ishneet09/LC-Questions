@@ -1,0 +1,163 @@
+--------------Brute Force--------------O(exp)
+
+class Solution {
+private:
+    
+    int minCharsToRemove(string s,  int start, int end){
+        // base case 1=> only one char is there=>need not remove anything
+        if(start == end){
+            return 0;
+        }
+        
+        // base case 2=> two chars left => if both are unequal, return 1=> remove either of them, else if they are equal, remove none of them
+        if(start == end - 1){
+            return s[start] != s[end];
+        }
+        
+        // if chars are equal, leave these chars and check for remaining portion of string
+        if(s[start] == s[end]){
+            return minCharsToRemove(s, start + 1, end - 1);
+        }
+        
+        // if they are unequal, pick the min choice of removing one of the wo chars
+        return 1 + min(minCharsToRemove(s, start, end - 1), minCharsToRemove(s, start + 1, end));
+    }
+    
+    
+public:
+    bool isValidPalindrome(string s, int k) {
+        if(s.size() == 0){
+            return true;
+        }
+        
+        if(s.size() == 1){
+            return true;
+        }
+        
+        return minCharsToRemove(s, 0, s.size() - 1) <= k;
+    }
+};
+
+
+
+
+
+
+-----------------Memoised----------------
+
+class Solution {
+private:
+    
+    int minCharsToRemove(string s,  int start, int end, vector<vector<int>>& minCharsStore){
+        // base case 1=> only one char is there=>need not remove anything
+        if(start == end){
+            return 0;
+        }
+        
+        
+        // base case 2=> two chars left => if both are unequal, return 1=> remove either of them, else if they are equal, remove none of them
+        if(start == end - 1){
+            return s[start] != s[end];
+        }
+        
+         if(minCharsStore[start][end] != -1)
+            return minCharsStore[start][end];
+        
+        // if chars are equal, leave these chars and check for remaining portion of string
+        if(s[start] == s[end]){
+            return minCharsStore[start][end] = minCharsToRemove(s, start + 1, end - 1, minCharsStore);
+        }
+        
+        // if they are unequal, pick the min choice of removing one of the wo chars
+        return minCharsStore[start][end] = 1 + min(minCharsToRemove(s, start, end - 1, minCharsStore), minCharsToRemove(s, start + 1, end, minCharsStore));
+    }
+    
+    
+public:
+    bool isValidPalindrome(string s, int k) {
+        if(s.size() == 0){
+            return true;
+        }
+        
+        if(s.size() == 1){
+            return true;
+        }
+        
+        vector<vector<int>>minCharsStore(s.size(), vector<int>(s.size(), -1));
+        
+        return minCharsToRemove(s, 0, s.size() - 1, minCharsStore) <= k;
+    }
+};
+
+
+
+
+
+
+
+
+-------------------BOTTOM UP----------------------
+
+
+public:
+    bool isValidPalindrome(string s, int k) {
+        if(s.size() == 0){
+            return true;
+        }
+        
+        if(s.size() == 1){
+            return true;
+        }
+        
+        vector<vector<int>>minCharsStore(s.size(), vector<int>(s.size(), 0));
+        
+        // find all possible combos of i,j
+        
+        for(int i = s.size() - 2; i >= 0; i--){
+            for(int j = i + 1; j < s.size(); j++){
+                
+                if(s[i] == s[j]){
+                    minCharsStore[i][j] = minCharsStore[i + 1][j - 1];
+                }
+                
+                else{
+                    minCharsStore[i][j] = 1 + min(minCharsStore[i + 1][j], minCharsStore[i][j - 1]);
+                }
+            }
+        }
+        
+        return minCharsStore[0][s.size() - 1] <= k;
+    }
+};
+
+
+
+
+--------------BOTTOM UP---------1-D SPACE
+
+ if(s.size() <= 1)
+            return true;
+        
+        vector<int>minCharsStore(s.size(), 0);
+        
+        int prev, temp;
+        
+        for(int i = s.size() - 2; i >= 0; i--){
+            prev = 0;
+            for(int j = i + 1; j < s.size(); j++){
+                
+                temp = minCharsStore[j];
+                
+                if(s[i] == s[j]){
+                    minCharsStore[j] = prev;
+                }
+                
+                else{
+                    minCharsStore[j] = 1 + min(minCharsStore[j], minCharsStore[j - 1]);
+                }
+                prev = temp;
+                
+            }
+        }
+        
+        return minCharsStore[s.size() - 1] <= k;
