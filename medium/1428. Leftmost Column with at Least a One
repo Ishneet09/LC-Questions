@@ -1,0 +1,36 @@
+/**
+ * // This is the BinaryMatrix's API interface.
+ * // You should not implement it, or speculate about its implementation
+ * class BinaryMatrix {
+ *   public:
+ *     int get(int row, int col);
+ *     vector<int> dimensions();
+ * };
+ */
+
+class Solution {
+public:
+    int leftMostColumnWithOne(BinaryMatrix &binaryMatrix) {
+        auto dimensionList = binaryMatrix.dimensions();
+        
+        int rows = dimensionList[0];
+        int columns = dimensionList[1];
+        
+        int rowIndex = 0;
+        int columnIndex = columns - 1;
+        
+        while(rowIndex < rows && columnIndex >= 0){
+                if(binaryMatrix.get(rowIndex, columnIndex) == 0)
+                    rowIndex++;
+                else
+                    columnIndex--;
+            }
+        
+        
+        // the grid had all 0s
+        if(columnIndex == columns - 1)
+            return -1;
+        
+        return columnIndex + 1;
+    } 
+};
