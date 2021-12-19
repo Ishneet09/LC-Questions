@@ -1,0 +1,123 @@
+/*
+1. for every char present in the list, insert it into the graph as key[IMP]
+2. Make the graph. Compare every word char by char. As soon as you find mismatch, make edge. ALso handle cases where one word[the shorter and word2] might be a prefix of other here
+3. Once graph is created, we check for presence of cycle in graph using graph coloring b/c it is a directed graph. If graph cycle exists, return "".
+4. Call for top sort.
+5. Since top sort here uses string to concatenate letters, we must reverse the str and return it.[if we used stack, to stack se pop karke str mei append karne the bas]
+https://stackoverflow.com/questions/7913835/check-if-one-string-is-a-prefix-of-another
+*/
+class Solution {
+private:
+    
+   void dfs(char c, unordered_map<char, unordered_set<char>>& letterGraph, unordered_set<char>& seen, string& output){
+        
+        if(seen.find(c) != seen.end())
+            return;
+        
+        seen.insert(c);
+        
+        for(char neighbor: letterGraph[c]){
+            if(seen.find(neighbor) == seen.end())
+              dfs(neighbor, letterGraph, seen, output);
+        }
+        
+        output += c;
+        
+        return;
+    }
+    
+    bool isCyclic(char c, unordered_map<char, unordered_set<char>>& letterGraph, unordered_set<char>& grey, unordered_set<char>& black){
+        
+        if(grey.find(c) != grey.end())
+            return true;
+        
+        grey.insert(c);
+        
+        for(char neighbour: letterGraph[c]){
+            if(black.find(neighbour) == black.end() && isCyclic(neighbour, letterGraph, grey, black))
+                return true;
+                
+        }
+        
+        black.insert(c);
+        return false;
+    }
+    
+    
+public:
+    string alienOrder(vector<string>& words) {
+        if(words.size() == 0)
+            return "";
+        
+        // make the graph - letter-> which. letters occur after it
+        unordered_map<char, unordered_set<char>>letterGraph;
+        
+        for(string word: words){
+            for(char c: word){
+                letterGraph[c] = {};
+            }
+        }
+        
+        // make the graph
+        for(int i = 1; i < words.size(); i++){
+            string word1 = words[i - 1];
+            string word2 = words[i];
+            
+            // checking perfix case
+            if(word1.size() > word2.size()){
+                auto result = mismatch(word2.begin(), word2.end(), word1.begin());
+                
+                if(result.first == word2.end())
+                  return "";
+            }
+            
+            int ptr1 = 0;
+            int ptr2 = 0;
+            
+            while(ptr1 < word1.size() && ptr2 < word2.size()){
+                if(word1[ptr1] == word2[ptr2]){
+                    ptr1++;
+                    ptr2++;
+                }
+                else{
+                    char c1 = word1[ptr1];
+                    char c2 = word2[ptr2];
+                    letterGraph[c1].insert(c2);
+                    break;
+                }
+            }
+        }
+        
+       // cycle check
+        unordered_set<char>white;
+        
+        for(auto it: letterGraph){
+            white.insert(it.first);
+        }
+        
+        for(auto c: white){
+             unordered_set<char>grey;
+             unordered_set<char>black;
+            
+            if(isCyclic(c, letterGraph, black, grey))
+                return "";
+        }
+        
+        // topological sort
+        string output = "";
+        unordered_set<char>seen;
+        
+        for(auto it: letterGraph){
+            if(seen.find(it.first) == seen.end()){
+                dfs(it.first, letterGraph, seen, output);
+            }
+        }
+        
+        if(output.size() != letterGraph.size())
+            return "";
+        
+        reverse(output.begin(), output.end());
+        
+        return output;
+    }
+};
