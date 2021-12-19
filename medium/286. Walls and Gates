@@ -1,0 +1,55 @@
+/*I think what some folks are missing in this second solution is that each gate is not fully searched before moving on to a new gate. Each gate only looks at the areas within 1 space before we check the next gate. So each area within one space of the gates are checked for rooms and these rooms are marked, then added to the queue. Once all gates are checked, each new space is checked, and so forth. So, once a room gets hit, it has to be from the closest gate.*/
+/*We are starting BFS from each of the gates by enqueuing the coordinates into the queue. Since Queue is FIFO, the first gate is processed first. While doing a BFS from the first gate, we check the coordinates at distance 1 from that gate & only if we hit an EMPTY space, we increment the distance by 1 since it is the very next level i.e.
+rooms[r][c] = rooms[row][col] + 1
+Then we enqueue the adjacent nodes of this coordinate but since it is a queue, those coordinates are at the back of the queue. So next to be processed is the 2nd gate which was added & so on. Since we spread out from each gate in BFS way for a single step only each time & evaluate the distance, we have to get the shortest distance from each room to gate. Please let me know if this is correct.
+
+Whenever one has to perform BFS from a number of nodes simultaneously, I can either invoke BFS method on each node or one can even enqueue all the concerned nodes from which BFS has to be started & just invoke the BFS method once ? Ultimately, the same amount of work is being done in both cases, right ?*/
+
+class Solution {
+public:
+    void wallsAndGates(vector<vector<int>>& rooms) {
+        
+        if(rooms.size() == 0)
+            return;
+        
+        int rows = rooms.size();
+        int columns = rooms[0].size();
+        
+        
+        queue<pair<int, int>>q;
+        
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j < columns; j++){
+                if(rooms[i][j] == 0)
+                    q.push({i, j});
+            }
+        }
+        
+        
+        vector<vector<int>>directions = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        
+        
+        while(q.size() != 0){
+            auto frontRoom = q.front();
+            q.pop();
+            
+            int x = frontRoom.first;
+            int y = frontRoom.second;
+            
+            for(auto direction: directions){
+                int newX = direction[0] + x;
+                int newY = direction[1] + y;
+                
+                if(newX < 0 || newY < 0 || newX >= rows || newY >= columns)
+                    continue;
+                
+                if(rooms[newX][newY] != INT_MAX)
+                    continue;
+                
+                rooms[newX][newY] = rooms[x][y] + 1;
+                q.push({newX, newY});
+            }
+        }
+        return;
+    }
+};
