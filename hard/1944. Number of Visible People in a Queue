@@ -1,0 +1,48 @@
+//https://leetcode.com/problems/number-of-visible-people-in-a-queue/discuss/1619332/Stack-easy-to-understand-C%2B%2B-solution-oror-next-greater-element
+//We just need to find next greater element of every element from behind the given array.
+
+class Solution {
+public:
+    vector<int> canSeePersonsCount(vector<int>& heights) {
+        
+        if(heights.size() == 0)
+            return {};
+        
+        vector<int>personCount;
+        stack<int>st;
+        
+        for(int i = heights.size() - 1; i >= 0; i--){
+            // you are checking the rightmost person
+            if(st.size() == 0){
+                personCount.push_back(0);
+            }
+            // element to the very right of curr element has greater ht=>view blocked
+            else if(st.size() > 0 && st.top() > heights[i]){
+                personCount.push_back(1);
+            }
+            // height of curr person is greater than the right person=>keep checking all persons until view gets blocked=>you see a person of ht greater than you
+            else if(st.size() > 0 && st.top() < heights[i]){
+                int count = 0;
+                while(st.size() > 0 && st.top() < heights[i]){
+                    count++;
+                    st.pop();
+                }
+                //if you exit the loop, then-
+                
+                //you've either seen all persons on right b/c all their hts were less than yours=>count has accomodated all of them
+                if(st.size() == 0){
+                    personCount.push_back(count);
+                }
+                // there are still people left, but your view got blcoked, so just include the current person whose height is greater than curr person
+                else{
+                    personCount.push_back(count + 1);
+                }
+            }
+            
+            st.push(heights[i]);
+        }
+        
+        reverse(personCount.begin(), personCount.end());
+        return personCount;
+    }
+};
