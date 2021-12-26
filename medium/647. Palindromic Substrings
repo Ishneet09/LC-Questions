@@ -1,0 +1,87 @@
+-------------O(N2), O(N2)-----------DP
+
+class Solution {
+public:
+    int countSubstrings(string s) {
+        
+        if(s.size() == 0)
+            return 0;
+        
+        int size = s.size();
+        
+        int count = 0;
+        
+        vector<vector<bool>>isPalindrome(size, vector<bool>(size, false));
+        
+        // marking all single chars as true b/c they are palindromes
+        for(int i = 0; i < s.size(); i++){
+            isPalindrome[i][i] = true;
+            count++;
+        }
+        
+        // marking all substr of len 2
+        for(int i = 0; i < s.size() - 1; i++){
+            isPalindrome[i][i + 1] = (s[i] == s[i + 1]);
+            count += isPalindrome[i][i + 1];
+        }
+        
+        // checking all other substr of len >= 3 incl n
+        for(int len = 3; len <= size; len++){
+            // consider all substrs of legth len indicated by i,j
+            for(int i = 0, j = i + len - 1; j < size; i++, j++){
+                isPalindrome[i][j] = (s[i] == s[j]) && (isPalindrome[i + 1][j - 1]);
+                count += isPalindrome[i][j];    
+            }
+        }
+        
+        return count;
+    }
+};
+
+
+
+
+
+----------O(N2), O(1) -------------[Expanding around centres]-------
+
+class Solution {
+private:
+    
+    int countPalindromesAroundCentre(string s, int start, int end){
+        
+        int ans = 0;
+        
+        while(start >= 0 && end < s.size()){
+            if(s[start] != s[end])
+                break;
+            
+            start--;
+            end++;
+            ans++;
+        }
+        
+        return ans;
+    }
+    
+    
+public:
+    int countSubstrings(string s) {
+        
+        
+        return count;*/
+        
+        if(s.size() == 0)
+            return 0;
+        
+        int count = 0;
+        
+        for(int i = 0; i < s.size(); i++){
+            // for odd length palindromes
+            count += countPalindromesAroundCentre(s, i, i);
+            // for even length plaindromes
+            count += countPalindromesAroundCentre(s, i, i + 1);
+        }
+        
+        return count;
+    }
+};
