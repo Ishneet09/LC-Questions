@@ -1,0 +1,63 @@
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* next;
+
+    Node() {}
+
+    Node(int _val) {
+        val = _val;
+        next = NULL;
+    }
+
+    Node(int _val, Node* _next) {
+        val = _val;
+        next = _next;
+    }
+};
+*/
+
+class Solution {
+public:
+    Node* insert(Node* head, int insertVal) {
+        
+        // 1. The basic crux is to find the insertion point of the given val in the list
+        // For a val which lies in [minVal, maxVal], it will be inserted by checking if given val > currVal and givenVal < maxVal.
+        // If the val is less than the min val or greater than the maxVal, in boh cases, it must be inserted at the end.
+        // So all you need to do is, just figure out the point of insertion.
+        
+        if(head == NULL){
+            Node* newNode = new Node(insertVal);
+            newNode->next = newNode;
+            return newNode;
+        }
+        
+        Node* node = head;
+        
+        while(node->next != head){
+            // if asc order is maintained i.e., you make normal checks
+            if(node->val <= node->next->val){
+                //chek range
+                if(insertVal >= node->val && insertVal <= node->next->val)
+                    break;
+            }
+            // you found the break, this is the position of last & first node
+            else {
+                // 1. if given val is greater than last val, 2. if given val is less than min val
+                if(insertVal >= node->val || insertVal <= node->next->val)
+                    break;
+            }
+            node = node->next;
+        }
+        
+        // node is at point of insertion.
+        //Insert new node b/w node and node->next
+        Node* newNode = new Node(insertVal);
+        newNode->next = node->next;
+        node->next = newNode;
+        
+        return head;
+    }
+};
