@@ -1,0 +1,40 @@
+/*
+        1. Basically, the moment we see NULL at q front, we must stop.
+        2. This means that the level prev to it had an incomp node.
+        3. Now that incomp node must have a left node but not a right node. So this NUll must be indicate of the absence of that right node.
+        4. Alsom b/c we are inserting all nodes w/o checking for their null values, children of leaves = null are also inserted
+        5. If the tree is complete, then after we see a NULL, all values behind it should also be null 
+        6. So we stop and check the remaining nodes in the q
+        7. If even one of them is not null, implies a right node presence, we return false
+        else return true.
+        
+        */
+class Solution {
+public:
+    bool isCompleteTree(TreeNode* root) {
+        
+        if(root == NULL)
+            return true;
+        
+        queue<TreeNode*>q;
+        
+        q.push(root);
+        
+        while(q.front() != NULL){
+            auto front = q.front();
+            q.pop();
+            q.push(front->left);
+            q.push(front->right);
+        }
+        
+        while(q.size() != 0) {
+            auto front = q.front();
+            q.pop();
+            
+            if(front != NULL)
+                return false;
+        }
+        
+        return true;
+    }
+};
