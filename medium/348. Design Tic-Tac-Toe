@@ -1,0 +1,117 @@
+-----------O(N), O(N2)-------------
+
+class TicTacToe {
+private:
+    
+    vector<vector<int>>board;
+    int size;
+    
+    
+    bool checkWin(int player, int row, int col, int n, vector<vector<int>>& board){
+        // check the entire row, col and diagonal
+        
+        bool rowCheck = true;
+        bool colCheck = true;
+        bool diagonalCheck1 = true, diagonalCheck2 = true;
+        
+        for(int i = 0; i < n; i++){
+            if(board[i][col] != player)
+                colCheck = false;
+        }
+        if(colCheck)
+            return true;
+        
+        for(int i = 0; i < n; i++){
+            if(board[row][i] != player)
+                rowCheck = false;
+        }
+        if(rowCheck)
+            return true;
+        
+        if(row == col){
+            for(int i = 0; i < n; i++){
+                if(board[i][i] != player)
+                    diagonalCheck1 = false;
+            }
+            if(diagonalCheck1)
+             return true;
+        }
+        
+        if(row + col == n - 1){
+            for(int i = 0; i < n; i++){
+                if(board[i][n - i - 1] != player)
+                    diagonalCheck2 = false;
+            }
+            if(diagonalCheck2)
+             return true;
+        }
+        return false;
+    }
+    
+public:
+    TicTacToe(int n) {
+        size = n;
+        
+        for(int i = 0; i < n; i++){
+            vector<int>row(n, -1);
+            board.push_back(row);
+        }
+    }
+    
+    int move(int row, int col, int player) {
+        board[row][col] = player;
+        
+        if(checkWin(player, row, col, board.size(), board))
+            return player;
+        
+        return 0;
+    }
+};
+
+/**
+ * Your TicTacToe object will be instantiated and called as such:
+ * TicTacToe* obj = new TicTacToe(n);
+ * int param_1 = obj->move(row,col,player);
+ */
+ 
+ 
+ ---------O(1), O(N)------------
+ 
+ class TicTacToe {
+private:
+    
+    vector<int>rowVector;
+    vector<int>colVector;
+    int diagonal;
+    int antiDiagonal;
+   
+public:
+    TicTacToe(int n) {
+ 
+        rowVector.assign(n, 0);
+        colVector.assign(n, 0);
+        diagonal = 0;
+        antiDiagonal = 0;
+    }
+    
+    int move(int row, int col, int player) {
+        
+        int currPlayer = (player == 1) ? 1 : -1;
+        int n = rowVector.size();
+        
+        rowVector[row] += currPlayer;
+        colVector[col] += currPlayer;
+        
+        if(row == col){
+            diagonal += currPlayer;
+        }
+        if(row + col == n - 1){
+            antiDiagonal += currPlayer;
+        }
+        
+        if(abs(rowVector[row]) == n || abs(colVector[col]) == n || abs(diagonal) == n || abs(antiDiagonal) == n)
+            return player;
+        
+        return 0;
+    }
+};
