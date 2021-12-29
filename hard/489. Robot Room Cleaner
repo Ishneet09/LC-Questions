@@ -1,0 +1,63 @@
+/**
+ * // This is the robot's control interface.
+ * // You should not implement it, or speculate about its implementation
+ * class Robot {
+ *   public:
+ *     // Returns true if the cell in front is open and robot moves into the cell.
+ *     // Returns false if the cell in front is blocked and robot stays in the current cell.
+ *     bool move();
+ *
+ *     // Robot will stay in the same cell after calling turnLeft/turnRight.
+ *     // Each turn will be 90 degrees.
+ *     void turnLeft();
+ *     void turnRight();
+ *
+ *     // Clean the current cell.
+ *     void clean();
+ * };
+ */
+
+/*
+The robot has a starting point somewhere on the map. However, the API we are given has no way of telling us what that starting point is. Nor are we given it. Therefore we don't know where we are starting in the map. The problem guarantees that we will be starting on a space that is on the map but not an obstacle. Therefore we define the starting spot as (0,0). But really we could have said that our starting spot is (x,y) where x and y are any integers, and the algorithm will work just as well. Searching all the paths available to us from our starting point. They just picked 0,0 because that those are the most intuitive numbers to pick.
+*/
+// https://leetcode.com/problems/robot-room-cleaner/discuss/1540721/C%2B%2B-solution
+
+class Solution {
+public:
+    
+   void cleanCells(Robot& robot, int x, int y, int currDirIndex, set<pair<int, int>>& visitedCells, vector<vector<int>>& directions){
+        // clean the current cell
+        robot.clean();
+        // mark cell as visited
+        visitedCells.insert({x, y});
+        
+        for(int i = 0; i < 4; i++){
+            int newDirIndex = (currDirIndex + i) % 4;
+            int newX = x + directions[newDirIndex][0];
+            int newY = y + directions[newDirIndex][1];
+            
+            if(visitedCells.find({newX, newY}) == visitedCells.end() && robot.move()){
+                // go and explore other cells 
+                cleanCells(robot, newX, newY, newDirIndex, visitedCells, directions);
+                // move back
+                // turn 180 degrees to move back to prev cell
+                robot.turnRight();
+                robot.turnRight();
+                robot.move();
+                // since you reach the cell facing the direction you moved from, turn left to move to other direction to move to
+                robot.turnRight();
+                robot.turnRight();
+            }
+            robot.turnRight();
+        }
+    }
+    
+    void cleanRoom(Robot& robot) {
+        // eps track of viisted cells
+        set<pair<int, int>>visitedCells;
+        // dir vector - in order of up, right, down, left - 0, 1,2,3
+        vector<vector<int>>directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+        // start traversal
+        cleanCells(robot, 0, 0, 0, visitedCells, directions);
+    }
+};
