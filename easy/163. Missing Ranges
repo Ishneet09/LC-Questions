@@ -1,0 +1,64 @@
+class Solution {
+public:
+    vector<string> findMissingRanges(vector<int>& nums, int lower, int upper) {
+        
+        if(nums.size() == 0){
+            if(lower == upper){
+                return {to_string(lower)};
+            }
+            else{
+                return {to_string(lower) + "->" + to_string(upper)};
+            }
+        }
+        
+        if(lower == upper)
+            return {};
+        
+        vector<string>ranges;
+        
+        // if the number vector doesn't start with lower, we need to include numbers missing from lower to nums[0] - 1
+        if(nums[0] != lower){
+            int left = lower;
+            int right = nums[0] - 1;
+            
+            if(left == right)
+                ranges.push_back(to_string(left));
+            
+            else if(left < right)
+                ranges.push_back(to_string(left) + "->" + to_string(right));
+        }
+        
+        // including all intermediate ranges
+        for(int i = 1; i < nums.size(); i++){
+            // if numbers are consecutive, no missing ranges/elements
+            if(nums[i] == nums[i - 1] + 1)
+                continue;
+            // find the missing range
+            else{
+                int left = nums[i - 1] + 1;
+                int right = nums[i] - 1;
+                
+                string range = "";
+                if(left == right)
+                    range = to_string(left);
+                else
+                    range = to_string(left) + "->" + to_string(right);
+                
+                ranges.push_back(range);
+            }
+        }
+        
+        // if last element is not upper, we need o include range starting from nums[size - 1] to upper
+        if(nums[nums.size() - 1] != upper){
+           int left = nums[nums.size() - 1] + 1;
+           int right = upper;
+            
+            if(left == right)
+                ranges.push_back(to_string(left));
+            else
+                ranges.push_back(to_string(left) + "->" + to_string(right));
+        }
+        
+        return ranges;
+    }
+};
