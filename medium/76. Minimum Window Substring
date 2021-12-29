@@ -1,0 +1,57 @@
+class Solution {
+public:
+    string minWindow(string s, string t) {
+        
+        if(s.size() == 0 || t.size() == 0)
+            return "";
+        
+        if(s == t)
+            return s;
+        
+        // store the info about t in a map/vector
+        unordered_map<char, int>tMap;
+        
+        for(char c: t){
+            tMap[c]++;
+        }
+        
+        // now we do sliding window, initialise state of window
+        string windowStr = "";
+        int windowStart = 0;
+        int windowEnd = 0;
+        
+        int tLen = t.size();
+        
+        // starting with sliding window
+        while(windowEnd < s.size()){
+            //dec the count of curr char that you see in s. If it belongs to t as well, it will dec and become 0 or a less positive number
+            // else, it will go below 0
+            tMap[s[windowEnd]]--;
+            
+            // if it belongs to t as well ie either the count is 0 or positive
+            if(tMap[s[windowEnd]] >= 0)
+                tLen--;
+            
+            // decrement the window if the current window has all chars of t it tLen = 0
+            while(windowStart <= windowEnd && tLen == 0){
+                // form the window str
+                if(windowStr.size() == 0 || windowEnd - windowStart + 1 < windowStr.size())
+                    windowStr = s.substr(windowStart, windowEnd - windowStart + 1);
+                
+                // remove the char at windowStart from the current window
+                tMap[s[windowStart]]++;
+                // if its a part of t also, increment tLen
+                if(tMap[s[windowStart]] > 0)
+                    tLen++;
+                
+                // decrease the window
+                windowStart++;
+            }
+            
+            windowEnd++;
+        }
+        
+        
+        return windowStr;
+    }
+};
