@@ -1,0 +1,64 @@
+/*
+brute force approach - find all posituins of houses. Then for each cell, calculate the cell's mahantten distance from each house and keep adding the distances.Compare the distance returned for every cell with a global min and find ans - O(mnk) = if k = mn, O(m2n2), O(mn) space
+Lets take a step back, and think about a one-d vector. It might 'look' obv to pick the centre point to be meeting point but if the number of 1s on each side is unequal, then the side on which there are more 1s will typically increase the minDistance answer and the lesser number of points on other side won't be able to compensate for them. So we need a point around which the number of 1s on both sides is balanced so that we can have min distance or equivalent distance. So such a point considering the fact that we think about only the 1s will be the median if we can collect all the 1s. If array is odd =>odd number of houses, middle index will be the median[all values at the indices are 1]. If even lengh, then any of the middle element can be the median, distance won't be affected.
+And b/c the ultimate distance is based on manhatten distance which is sum of x diff and y diff = two independent variables so we can collect col indices and row indices separately. Median will be middle element. We simple calculate the distance of every point in these vectors from the median. Add the end, add the two distances.
+*/
+class Solution {
+private:
+    
+    vector<int> getRowIndices(vector<vector<int>>& grid){
+        vector<int>rows;
+        
+        for(int i = 0; i < grid.size(); i++){
+            for(int j = 0; j < grid[0].size(); j++){
+                if(grid[i][j] == 1)
+                    rows.push_back(i);
+            }
+        }
+        
+        return rows;
+    }
+    
+    vector<int> getColIndices(vector<vector<int>>& grid){
+        vector<int>columns;
+        
+        for(int i = 0; i < grid[0].size(); i++){
+            for(int j = 0; j < grid.size(); j++){
+                if(grid[j][i] == 1)
+                    columns.push_back(i);
+            }
+        }
+        
+        return columns;
+    }
+    
+    int minDistanceHelper(vector<int>& indices, int median){
+        int distance = 0;
+        int start = 0;
+        int end = indices.size() - 1;
+        
+        while(start < indices.size()){
+            distance += abs(indices[start] - median);
+            start++;
+        }
+        
+        return distance;
+    }
+    
+    
+    
+public:
+    int minTotalDistance(vector<vector<int>>& grid) {
+        
+        if(grid.size() == 0)
+            return 0;
+        
+        vector<int>rowIndices = getRowIndices(grid);
+        vector<int>colIndices = getColIndices(grid);
+        
+        int rowMedian = rowIndices[rowIndices.size() / 2];
+        int colMedian = colIndices[colIndices.size() / 2];
+        
+        return minDistanceHelper(rowIndices, rowMedian) + minDistanceHelper(colIndices, colMedian);
+    }
+};
