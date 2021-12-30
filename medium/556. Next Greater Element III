@@ -1,0 +1,60 @@
+// exactly same as find the next lexicographically largest permutation of int vector. we just convert number to vector and back at the end
+class Solution {
+public:
+    int nextGreaterElement(int n) {
+        
+        if(n == 0)
+            return 0;
+        
+        vector<int>digits;
+        
+        int tempN = n;
+        
+        while(tempN > 0){
+            digits.push_back(tempN % 10);
+            tempN = tempN / 10;
+        }
+        
+        reverse(digits.begin(), digits.end());
+        
+        int swapIndex = -1;
+        
+        for(int i = digits.size() - 1; i > 0; i--){
+            if(digits[i] > digits[i - 1]){
+                swapIndex = i - 1;
+                break;
+            }
+        }
+        
+        if(swapIndex == -1)
+            return -1;
+        
+        int justNextLargeIndex = -1;
+        
+        for(int i = swapIndex + 1; i < digits.size(); i++){
+            if(digits[i] > digits[swapIndex])
+                continue;
+            else{
+                justNextLargeIndex = i - 1;
+                break;
+            }
+        }
+        
+        if(justNextLargeIndex == -1)
+            justNextLargeIndex = digits.size() - 1;
+        
+        swap(digits[swapIndex], digits[justNextLargeIndex]);
+        
+        sort(digits.begin() + swapIndex + 1, digits.end());
+        
+        long newN = 0;
+        
+        for(int d: digits){
+            newN = (newN * 10) + d;
+            
+            if(newN > INT_MAX)
+                return -1;
+        }
+        return newN;
+    }
+};
