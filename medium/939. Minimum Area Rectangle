@@ -1,0 +1,49 @@
+// Brute force wold be to use 4 loops to find 4 points and check if they form a rectangle which are parallel to the axes. O(n4) - very bad
+// If you draw a rectangle on the coord plane - you only need two unique points of the diagonal. Other two points can be extracted using these two points itself. The point below the upper diagonal point share the same x coord. We only check if that y coord exists or not and we check that in the map[map of x coord to all y coords it has]. If it is present in the map, it => that such a points exists. So we only need to find to points s.t. x1 != x2 && y1 != y2. Then we check for presence of y2 in x1s map and y1 in x2s map.
+/*
+1. Make map of x->all coords of y
+2. Run two for loops to check for every pair of points. 
+3. Find two points s.t. x1 != x2 && y1 != y2. Check for presence of y1 in map of x2 and vice-versa
+4. Find len & breadth. Update areas
+*/
+class Solution {
+public:
+    int minAreaRect(vector<vector<int>>& points) {
+        
+        if(points.size() < 4)
+            return 0;
+        
+        unordered_map<int, unordered_set<int>>xCoordMap;
+        
+        for(auto point: points){
+            int x = point[0];
+            int y = point[1];
+            
+            xCoordMap[x].insert(y);
+        }
+        
+        int minArea = INT_MAX;
+        
+        for(int i = 0; i < points.size() - 1; i++){
+            for(int j = i + 1; j < points.size(); j++){
+                //auto point1 = points[i];
+                //auto point2 = points[j];
+                
+                int x1 = points[i][0];
+                int y1 = points[i][1];
+                int x2 = points[j][0];
+                int y2 = points[j][1];
+                
+                if(x1 != x2 && y1 != y2){
+                    if(xCoordMap[x1].find(y2) != xCoordMap[x1].end() && xCoordMap[x2].find(y1) != xCoordMap[x2].end()){
+                        int len = abs(x2 - x1);
+                        int breadth = abs(y2 - y1);
+                        minArea = min(minArea, len * breadth);
+                    }
+                }
+            }
+        }
+        
+        return minArea == INT_MAX ? 0 : minArea;
+    }
+};
