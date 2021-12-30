@@ -1,43 +1,45 @@
 class RandomizedSet {
- 
-    unordered_set<int>set;
-     
+private:
+
+    // list for const TC for getRandom(), map for other two
+    vector<int>list;
+    unordered_map<int, int>numMap;
+    
 public:
-    /** Initialize your data structure here. */
     RandomizedSet() {
         
     }
     
-    /** Inserts a value to the set. Returns true if the set did not already contain the specified element. */
     bool insert(int val) {
-        if(set.find(val) == set.end()){
-            set.insert(val);
+        if(numMap.count(val) == 0){
+            // order is imp
+            numMap[val] = list.size();
+            list.push_back(val);
             return true;
         }
         return false;
     }
     
-    /** Removes a value from the set. Returns true if the set contained the specified element. */
     bool remove(int val) {
-        if(set.find(val) != set.end()){
-            set.erase(val);
+        if(numMap.count(val) > 0){
+            // for delete, swap the val and last element b/c this way, we'll dlt last element from vector in const tc
+            int valIndex = numMap[val];
+            int lastIndex = list.size() - 1;
+            swap(list[lastIndex], list[valIndex]);
+            // update map after swap
+            numMap[list[valIndex]] = valIndex;
+            numMap[val] = lastIndex;
+            // remove from list and map
+            numMap.erase(val);
+            list.pop_back();
             return true;
         }
-        
         return false;
     }
     
-    /** Get a random element from the set. */
     int getRandom() {
-        auto random = rand() % set.size();
-        auto it = set.begin();
-        
-        while(random > 0){
-            it++;
-            random--;
-        }
-        
-        return *it;
+        int index = rand() % list.size();
+        return list[index];
     }
 };
 
