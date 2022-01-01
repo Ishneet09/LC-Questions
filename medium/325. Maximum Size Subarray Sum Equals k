@@ -1,0 +1,33 @@
+class Solution {
+public:
+    int maxSubArrayLen(vector<int>& nums, int k) {
+        if(nums.size() == 0)
+            return 0;
+        
+        int runningSum = 0;
+        int maxLen = 0;
+        
+        // sum->index map
+        unordered_map<int, int>sumMap;
+        
+        for(int i = 0; i < nums.size(); i++){
+            runningSum += nums[i];
+            
+            // if sum is equal to k, then len is i + 1 starting from 0
+            if(runningSum == k){
+                maxLen = max(maxLen, i + 1);
+            }
+            
+            // if some subarray in b/w two arrays sums to k, then len will be index2 - index1, index2 > index1
+            if(sumMap.count(runningSum - k) > 0){
+                maxLen = max(maxLen, i - sumMap[runningSum - k]);
+            }
+            
+            // if the running sum is seen again, only update the first time. We want to keep the index as far left as possible s that len is max
+            if(sumMap.count(runningSum) == 0)
+               sumMap[runningSum] = i;
+        }
+        
+        return maxLen;
+    }
+};
