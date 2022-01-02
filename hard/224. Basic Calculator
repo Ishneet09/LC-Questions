@@ -1,0 +1,40 @@
+ stack<int>signStack;
+        // overall result
+    int result = 0;
+        // curr operamd
+    int currNumber = 0;
+        // last seen sign
+    int lastSign = 1;
+        // initially, we assume sign is +
+    signStack.push(1);
+    
+    for(int i = 0; i < s.size(); i++){
+        char c = s[i];
+        
+        if(c == ' '){
+            continue;
+        }
+        else if(isdigit(c)){
+            currNumber = (currNumber * 10) + (c - '0');
+        }
+        // once we enter a bracket sequence, it can be assumed that all prev operands and operators have been accomodated but there still might be some operators that are going to carry forward on this sequenc of bracket. So, b/c we will be processing a diff set of operators and operands in this, we store the prev sign so that we don't lose it and can apply it further
+        else if(c == '('){
+            signStack.push(lastSign);
+        }
+        // the top most bracket sign has been accomodated on this bracket sequence. we can remove this
+        // deeper the sign in the stack, more sequences of brackets will it be applied to
+        else if(c == ')'){
+            signStack.pop();
+        }
+        else if(c == '+' || c == '-'){
+            // apply last seen operand and sign
+            result += (currNumber * lastSign);
+            // update curr sign with effect of nested sign
+            lastSign = (c == '+' ? 1 : -1) * signStack.top();
+            // reset curr number for new operand
+            currNumber = 0;
+        }
+    }
+    
+        // accomodating the last seen sign & operand
+    return result + (lastSign * currNumber);
