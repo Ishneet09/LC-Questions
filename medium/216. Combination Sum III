@@ -1,0 +1,44 @@
+class Solution {
+public:
+    
+    void findCombinations(int k, int n, int num, vector<int>& currCombo, vector<vector<int>>& allCombos){
+        
+        if(k == 0){
+            if(n == 0){
+                allCombos.push_back(currCombo);
+                return;
+            }
+            else if(n < 0){
+                return;
+            }
+        }
+        
+        
+        for(int currNum = num; currNum <= 9; currNum++){
+            // include curr num. in the answer
+            currCombo.push_back(currNum);
+            // use this num and find all possible combos
+            findCombinations(k - 1, n - currNum, currNum + 1, currCombo, allCombos);
+            // backtrack, remove this num and move on to another choice
+            currCombo.pop_back();
+        }
+        return;
+    }
+    
+    
+    vector<vector<int>> combinationSum3(int k, int n) {
+        
+        if(k == 0)
+            return {};
+        
+        if(n == 0)
+            return {};
+        
+        vector<vector<int>>allCombinations;
+        vector<int>currCombo;
+        
+        findCombinations(k, n, 1, currCombo, allCombinations);
+        
+        return allCombinations;
+    }
+};
