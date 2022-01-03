@@ -1,0 +1,59 @@
+/*
+
+we do DFS. As we progress up,if a node needs to be removed, we store its children in our final ans and then delete it ie - mark it NULL
+Else, if a root need not be removed, we return the root.
+So we are basically removing the nodes and storing their children silmutaneoulsy otherwise, access to children will be lost.
+Also b/c we are doing post order ie processing a root at the end, we ca be sure that when a root is processed, all nodes that had to be removed below it have been removed and their children stored.
+NOTE: Also, once the function returns the final root, if it is NULL, we can directly return the forests or else, we insert the root and then return it.
+*/
+
+class Solution {
+
+private:
+    
+    TreeNode* delNodesHelper(TreeNode* root, unordered_set<int>& deleteSet, vector<TreeNode*>& forests){
+        
+        if(root == NULL)
+            return NULL;
+        
+        TreeNode* newLeft = delNodesHelper(root->left, deleteSet, forests);
+        TreeNode* newRight = delNodesHelper(root->right, deleteSet, forests);
+        
+        root->left = newLeft;
+        root->right = newRight;
+        
+        if(deleteSet.find(root->val) != deleteSet.end()){
+            if(root->left)
+                forests.push_back(root->left);
+            if(root->right)
+                forests.push_back(root->right);
+            
+            return NULL;
+        }
+        return root;
+    }
+    
+public:
+    vector<TreeNode*> delNodes(TreeNode* root, vector<int>& to_delete) {
+        if(root == NULL)
+            return {};
+        
+        if(to_delete.size() == 0)
+            return {root};
+        
+        // holds final roots
+        vector<TreeNode*>forests;
+        unordered_set<int>deleteSet(to_delete.begin(), to_delete.end());
+        
+        TreeNode* newRoot = delNodesHelper(root, deleteSet, forests);
+        
+        if(newRoot == NULL)
+            return forests;
+        
+        if(deleteSet.find(newRoot->val) == deleteSet.end()){
+           forests.push_back(newRoot);
+        }
+        
+        return forests;
+    }
+};
