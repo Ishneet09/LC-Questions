@@ -1,0 +1,40 @@
+/*
+exactly same as combination sum3 . here there is no k. base case is onlt checking if target == 0 and instead of drectly accessing the numbers, we access the by index - next index is i itself
+*/
+class Solution {
+public:
+    
+    void combinationSumHelper(vector<int>& candidates, int target, int index, vector<int>& current, vector<vector<int>>& combinations){
+        
+        if(target == 0){
+            combinations.push_back(current);
+            return;
+        }
+        if(target < 0){
+            return;
+        }
+        
+        for(int i = index; i < candidates.size(); i++){
+            current.push_back(candidates[i]);
+            combinationSumHelper(candidates, target - candidates[i], i, current, combinations);
+            current.pop_back();
+        }
+        return;
+    }
+    
+    
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+        if(candidates.size() == 0)
+            return {};
+        
+        if(target == 0)
+            return {};
+        
+        vector<vector<int>>combinations;
+        vector<int>currCombination;
+        
+        combinationSumHelper(candidates, target, 0, currCombination, combinations);
+        
+        return combinations;
+    }
+};
