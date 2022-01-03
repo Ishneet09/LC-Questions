@@ -1,0 +1,65 @@
+/*
+Find the nodes of the last level - get the first and the last node. Find their LCA- all other nodes will get included b/w them
+*/
+
+class Solution {
+public:
+    
+    TreeNode* LCA(TreeNode* root, TreeNode* p, TreeNode* q){
+        if(root == NULL)
+            return NULL;
+        
+        if(root == p | root == q)
+            return root;
+        
+        TreeNode* leftAns = LCA(root->left, p, q);
+        TreeNode* rightAns = LCA(root->right, p, q);
+        
+        if(!leftAns)
+            return rightAns;
+        
+        if(!rightAns)
+            return leftAns;
+        
+        return root;
+    }
+    
+    
+    TreeNode* subtreeWithAllDeepest(TreeNode* root) {
+        
+        if(root == NULL)
+            return NULL;
+        
+        queue<TreeNode*>treeQ;
+        treeQ.push(root);
+        treeQ.push(NULL);
+        vector<TreeNode*>currLevel;
+        
+        while(treeQ.size() != 0){
+            auto front = treeQ.front();
+            treeQ.pop();
+            
+            if(front == NULL){
+                if(treeQ.size() == NULL)
+                    break;
+                
+                currLevel.clear();
+                treeQ.push(NULL);
+                continue;
+            }
+            
+            currLevel.push_back(front);
+            
+            if(front->left)
+                treeQ.push(front->left);
+            
+            if(front->right)
+                treeQ.push(front->right);
+        }
+        
+        TreeNode* firstNode = currLevel.front();
+        TreeNode* lastNode = currLevel.back();
+        
+        return LCA(root, firstNode, lastNode);
+    }
+};
