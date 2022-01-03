@@ -1,0 +1,64 @@
+class Solution {
+public:
+    vector<vector<string>> findLadders(string beginWord, string endWord, vector<string>& wordList) {
+        
+        if(beginWord == endWord)
+            return {};
+        
+        if(wordList.size() == 0)
+            return {};
+        
+        queue<vector<string>>pathQ;
+        pathQ.push({beginWord});
+        
+        int minLen = INT_MAX;
+        vector<vector<string>>allPaths;
+        
+        unordered_set<string>wordSet;
+        
+        for(auto word: wordList){
+            wordSet.insert(word);
+        }
+        
+        wordSet.erase(beginWord);
+        
+        while(pathQ.size() != 0){
+            auto currPath = pathQ.front();
+            pathQ.pop();
+            
+             if(currPath.size() > minLen)
+                continue;
+            
+            string lastWord = currPath.back();
+            wordSet.erase(lastWord);
+            
+            if(lastWord == endWord){
+                if(currPath.size() < minLen)
+                    allPaths.clear();
+                
+                allPaths.push_back(currPath);
+                minLen = currPath.size();
+                continue;
+            }
+            
+            
+            for(int i = 0; i < lastWord.size(); i++){
+                char originalChar = lastWord[i];
+                
+                for(char c = 'a'; c <= 'z'; c++){
+                    if(c == originalChar)
+                        continue;
+                    lastWord[i] = c;
+                    
+                    if(wordSet.find(lastWord) != wordSet.end()){
+                        currPath.push_back(lastWord);
+                        pathQ.push(currPath);
+                        currPath.pop_back();
+                    }
+                }
+                lastWord[i] = originalChar;
+            }
+        }
+        return allPaths;
+    }
+};
