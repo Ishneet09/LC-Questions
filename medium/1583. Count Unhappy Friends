@@ -1,29 +1,45 @@
+// https://www.youtube.com/watch?v=10laHayu2dc
 class Solution {
 public:
-    int unhappyFriends(int n, vector<vector<int>>& preferences, vector<vector<int>>& pairs) {
+    int unhappyFriends(int n, vector<vector<int>>& preferences, vector<vector<int>>& pairs){
+        
         if(n == 0)
             return 0;
         
-        set<pair<int, int>>happySet;
         
-        for(int i = 0; i < preferences.size(); i++){
-            happySet.insert({i, preferences[i][0]});
+        unordered_map<int, unordered_set<int>>preferredFriends;
+        
+        vector<int>currMatch(n);
+        
+        for(auto p: pairs){
+            int x = p[0];
+            int y = p[1];
+            currMatch[x] = y;
+            currMatch[y] = x;
         }
         
-        vector<pair<int, int>>allPairs;
-        
-        for(vector<int> it: pairs){
-            allPairs.push_back({it[0], it[1]});
-            allPairs.push_back({it[1], it[0]});
+        // make a hashmap for each person which includes a set of all the persons that the curr person preferes more than the partenr they are paired with. so if they are paired with the right partner, the set will be empty. otherwise, it will include all persons that the currPerson would like to be with
+        for(int i = 0; i < n; i++){
+            for(int prefFriend: preferences[i]){
+                if(prefFriend == currMatch[i])
+                    break;
+                
+                preferredFriends[i].insert(prefFriend);
+            }
         }
         
-        int uf = 0;
+        int unhappyFriends = 0;
         
-        for(auto p: allPairs){
-            if(happySet.find(p) == happySet.end())
-                uf++;
+        // now, we have a list of all persons that the curr person prefers over the curr partner. if in that list, there is any person who prefers the currPerson also, then our currPerson is unhappy.
+        for(int i = 0; i < n; i++){
+            for(int f: preferredFriends[i]){
+                if(preferredFriends[f].find(i) != preferredFriends[f].end()){
+                    unhappyFriends++;
+                    break;
+                }
+            }
         }
         
-        return uf;
+        return unhappyFriends;
     }
 };
