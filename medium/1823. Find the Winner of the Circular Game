@@ -1,0 +1,29 @@
+class Solution {
+public:
+    int findTheWinner(int n, int k) {
+        
+        if(n == 1)
+            return 1;
+        
+        int friendToBeRemoved = 0;
+        
+        vector<int>personsLeft(n);
+        
+        // we are given persons from 1 to n. we for the solution use 0 to n - 1
+        for(int i = 0; i < n; i++){
+            personsLeft[i] = i;
+        }
+        
+        // until there is only person left
+        while(personsLeft.size() > 1){
+            // b/c we are alsways removing the set of persons we don't require. total number of persons now decreases.
+            friendToBeRemoved = (friendToBeRemoved + k - 1) % personsLeft.size();
+            // erase this portion so that you don't consider it in your count when calculating the index of the person to remove
+            personsLeft.erase(personsLeft.begin() + friendToBeRemoved);
+                    
+        }
+        
+        // only person left at the end. +1 b/c we are given persons from 1 - n
+        return  personsLeft[0] + 1;
+    }
+};
