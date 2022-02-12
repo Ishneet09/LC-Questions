@@ -1,0 +1,40 @@
+class Solution {
+public:
+    int numPairsDivisibleBy60(vector<int>& time) {
+        
+        if(time.size() == 0)
+            return 0;
+        
+        int count = 0;
+        vector<int>remMap(60, 0);
+        
+        for(int t: time){
+            int remainder = t % 60;
+            count += remMap[(60 - remainder) % 60];
+            remMap[remainder]++;
+        }
+        
+        return count;
+    }
+};
+
+
+/*
+Indeed, this looks like a variant of 2 sum, the only difference being that we are concerned about the modulo sum here instead of the absolute sum. Here's my take:
+
+1.Distribute the numbers in buckets 0-59 i.e num % 60.
+2.Bucket x's complimentary is bucket 60-x. For e.g bucket 20's complimentary is bucket 40. This means that adding up the number's in bucket 20 and bucket 40 would definitely give sum which is divisible by 60. For e.g.
+
+bucket no.20=[20,80,140]
+bucket no.40=[40,100,160]
+
+(20 + 40) % 60 == 0
+(20 + 100) % 60 == 0
+(20 + 160) % 60 == 0
+...
+...
+(140 + 160) % 60 == 0
+3.With the above point in mind, whenever you are going to add a number in bucket no. x, check how many items are there in its complimentary bucket no. 60-x because all those items would form valid pairs with the current item to yield a sum divisible by 60. So add the number of items in the complimentary bucket to the running total of the number of valid pairs found out till now.
+
+
+*/
