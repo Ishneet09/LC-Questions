@@ -1,0 +1,44 @@
+class Solution {
+public:
+    vector<int> nextGreaterElement(vector<int>& nums1, vector<int>& nums2) {
+        
+        if(nums1.size() == 0 || nums2.size() == 0)
+            return {};
+        
+        unordered_map<int, int>elementToNextGreater;
+        stack<int>st;
+        
+        for(int num: nums2){
+            while(st.size() != 0 && num > st.top()){
+                elementToNextGreater[st.top()] = num;
+                st.pop();
+            }
+            
+            st.push(num);
+        }
+        
+        vector<int>ans;
+        
+        for(int num: nums1){
+            if(elementToNextGreater.count(num) > 0){
+                ans.push_back(elementToNextGreater[num]);
+            }
+            else{
+                ans.push_back(-1);
+            }
+        }
+        
+        return ans;
+    }
+};
+/*
+In this approach, we make use of pre-processing first so as to make the results easily available later on. We make use of a stack (stackstack) and a hashmap (mapmap). mapmap is used to store the result for every posssible number in nums2nums2 in the form of (element, next\_greater\_element)(element,next_greater_element). Now, we will look at how to make entries in mapmap.
+
+We iterate over the nums2nums2 array from the left to right. We push every element nums2[i]nums2[i] on the stack if it is less than the previous element on the top of the stack (stack[top]stack[top]). No entry is made in mapmap for such nums2[i]nums2[i]'s right now. This happens because the nums2[i]nums2[i]'s encountered so far are coming in a descending order.
+
+If we encounter an element nums2[i]nums2[i] such that nums2[i]nums2[i] > stack[top]stack[top], we keep on popping all the elements from stack[top]stack[top] until we encounter stack[k]stack[k] such that stack[k]stack[k] ≥ nums2[i]nums2[i]. For every element popped out of the stack stack[j]stack[j], we put the popped element along with its next greater number (result) into the hashmap mapmap, in the form (stack[j], nums2[i])(stack[j],nums2[i]). Now, the next greater element for all elements stack[j]stack[j], such that kk < jj ≤ toptop is nums2[i]nums2[i] (since this larger element caused all the stack[j]stack[j]'s to be popped out). We stop popping the elements at stack[k]stack[k] because this nums2[i]nums2[i] can't act as the next greater element for the next elements on the stack.
+
+Thus, an element is popped out of the stack whenever a next greater element is found for it. Therefore, the elements remaining in the stack are the ones for which no next greater element exists in the nums2nums2 array. Thus, at the end of the iteration over nums2nums2, we pop the remaining elements from the stackstack and put their entries in hashhash with a \text{-1}-1 as their corresponding results.
+
+Then, we can simply iterate over the nums1nums1 array to find the corresponding results from mapmap directly.
+*/
