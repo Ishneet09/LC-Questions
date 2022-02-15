@@ -1,0 +1,73 @@
+---------iterative------
+
+  bool isSymmetric(TreeNode* root) {
+        if(root == NULL)
+            return true;
+                
+        stack<pair<TreeNode*, TreeNode*>>st;
+        st.push({root->left, root->right});
+        
+        while(st.size() != 0){
+            auto top = st.top();
+            st.pop();
+            
+            TreeNode* root1 = top.first;
+            TreeNode* root2 = top.second;
+            
+            if(root1 == NULL && root2 == NULL)
+                continue;
+            
+            if(root1 == NULL || root2 == NULL)
+                return false;
+            
+            if(root1->val != root2->val)
+                return false;
+            
+            st.push({root1->left, root2->right});
+            st.push({root1->right, root2->left});
+        }
+        
+        return true;
+    }
+    
+    
+ ---------recursive----------
+ 
+ class Solution {
+private:
+    
+    bool isSymmetric(TreeNode* root1, TreeNode* root2){
+        if(root1 == NULL && root2 == NULL)
+            return true;
+        
+        if(root1 == NULL || root2 == NULL)
+            return false;
+        
+        return (root1->val == root2->val) && isSymmetric(root1->left, root2->right) && isSymmetric(root1->right, root2->left);
+    }
+    
+public:
+    bool isSymmetric(TreeNode* root) {
+        if(root == NULL)
+            return true;
+        
+        return isSymmetric(root->left, root->right);
+    }
+};
+
+/*
+A tree is symmetric if the left subtree is a mirror reflection of the right subtree.
+
+Therefore, the question is: when are two trees a mirror reflection of each other?
+
+Two trees are a mirror reflection of each other if:
+
+Their two roots have the same value.
+The right subtree of each tree is a mirror reflection of the left subtree of the other tree.
+
+This is like a person looking at a mirror. The reflection in the mirror has the same head, but the reflection's right arm corresponds to the actual person's left arm, and vice versa.
+
+The explanation above translates naturally to a recursive function as follows.
+
+
+*/
