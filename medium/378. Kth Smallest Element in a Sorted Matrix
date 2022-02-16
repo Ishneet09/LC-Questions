@@ -1,0 +1,57 @@
+class Solution {
+public:
+    
+    int numsGreaterThanMid(vector<vector<int>>& matrix, int mid){
+        int count = 0;
+        
+        for(auto row: matrix){
+            int j = row.size() - 1;
+            
+            while(j >= 0 && row[j] > mid)
+                j--;
+            
+            count += j + 1;
+        }
+        
+        return count;
+    }
+    
+    int kthSmallest(vector<vector<int>>& matrix, int k) {
+        
+        if(matrix.size() == 0)
+            return 0;
+        
+        
+        int rows = matrix.size();
+        int columns = matrix[0].size();
+   
+        /* MAX PQ SOLUTION*/
+       /* priority_queue<int>pq;
+        
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j < columns; j++){
+                pq.push(matrix[i][j]);
+                
+                if(pq.size() > k)
+                    pq.pop();
+            }
+        }
+        
+        return pq.top();*/
+        
+        int left = matrix[0][0];
+        int right = matrix[rows - 1][columns - 1];
+        
+        while(left < right){
+            int mid = left + (right - left) / 2;
+            
+            // move to left b/c we want kth smallest
+            if(numsGreaterThanMid(matrix, mid) >= k)
+                right = mid;
+            else
+                left = mid + 1;
+        }
+        
+        return left;
+    }
+};
