@@ -1,0 +1,71 @@
+class Solution {
+
+public:
+    
+    int calculateMinutes(vector<vector<int>>& grid, queue<pair<int, int>>orangeQ){
+        vector<vector<int>>directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+        // there are already some rotten oranges present and queue has them. b/c we do minutes++ even when they are processed, we end up making extra increment
+        int minutes = -1;
+        
+        while(orangeQ.size() != 0){
+            int size = orangeQ.size();
+            minutes++;
+            
+            for(int i = 0; i < size; i++){
+                auto front = orangeQ.front();
+                orangeQ.pop();
+                
+                int x = front.first;
+                int y = front.second;
+                
+                
+                for(auto d: directions){
+                    int newX = x + d[0];
+                    int newY = y + d[1];
+                    
+                    if(newX < 0 || newY < 0 || newX >= grid.size() || newY >= grid[0].size())
+                        continue;
+                    if(grid[newX][newY] == 0 || grid[newX][newY] == 2)
+                        continue;
+                    
+                    grid[newX][newY] = 2;
+                    orangeQ.push({newX, newY});
+                }
+            }
+        }
+        
+        return minutes;
+    }
+    
+    
+    int orangesRotting(vector<vector<int>>& grid) {
+        if(grid.size() == 0)
+            return 0;;
+        
+        int rows = grid.size();
+        int columns = grid[0].size();
+        
+        queue<pair<int, int>>orangeQ;
+        
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j < columns; j++){
+                if(grid[i][j] == 2)
+                    orangeQ.push({i, j});
+            }
+        }
+        
+        int minutes = calculateMinutes(grid, orangeQ);
+        
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j < columns; j++){
+                if(grid[i][j] == 0)
+                    continue;
+                
+                if(grid[i][j] != 2)
+                    return -1;
+            }
+        }
+        
+        return minutes == -1 ? 0 : minutes;
+    }
+};
