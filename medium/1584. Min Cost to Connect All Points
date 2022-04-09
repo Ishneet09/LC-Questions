@@ -1,0 +1,88 @@
+-------------PQ Solution-----------O(N2 LOG N2) = O(N2 LOG N), O(N2)
+
+class Solution {
+public:
+    int minCostConnectPoints(vector<vector<int>>& points) {
+        if(points.size() == 0)
+            return 0;
+        
+        int numPoints = points.size(); // number of nodes
+        int connectionCost = 0; // mstCost
+        int edgesUsed = 0; // V - 1 edges allowed
+        vector<bool>included(numPoints, false); // to prevent cycles, we keep track of what vertices are already included
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>>pq; // to choose min edge every time
+        
+        // we start from point 0
+        pq.push({0, 0});
+        
+        while(edgesUsed < numPoints){
+            auto currentPair = pq.top();
+            pq.pop();
+            
+            int currPoint = currentPair.second;
+            int weight = currentPair.first; // wt is distance b/w points
+            
+            // don't include any edge with this as end point again
+            if(included[currPoint])
+                continue;
+            
+            // include it
+            included[currPoint] = true;
+            edgesUsed++;
+            connectionCost += weight;
+            
+            // inlude all its neighbouring edges in pq, neighbouring edges = all point edges
+            for(int nextPoint = 0; nextPoint < points.size(); nextPoint++){
+                if(included[nextPoint])
+                    continue;
+                
+                int nextWeight = abs(points[currPoint][0] - points[nextPoint][0]) + abs(points[currPoint][1] - points[nextPoint][1]);
+                pq.push({nextWeight, nextPoint});
+            }
+        }
+        
+        return connectionCost;
+        
+        
+    }
+};
+
+
+
+-------------Use Vector instead of heap----------O(N2), O(N)
+
+if(points.size() == 0)
+            return 0;
+        
+        int numPoints = points.size();
+        int connectionCost = 0;
+        int edgesUsed = 0;
+        vector<bool>included(numPoints, false);
+        vector<int>weightArray(numPoints, INT_MAX);
+        
+        weightArray[0] = 0;
+        
+        while(edgesUsed < numPoints){
+            int weight = INT_MAX;
+            int currPoint = -1;
+            
+            for(int point = 0; point < points.size(); point++){
+                if(!included[point] && weightArray[point] < weight){
+                    currPoint = point;
+                    weight = weightArray[point];
+                }
+            }
+            
+            edgesUsed++;
+            included[currPoint] = true;
+            connectionCost += weight;
+            
+            for(int nextPoint = 0; nextPoint < numPoints; nextPoint++){
+                int nextWeight = abs(points[currPoint][0] - points[nextPoint][0]) + abs(points[currPoint][1] - points[nextPoint][1]);
+                if(!included[nextPoint] && nextWeight < weightArray[nextPoint]){
+                    weightArray[nextPoint] = nextWeight; 
+                }
+            }
+        }
+        
+        return connectionCost;
