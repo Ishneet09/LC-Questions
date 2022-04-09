@@ -1,0 +1,48 @@
+/*
+exactly dijkstras but we also keep track of k in PQ. We explore every possible path here as well and so even if we go with greedy and k over runs, we can still be sure of another path(if it exists) b/c we explore every path, O(E + ELogN)
+*/
+
+class Solution {
+public:
+   
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dest, int k) {
+        if(n == 0)
+            return 0;
+        
+        if(flights.size() == 0)
+            return 0;
+        
+        
+        vector<vector<pair<int, int>>>cityGraph(n);
+        
+        for(auto flight: flights){
+            int from = flight[0];
+            int to = flight[1];
+            int cost = flight[2];
+            cityGraph[from].push_back({to, cost});
+        }
+        
+        priority_queue<tuple<int, int, int>, vector<tuple<int, int, int>>, greater<tuple<int, int, int>>>pq;
+        // cost, node, k(= k + 1 b/c we have to find path with exactly k stops. if we dont do that, we will end up searching k - 1 node path)
+        pq.push({0, src, k + 1});
+        
+        while(pq.size() != 0){
+            auto [currCost, src, steps] = pq.top();
+            pq.pop();
+            
+            if(src == dest)
+                return currCost;
+            
+            if(steps == 0)
+                continue;
+            
+            for(auto neighbor: cityGraph[src]){
+                int node = neighbor.first;
+                int cost = neighbor.second;
+                pq.push({currCost + cost, node, steps - 1});
+            }
+        }
+        
+        return -1;
+    }
+};
