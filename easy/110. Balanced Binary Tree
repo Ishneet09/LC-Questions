@@ -1,0 +1,48 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+
+class helperObject{
+     
+    public:
+       bool isBalanced;
+       int height;
+       helperObject(bool bal, int h){
+           isBalanced = bal;
+           height = h;
+       }
+};
+
+class Solution {
+public:
+    
+    helperObject isBalancedHelper(TreeNode* root){
+        if(root == NULL)
+            return helperObject(true, 0);
+        
+        auto leftAns = isBalancedHelper(root->left);
+        auto rightAns = isBalancedHelper(root->right);
+        
+        int newHt = max(leftAns.height, rightAns.height) + 1;
+        bool isCurrBalanced = leftAns.isBalanced && rightAns.isBalanced && (abs(leftAns.height - rightAns.height) <= 1);
+        
+        return helperObject(isCurrBalanced, newHt);
+    }
+    
+    
+    
+    bool isBalanced(TreeNode* root) {
+        if(root == NULL)
+            return true;
+        
+        return isBalancedHelper(root).isBalanced;
+    }
+};
