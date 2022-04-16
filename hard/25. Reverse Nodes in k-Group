@@ -1,0 +1,39 @@
+class Solution {
+public:
+    // just like simple reverse but here, instead of goig till null, we only go to kth node
+    ListNode* reverseList(ListNode* first, ListNode* last){
+        ListNode* prev = NULL;
+        ListNode* current = first;
+        ListNode* currentNext = first->next;
+        
+        while(currentNext != last){
+            current->next = prev;
+            prev = current;
+            current = currentNext;
+            currentNext = currentNext->next;
+        }
+        
+        current->next = prev;
+        return current;
+    }
+    
+    
+    ListNode* reverseKGroup(ListNode* head, int k) {
+       
+         ListNode* nextToKNode = head;
+        
+        // finf ref to next node after kth node
+        for(int i = 0; i < k ; i++){
+            if(nextToKNode == NULL)
+                return head;
+            
+            nextToKNode = nextToKNode->next;
+        }
+        
+        ListNode* newHead = reverseList(head, nextToKNode);
+        // first k nodes are reversed, now head becomes last node of first k nodes
+        // we have now reversed the first k nodes, call recusrion to handle the rest of the list
+        head->next = reverseKGroup(nextToKNode, k);
+        return newHead;
+    }
+};
