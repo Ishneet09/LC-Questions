@@ -1,0 +1,58 @@
+// check discuss section to understand what we did and why
+class Solution {
+public:
+    string reorganizeString(string s) {
+        if(s.size() == 0)
+            return "";
+        // we will try to find a place for most freq chars first
+        unordered_map<char, int>sCounter;
+        
+        for(char c: s){
+            sCounter[c]++;
+        }
+        
+        int maxFreq = 0;
+        int maxFreqChar;
+        
+        for(auto it: sCounter){
+            if(it.second > maxFreq){
+                maxFreq = it.second;
+                maxFreqChar = it.first;
+            }
+        }
+        
+        // if number of most freq char is even greater than more than half the length of str, it is impossible to arrange that char s.t. no two chars are together
+        if(maxFreq > (s.size() + 1) / 2)
+            return "";
+        
+        int index = 0;
+        
+        // we place the most freq char first at alternate positions so that they are all sepratae
+        while(sCounter[maxFreqChar] > 0){
+            s[index] = maxFreqChar;
+            index += 2;
+            sCounter[maxFreqChar]--;
+        }
+        
+        // once the most freq char is placed, we do the same with other chars
+        for(auto it: sCounter){
+            int freq = it.second;
+            char c = it.first;
+            
+            if(c == maxFreqChar)
+                continue;
+            
+            while(freq > 0){
+                // index = 1 b/c at index = 0 we have most freq char
+                if(index >= s.size())
+                    index = 1;
+                
+                s[index] = c;
+                freq--;
+                index += 2;
+            }
+        }
+        
+        return s;
+    }
+};
