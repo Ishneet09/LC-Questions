@@ -1,0 +1,38 @@
+// see neetcode's video explanation: superb
+class Solution {
+public:
+    int largestRectangleArea(vector<int>& heights) {
+        if(heights.size() == 0)
+            return 0;
+        
+        stack<pair<int, int>>heightStack; // pair of (where that height starts, height)
+        int maxArea = 0;
+        
+        for(int i = 0; i < heights.size(); i++){
+            int currHeight = heights[i];
+            
+            // implies that last height in the stack cannot be extended further b/c curr height seen is less
+            int currHeightStartedFrom = i;
+            while(heightStack.size() > 0 && heightStack.top().second > currHeight){
+                auto topPair = heightStack.top();
+                heightStack.pop();
+                int startedFrom = topPair.first;
+                int height = topPair.second;
+                maxArea = max(maxArea, height * (i - startedFrom));
+                currHeightStartedFrom = min(startedFrom, currHeightStartedFrom);
+            }
+            
+            heightStack.push({currHeightStartedFrom, currHeight});
+        }
+        
+        while(heightStack.size() != 0){
+            auto topPair = heightStack.top();
+            heightStack.pop();
+            int height = topPair.second;
+            int width = heights.size() - topPair.first;
+            maxArea = max(maxArea, height * width);
+        }
+        
+        return maxArea;
+    }
+};
