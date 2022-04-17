@@ -1,0 +1,34 @@
+// https://leetcode.com/problems/car-fleet/discuss/255589/Python-Code-with-Explanations-and-Visualization-Beats-95
+class Solution {
+public:
+    int carFleet(int target, vector<int>& position, vector<int>& speed) {
+        if(position.size() == 0 || speed.size() == 0)
+            return 0;
+        
+        vector<pair<int, double>>positionTimePairs;
+        
+        // a car will form a fleet with another car(s) iff the time to reach the target taken by it is less than the time taken by the car right ahead of it.
+        for(int pos = 0; pos < position.size(); pos++){
+            int currPosition = position[pos];
+            int remDistLeft = target - currPosition;
+            double time = (double)remDistLeft / (double)speed[pos];
+            positionTimePairs.push_back({currPosition, time});
+        }
+        // we start finding the time from the car that is the farthest
+        sort(positionTimePairs.begin(), positionTimePairs.end());
+        
+        // the car nearest to target will always form a fleet. every car tjat will catch up to it has to stop when it reaches the nearest car
+        int fleetCount = 1;
+        int maxTimeIndex = positionTimePairs.size() - 1;
+        
+        // if the curr time is less, then the car will join some existing fleet. If the time taken is greater than the slowest car so far, it will start a new fleet
+        for(int i = positionTimePairs.size() - 2; i >= 0; i--){
+            if(positionTimePairs[i].second > positionTimePairs[maxTimeIndex].second){
+                maxTimeIndex = i;
+                fleetCount++;
+            }
+        }
+        
+        return fleetCount;
+    }
+};
