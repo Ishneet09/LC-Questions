@@ -1,0 +1,50 @@
+// earlier, i was doing speed * hours and matching with total bananas of to see if all bananas were eaten or not
+// but in that approach, it was considering that KOKO can pick more than one pile in one go which is not the case 
+// that approach is. good if hours > number of piles but not if piles. <hours
+class Solution {
+public:
+    
+    bool canEatAllBananas(int h, int speed, vector<int>& piles){
+        int hours = 0;
+        // in one hour, we pick only one pile
+        // if the pile is not exactly divisible by speed, then the rem bananas of that pile are picked in next hour. So we increment hours for the rem bananas of that pile
+        for(int pile: piles){
+            hours += (pile / speed);
+            if(pile % speed != 0)
+                hours++;
+        }
+        
+        return hours <= h;
+    }
+    
+    int minEatingSpeed(vector<int>& piles, int h) {
+        if(piles.size() == 0)
+            return 0;
+        
+        int minSpeed = 1;
+        long total = 0;
+        int maxSpeed = 0;
+        
+        for(int pile: piles){
+            total += pile;
+            maxSpeed = max(maxSpeed, pile);
+        }
+        
+        int speed;
+        
+        while(minSpeed <= maxSpeed){
+            int mid = minSpeed + (maxSpeed - minSpeed) / 2;
+            
+            if(canEatAllBananas(h, mid, piles)){
+                speed = mid;
+                maxSpeed = mid - 1;
+            }
+            
+            else
+                minSpeed = mid + 1;
+        }
+        
+        return speed;
+        
+    }
+};
