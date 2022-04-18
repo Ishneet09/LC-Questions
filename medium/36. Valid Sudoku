@@ -1,0 +1,42 @@
+// MUCH BETTER THAN SIMULATION
+// https://leetcode.com/problems/valid-sudoku/discuss/15472/Short%2BSimple-Java-using-Strings
+class Solution {
+public:
+    
+    bool isValidSudoku(vector<vector<char>>& board) {
+        
+        if(board.size() == 0)
+            return true;
+        
+        int rows = board.size();
+        int columns = board[0].size();
+        
+        unordered_set<string>seen;
+        
+        for(int i = 0; i < rows; i++){
+            for(int j = 0; j < columns; j++){
+                if(board[i][j] != '.'){
+                string currChar = "(" + to_string(board[i][j]) + ")";
+                string rowCheck = currChar + to_string(i);
+                string colCheck = to_string(j) + currChar;
+                string boxCheck = to_string(i / 3) + currChar + to_string(j / 3);
+                
+                if(seen.find(rowCheck) != seen.end())
+                    return false;
+                    
+                    if(seen.find(colCheck) != seen.end())
+                        return false;
+                    
+                    if(seen.find(boxCheck) != seen.end())
+                        return false;
+                    
+                    seen.insert(rowCheck);
+                    seen.insert(colCheck);
+                    seen.insert(boxCheck);
+                }
+            }
+        }
+        
+        return true;
+    }
+};
