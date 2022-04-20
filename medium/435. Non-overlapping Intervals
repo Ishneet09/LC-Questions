@@ -1,0 +1,37 @@
+// https://leetcode.com/problems/non-overlapping-intervals/discuss/91713/Java%3A-Least-is-Most
+
+/*If we have interval a and b, we found out that a overlaps with b. That means we can only keep one, the question is which one should we keep?
+Obviously we want to keep the one with smaller end, this way we have higher chance of putting other intervals after it.
+So we decided to sort by end time.*/
+
+
+class Solution {
+public:
+    int eraseOverlapIntervals(vector<vector<int>>& intervals) {
+        if(intervals.size() == 0)
+            return 0;
+        
+        sort(intervals.begin(), intervals.end());
+        
+        int maxNonOverlapCount = 1;
+        int lastEndTime = intervals[0][1];
+        
+        for(int i = 1; i < intervals.size(); i++){
+            int currStartTime = intervals[i][0];
+            int currEndTime = intervals[i][1];
+            
+            // non-overlap
+            if(lastEndTime <= currStartTime){
+                lastEndTime = currEndTime;
+                maxNonOverlapCount++;
+            }
+            // there is an overlap, you can keep only 1 out of both- choose the one with min end time so that you can have as many intervals further as possible
+            else {
+               lastEndTime = min(lastEndTime, currEndTime); 
+            }
+        }
+        
+        // you want min number of overlap
+        return intervals.size() - maxNonOverlapCount;
+    }
+};
