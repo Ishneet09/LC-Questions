@@ -1,0 +1,42 @@
+class Solution {
+public:
+    vector<vector<int>> insert(vector<vector<int>>& intervals, vector<int>& newInterval) {
+        if(intervals.size() == 0)
+            return {newInterval};
+        
+        // first add all intervals that end before this new one starts
+        // so we compare the ends of all those present with the start of this one
+        
+        vector<vector<int>>mergedIntervals;
+        
+        int i = 0;
+        while(i < intervals.size()){
+            auto currInterval = intervals[i];
+            if(currInterval[1] < newInterval[0]){
+               mergedIntervals.push_back(currInterval);
+                i++;
+            }
+            else 
+                break;
+        }
+        
+        // now we add all the new interval. this is its location, so that while merging, we start from it
+        mergedIntervals.push_back(newInterval);
+        
+        // now merge the remaining
+        while(i < intervals.size()){
+            // if no overlap
+            if(mergedIntervals.back()[1] < intervals[i][0]){
+                mergedIntervals.push_back(intervals[i]);
+            }
+            // overlap
+            else{
+                mergedIntervals.back()[0] = min(mergedIntervals.back()[0], intervals[i][0]);
+                mergedIntervals.back()[1] = max(mergedIntervals.back()[1], intervals[i][1]);
+            }
+            i++;
+        }
+        
+        return mergedIntervals;
+    }
+};
